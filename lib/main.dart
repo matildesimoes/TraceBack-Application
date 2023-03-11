@@ -70,25 +70,23 @@ class BottomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Expanded(
-    child: TextButton(
-      onPressed: () {},
-      style: ButtonStyle(
-          shape: MaterialStatePropertyAll<ContinuousRectangleBorder>(
-              ContinuousRectangleBorder()
-          ),
-          backgroundColor: MaterialStateProperty.all<Color>(mainColor)
-      ),
-      child: Padding(
-          padding: EdgeInsets.symmetric(
-              vertical: 20
-          ),
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: 25,
-              color: Colors.white,
+    child: Container (
+      height: 70,
+      child: TextButton(
+        onPressed: () {},
+        style: ButtonStyle(
+            shape: MaterialStatePropertyAll<ContinuousRectangleBorder>(
+                ContinuousRectangleBorder()
             ),
-          )
+            backgroundColor: MaterialStateProperty.all<Color>(mainColor)
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        )
       ),
     ),
   );
@@ -531,7 +529,8 @@ class CategoryBar extends StatelessWidget {
 class SearchBar extends StatelessWidget{
 
   @override
-  Widget build(BuildContext context) => Padding(
+  Widget build(BuildContext context) => Container(
+    height: 70,
     padding: EdgeInsets.only(bottom: 30, right: 30, left: 30),
     child: TextField(
       textAlignVertical: TextAlignVertical.center,

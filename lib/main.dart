@@ -1,25 +1,30 @@
-import 'dart:math';
-import 'package:flutter/gestures.dart';
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:lost_and_found/post.dart';
+
+const Color mainColor = Color(0xFF1D3D5C);
+
+const Color grey = Color(0xFFEBEAEA);
 
 void main() {
-  runApp(MyApp());
+  runApp(MainPage());
 }
 
-class MyApp extends StatelessWidget {
+class MainPage extends StatefulWidget {
 
-  final Color mainColor = const Color(0xFF1D3D5C);
+  MainPage ({Key? key}) : super(key: key);
 
-  final Color grey = const Color(0xFFEBEAEA);
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
 
-  MyApp ({Key? key}) : super(key: key);
+class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-
           title: const Text("Lost&Found"),
           centerTitle: true,
           backgroundColor: mainColor,
@@ -38,253 +43,34 @@ class MyApp extends StatelessWidget {
         body: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            _CategoryBar(),
-            _SearchBar(),
-            _PostsTimeline()
+            CategoryBar(),
+            SearchBar(),
+            PostsTimeline()
           ],
         ),
         bottomNavigationBar: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
           children: [
-            _BottomButton("Found"),
-            _BottomButton("Lost")
+            BottomButton("Found"),
+            BottomButton("Lost")
           ],
         ),
-        drawer: _SideMenu(),
+        drawer: SideMenu(),
       ),
     );
   }
+}
 
-  Drawer _SideMenu() {
-    return Drawer(
-        width: 200,
-        child: Column(
-          children: [
-            Stack(
-              children: [
-                Container(
-                  height: 132,
-                  color: mainColor,
-                ),
-                const Positioned(
-                  top: 65,
-                  left: 75,
-                  child: Icon(
-                    Icons.account_circle_outlined,
-                    color: Colors.white,
-                    size: 50.0,
-                  ),
-                )
-              ],
-            ),
-            SizedBox(
-              width: 200,
-              height: 60,
-              child: TextButton.icon(
-                onPressed: () {},
-                icon: Icon(Icons.chat, color: mainColor,),
-                label: Text("Chat", style: TextStyle(color: mainColor),),
-              )
-            ),
-            SizedBox(
-              width: 200,
-              height: 60,
-              child: TextButton.icon(
-                  onPressed: () {},
-                  icon: Icon(Icons.account_circle, color: mainColor,),
-                  label: Text("Profile", style: TextStyle(color: mainColor),),
-              )
-            ),
-            SizedBox(
-              width: 200,
-              height: 60,
-              child: TextButton.icon(
-                onPressed: () {},
-                icon: Icon(Icons.settings, color: mainColor,),
-                label: Text("Settings", style: TextStyle(color: mainColor)),
-              )
-            ),
-            const Spacer(
-              flex: 6,
-            ),
-            Container (
-              width: 200,
-              height: 60,
-              color: mainColor,
-              child:TextButton(
-                onPressed: (){},
-                child: Text(
-                  "Logout",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold),
-                )
-              )
-            )
-          ],
-        )
-      );
-  }
+class BottomButton extends StatelessWidget {
 
-  Widget _PostsTimeline() {
-    return Expanded(
-              child: ListView.builder(
-              itemBuilder: (_,index){
-                return Container(
-                  width:  double.maxFinite,
-                  height: 130,
-                  margin: const EdgeInsetsDirectional.only(
-                      bottom: 30,
-                      start: 20,
-                      end: 20),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(80),
-                      color: grey,
-                      border: Border.all(
-                          style: BorderStyle.solid,
-                          color: grey
-                      )
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        height: 100.0,
-                        width: 100.0,
-                        margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
-                        decoration: const BoxDecoration(
-                          color: Colors.black26,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Stack(
-                          children: const <Widget>[
-                            Positioned(
-                              top: 25.0,
-                              left: 25.0,
-                              child: Icon(
-                                Icons.camera_alt,
-                                color: Colors.white,
-                                size: 50.0,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded (
-                          child:Column (
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(top: 10),
-                                child: const Text(
-                                  "Title",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  _Tag("Tag1"),
-                                  _Tag("Tag2")
-                                ],
-                              ),
-                              Expanded (
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 40),
-                                  child:Align(
-                                    alignment: AlignmentDirectional.centerStart,
-                                    child: Row (
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Location",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: mainColor),
-                                        ),
-                                        Text(
-                                          "Author",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                              color: mainColor),
-                                        )
-                                      ],
-                                    )
-                                  )
-                                )
-                              )
-                            ],
-                          )
-                      )
-                    ],
-                  ),
-                );
-              }
-            )
-          );
-  }
+  final String text;
 
-  Widget _SearchBar() {
-    return Padding(
-            padding: EdgeInsets.only(bottom: 20),
-            child:Stack(
-              children: [
-                Container(
-                  color: grey,
-                  child: Flexible(
-                      child: TextField(
-                        textAlignVertical: TextAlignVertical.center,
-                        style: TextStyle(
-                          fontSize: 20
-                        ),
-                      )
-                  ),
-                ),
-                Positioned(
-                    top: 10,
-                    child: Padding(
-                        padding: EdgeInsets.only(right: 20),
-                        child:Icon(Icons.search, size: 20)
-                    )
-                ),
-              ],
-            )
-          );
-  }
+  BottomButton(this.text);
 
-  Widget _CategoryBar() {
-    return ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: 50, minHeight: 50),
-            child:ListView (
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              children: [
-                _Category("All"),
-                _Category("IT Devices"),
-                _Category("Keys"),
-                _Category("Clothing"),
-                _Category("School Supplies"),
-                _Category("Other")
-              ],
-            )
-          );
-  }
-
-  Widget _Category(String text){
-    return TextButton(
-        onPressed: (){},
-        child: Text(
-          text,
-          style: TextStyle(color: mainColor),
-        )
-    );
-  }
-
-  Widget _BottomButton(String text){
-    return Expanded(child: TextButton(
+  @override
+  Widget build(BuildContext context) => Expanded(
+    child: TextButton(
       onPressed: () {},
       style: ButtonStyle(
           shape: MaterialStatePropertyAll<ContinuousRectangleBorder>(
@@ -305,35 +91,488 @@ class MyApp extends StatelessWidget {
           )
       ),
     ),
-    );
-  }
-
-  Widget _Tag(String tagText) {
-    return Container(
-        padding: const EdgeInsets.symmetric(
-            vertical: 5,
-            horizontal: 10
-        ),
-        margin: const EdgeInsetsDirectional.only(
-            top: 10,
-            end: 10
-        ),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(80),
-            color: mainColor,
-            border: Border.all(
-                style: BorderStyle.solid,
-                color: mainColor
-            )
-        ),
-        child: Text(
-          tagText,
-          style: const TextStyle(
-              color: Colors.white
-          ),
-        )
-    );
-  }
-
+  );
 }
 
+class Tag extends StatelessWidget {
+
+  final String text;
+
+  const Tag(this.text, {super.key});
+
+  @override
+  Widget build(BuildContext context) => Container(
+    alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(
+          vertical: 5,
+          horizontal: 10
+      ),
+      margin: const EdgeInsetsDirectional.only(
+          top: 10,
+          end: 10
+      ),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(80),
+          color: mainColor,
+          border: Border.all(
+              style: BorderStyle.solid,
+              color: mainColor
+          )
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+            color: Colors.white
+        ),
+      )
+  );
+}
+
+
+class PostsTimeline extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) => Expanded(
+    child: ListView(
+        children: [
+          GestureDetector(
+            onTap: (){
+              Navigator.of(context)
+                  .push(
+                MaterialPageRoute(builder: (context) => Post())
+              );
+            },
+            child: _Post1(),
+          ),
+          _Post2(),
+          _Post3(),
+          SizedBox(
+            height: 90,
+          )
+        ]
+    )
+  );
+
+  Widget _Post3() {
+    return Container(
+      width:  double.maxFinite,
+      height: 130,
+      margin: const EdgeInsetsDirectional.only(
+          bottom: 30,
+          start: 20,
+          end: 20),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(80),
+          color: grey,
+          border: Border.all(
+              style: BorderStyle.solid,
+              color: grey
+          )
+      ),
+      child: Row(
+        children: [
+          Container(
+            height: 100.0,
+            width: 100.0,
+            margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
+            child: ClipOval(
+                child: ImageFiltered(
+                  child: Image(
+                    image: AssetImage("assets/jacket.jpg"),
+                  ),
+                  imageFilter: ImageFilter.blur(sigmaX: 1.2, sigmaY: 1.2),
+                )
+            ),
+          ),
+          Expanded (
+              child: Padding(
+                padding: EdgeInsets.only(left: 1, right: 40),
+                child: Column (
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(top: 10),
+                      child: const Text(
+                        "Brown Jacket",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 40,
+                      child: Expanded(
+                          child: ListView(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            children: [
+                              Tag("Jacket"),
+                              Tag("Brown"),
+                              Tag("Zara"),
+                              Tag("Old")
+                            ],
+                          )
+                      ),
+                    ),
+                    Expanded (
+                        child:Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            child: Row (
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "FEUP - Bar de Minas",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: mainColor),
+                                ),
+                                Text(
+                                  "Alex",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      color: mainColor),
+                                )
+                              ],
+                            )
+                        )
+                    )
+                  ],
+                ),
+              )
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _Post2() {
+    return Container(
+      width:  double.maxFinite,
+      height: 130,
+      margin: const EdgeInsetsDirectional.only(
+          bottom: 30,
+          start: 20,
+          end: 20),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(80),
+          color: grey,
+          border: Border.all(
+              style: BorderStyle.solid,
+              color: grey
+          )
+      ),
+      child: Row(
+        children: [
+          Container(
+            height: 100.0,
+            width: 100.0,
+            margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
+            child: ClipOval(
+                child: ImageFiltered(
+                  child: Image(
+                    image: AssetImage("assets/BrokenWatch.jpg"),
+                  ),
+                  imageFilter: ImageFilter.blur(sigmaX: 1.2, sigmaY: 1.2),
+                )
+            ),
+          ),
+          Expanded (
+              child: Padding(
+                padding: EdgeInsets.only(right: 30),
+                child: Column (
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(top: 10),
+                      child: const Text(
+                        "Broken Apple Watch",
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 40,
+                      child: Expanded(
+                          child: ListView(
+
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            children: [
+                              Tag("Watch"),
+                              Tag("White")
+                            ],
+                          )
+                      ),
+                    ),
+                    Expanded (
+                        child:Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            child: Row (
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "FDUP - 3.12",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: mainColor),
+                                ),
+                                Text(
+                                  "Tiago",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      color: mainColor),
+                                )
+                              ],
+                            )
+                        )
+                    )
+                  ],
+                ),
+              )
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _Post1() {
+    return Container(
+      width:  double.maxFinite,
+      height: 130,
+      margin: const EdgeInsetsDirectional.only(
+          bottom: 30,
+          start: 20,
+          end: 20),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(80),
+          color: grey,
+          border: Border.all(
+              style: BorderStyle.solid,
+              color: grey
+          )
+      ),
+      child: Row(
+        children: [
+          Container(
+            height: 100.0,
+            width: 100.0,
+            margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
+            child: ClipOval(
+                child: ImageFiltered(
+                  child: Image(
+                    image: AssetImage("assets/SamsungS10.jpg"),
+                  ),
+                  imageFilter: ImageFilter.blur(sigmaX: 1.2, sigmaY: 1.2),
+                )
+            ),
+          ),
+          Expanded (
+              child: Padding(
+                padding: EdgeInsets.only(right: 40),
+                child: Column (
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(top: 10),
+                      child: const Text(
+                        "Samsung Galaxy S10+",
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 40,
+                      child: Expanded(
+                          child: ListView(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            children: [
+                              Tag("Phone"),
+                              Tag("Samsung"),
+                              Tag("S10+")
+                            ],
+                          )
+                      ),
+                    ),
+                    Expanded (
+                        child:Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            child: Row (
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "FEUP - B203",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: mainColor),
+                                ),
+                                Text(
+                                  "Mariana",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      color: mainColor),
+                                )
+                              ],
+                            )
+                        )
+                    )
+                  ],
+                ),
+              )
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class SideMenu extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) => Drawer(
+    width: 200,
+    child: Column(
+      children: [
+        Container(
+          height: 110,
+          color: mainColor,
+          child: Center(
+              child:Icon(
+                Icons.account_circle_outlined,
+                color: Colors.white,
+                size: 50.0,
+              )
+          ),
+        ),
+        SideMenuButton("Home", Icon(Icons.home, color: mainColor)),
+        SideMenuButton("Chat", Icon(Icons.chat, color: mainColor)),
+        SideMenuButton("Profile", Icon(Icons.account_circle, color: mainColor)),
+        SideMenuButton("Settings", Icon(Icons.settings, color: mainColor)),
+        const Spacer(
+          flex: 6,
+        ),
+        Container (
+            width: 200,
+            height: 60,
+            color: mainColor,
+            child:TextButton(
+                onPressed: (){},
+                child: Text(
+                  "Logout",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold),
+                )
+            )
+        )
+      ],
+    )
+);
+}
+
+class SideMenuButton extends StatelessWidget{
+
+  final Icon icon;
+
+  final String text;
+
+  SideMenuButton(this.text, this.icon);
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: 200,
+    height: 60,
+    child: TextButton.icon(
+      onPressed: () {
+        Navigator.of(context)
+            .push(
+            MaterialPageRoute(builder: (context) => MainPage())
+        );
+      },
+      icon: icon,
+      label: Text(text, style: TextStyle(color: mainColor),),
+    )
+  );
+}
+
+class CategoryBar extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) => ConstrainedBox(
+    constraints: BoxConstraints(maxHeight: 50, minHeight: 50),
+    child:ListView (
+      scrollDirection: Axis.horizontal,
+      shrinkWrap: true,
+      children: [
+        Category("All"),
+        Category("IT Devices"),
+        Category("Keys"),
+        Category("Clothing"),
+        Category("School Supplies"),
+        Category("Other")
+      ],
+    )
+  );
+}
+
+class SearchBar extends StatelessWidget{
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: EdgeInsets.only(bottom: 30, right: 30, left: 30),
+    child: TextField(
+      textAlignVertical: TextAlignVertical.center,
+      style: TextStyle(
+          fontSize: 17
+      ),
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: grey,
+        labelText: "search",
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(
+                color: mainColor,
+                width: 2,
+                style: BorderStyle.solid
+            )
+        ),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(
+                color: mainColor,
+                width: 1,
+                style: BorderStyle.solid
+            )
+        ),
+        suffixIconColor: mainColor,
+        suffixIcon: IconButton(
+          icon: Icon(Icons.search_rounded),
+          onPressed: (){},
+        ),
+      ),
+    )
+  );
+}
+
+class Category extends StatelessWidget{
+
+  final String text;
+
+  const Category(this.text, {super.key});
+
+  @override
+  Widget build(BuildContext context) => TextButton(
+    onPressed: (){},
+    child: Text(
+      text,
+      style: TextStyle(color: mainColor),
+    )
+  );
+}

@@ -101,12 +101,13 @@ class Tag extends StatelessWidget {
   const Tag(this.text, {super.key});
 
   @override
-  Widget build(BuildContext context) => Container(
-    alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(
-          vertical: 5,
-          horizontal: 10
-      ),
+  Widget build(BuildContext context) => IntrinsicWidth(
+    child: Container(
+      alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(
+            vertical: 5,
+            horizontal: 10
+        ),
       margin: const EdgeInsetsDirectional.only(
           top: 10,
           end: 10
@@ -125,6 +126,7 @@ class Tag extends StatelessWidget {
             color: Colors.white
         ),
       )
+    )
   );
 }
 
@@ -435,7 +437,7 @@ class SideMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Drawer(
-    width: 200,
+    width: 180,
     child: Column(
       children: [
         Container(
@@ -449,10 +451,10 @@ class SideMenu extends StatelessWidget {
               )
           ),
         ),
-        SideMenuButton("Home", Icon(Icons.home, color: mainColor)),
-        SideMenuButton("Chat", Icon(Icons.chat, color: mainColor)),
-        SideMenuButton("Profile", Icon(Icons.account_circle, color: mainColor)),
-        SideMenuButton("Settings", Icon(Icons.settings, color: mainColor)),
+        SideMenuButton("Home", Icon(Icons.home, color: mainColor), MainPage()),
+        SideMenuButton("Chat", Icon(Icons.chat, color: mainColor), MainPage()),
+        SideMenuButton("Profile", Icon(Icons.account_circle, color: mainColor), MainPage()),
+        SideMenuButton("Settings", Icon(Icons.settings, color: mainColor), MainPage()),
         const Spacer(
           flex: 6,
         ),
@@ -482,17 +484,22 @@ class SideMenuButton extends StatelessWidget{
 
   final String text;
 
-  SideMenuButton(this.text, this.icon);
+  final StatefulWidget page;
+
+  SideMenuButton(this.text, this.icon, this.page);
 
   @override
   Widget build(BuildContext context) => SizedBox(
     width: 200,
     height: 60,
     child: TextButton.icon(
+      style: ButtonStyle(
+        alignment: Alignment.centerLeft
+      ),
       onPressed: () {
         Navigator.of(context)
             .push(
-            MaterialPageRoute(builder: (context) => MainPage())
+            MaterialPageRoute(builder: (context) => page)
         );
       },
       icon: icon,

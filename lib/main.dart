@@ -25,7 +25,7 @@ class _MainPageState extends State<MainPage> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text("Lost&Found"),
+          title: const Text("TraceBack"),
           centerTitle: true,
           backgroundColor: mainColor,
           toolbarHeight: 80,

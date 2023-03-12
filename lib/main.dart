@@ -99,8 +99,7 @@ class Tag extends StatelessWidget {
   const Tag(this.text, {super.key});
 
   @override
-  Widget build(BuildContext context) => IntrinsicWidth(
-    child: Container(
+  Widget build(BuildContext context) => Container(
       alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(
             vertical: 5,
@@ -124,7 +123,6 @@ class Tag extends StatelessWidget {
             color: Colors.white
         ),
       )
-    )
   );
 }
 
@@ -195,14 +193,13 @@ class PostsTimeline extends StatelessWidget {
                       child: const Text(
                         "Brown Jacket",
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                     SizedBox(
                       height: 40,
-                      child: Expanded(
                           child: ListView(
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
@@ -213,7 +210,6 @@ class PostsTimeline extends StatelessWidget {
                               Tag("Old")
                             ],
                           )
-                      ),
                     ),
                     Expanded (
                         child:Align(
@@ -227,12 +223,12 @@ class PostsTimeline extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                       color: mainColor),
                                 ),
-                                Text(
+    /*Text(
                                   "Alex",
                                   style: TextStyle(
                                       fontWeight: FontWeight.w400,
                                       color: mainColor),
-                                )
+                                )*/
                               ],
                             )
                         )
@@ -288,16 +284,14 @@ class PostsTimeline extends StatelessWidget {
                       child: const Text(
                         "Broken Apple Watch",
                         style: TextStyle(
-                          fontSize: 17,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                     SizedBox(
-                      height: 40,
-                      child: Expanded(
+                        height: 40,
                           child: ListView(
-
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
                             children: [
@@ -305,7 +299,6 @@ class PostsTimeline extends StatelessWidget {
                               Tag("White")
                             ],
                           )
-                      ),
                     ),
                     Expanded (
                         child:Align(
@@ -319,12 +312,13 @@ class PostsTimeline extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                       color: mainColor),
                                 ),
+                                /*
                                 Text(
                                   "Tiago",
                                   style: TextStyle(
                                       fontWeight: FontWeight.w400,
                                       color: mainColor),
-                                )
+                                )*/
                               ],
                             )
                         )
@@ -375,28 +369,26 @@ class PostsTimeline extends StatelessWidget {
                 child: Column (
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      margin: EdgeInsets.only(top: 10),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10),
                       child: const Text(
                         "Samsung Galaxy S10+",
                         style: TextStyle(
-                          fontSize: 17,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                     SizedBox(
                       height: 40,
-                      child: Expanded(
-                          child: ListView(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            children: [
-                              Tag("Phone"),
-                              Tag("Samsung"),
-                              Tag("S10+")
-                            ],
-                          )
+                        child: ListView(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            Tag("Phone"),
+                            Tag("Samsung"),
+                            Tag("S10+")
+                          ],
                       ),
                     ),
                     Expanded (
@@ -411,12 +403,12 @@ class PostsTimeline extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                       color: mainColor),
                                 ),
-                                Text(
+    /*Text(
                                   "Mariana",
                                   style: TextStyle(
                                       fontWeight: FontWeight.w400,
                                       color: mainColor),
-                                )
+                                )*/
                               ],
                             )
                         )

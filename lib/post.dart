@@ -15,8 +15,6 @@ class _PostState extends State<Post> {
     home: Scaffold(
       drawer: SideMenu(),
       appBar: AppBar(
-        title: const Text("Lost&Found"),
-        centerTitle: true,
         backgroundColor: mainColor,
         toolbarHeight: 80,
       ),

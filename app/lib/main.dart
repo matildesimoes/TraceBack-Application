@@ -1,6 +1,6 @@
 import 'dart:ui';
+import 'package:TraceBack/post.dart';
 import 'package:flutter/material.dart';
-import 'package:lost_and_found/post.dart';
 
 const Color mainColor = Color(0xFF1D3D5C);
 

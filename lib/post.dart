@@ -32,7 +32,7 @@ class _PostState extends State<Post> {
                   child: Text(
                     "Samsung Galaxy S10+",
                     style: TextStyle(
-                        fontSize: 25,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: mainColor
                     ),
@@ -119,23 +119,20 @@ class _PostState extends State<Post> {
             Container(
               height: 60,
               width: 200,
-              child: Expanded(
-                child: TextButton.icon(
-                  onPressed: (){},
-                  icon: Icon(Icons.message, color: Colors.white, size: 23,),
-                  label: Text("Contact", style: TextStyle(color: Colors.white, fontSize: 17),),
-                  style: ButtonStyle(
+              child: TextButton.icon(
+                onPressed: (){},
+                icon: Icon(Icons.message, color: Colors.white, size: 23,),
+                label: Text("Contact", style: TextStyle(color: Colors.white, fontSize: 17),),
+                style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(mainColor),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50),
+                          borderRadius: BorderRadius.circular(50),
                         )
-                      )
-                  ),
+                    )
                 ),
               ),
             )
-
           ],
         ),
       )

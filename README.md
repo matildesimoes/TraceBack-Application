@@ -10,9 +10,9 @@ You can find here details about the product TraceBack, from a high-level vision 
 * Requirements
   * [Domain model](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC06T4/blob/develop/images/DomainModel.jpg)
 * Architecture and Design
-  * [Logical architecture](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC06T4/blob/ReadME-update/docs/ArchitectureAndDesign.md#L5)
-  * [Physical architecture](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC06T4/blob/ReadME-update/docs/ArchitectureAndDesign.md#L9)
-  * [Vertical prototype](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC06T4/blob/ReadME-update/docs/ArchitectureAndDesign.md#L24)
+  * [Logical architecture](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC06T4/blob/develop/docs/ArchitectureAndDesign.md#logical-architecture)
+  * [Physical architecture](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC06T4/blob/develop/docs/ArchitectureAndDesign.md#physical-architecture)
+  * [Vertical prototype](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC06T4/blob/develop/docs/ArchitectureAndDesign.md#vertical-prototype)
 * [Project management](https://github.com/orgs/FEUP-LEIC-ES-2022-23/projects/68/views/1)
 
 So far, contributions are exclusively made by the initial team, but we hope to open them to the community, in all areas and topics: requirements, technologies, development, experimentation, testing, etc.

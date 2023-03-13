@@ -1,15 +1,13 @@
 # Project management
 
-Software project management is the art and science of planning and leading software projects, in which software projects are planned, implemented, monitored and controlled.
+## Backlog management
 
-In the context of ESOF, we recommend each team to adopt a set of project management practices and tools capable of registering tasks, assigning tasks to team members, adding estimations to tasks, monitor tasks progress, and therefore being able to track their projects.
+In order to facilitate project management, we used Githubs Projects.
 
-Common practices of managing iterative software development are: backlog management, release management, estimation, iteration planning, iteration development, acceptance tests, and retrospectives.
+Github Projects provides us with a [Board](https://github.com/orgs/FEUP-LEIC-ES-2022-23/projects/68), which we used for backlog management, where we are able to easily manage the product backlog, the current iteration backlog, work in progress and completed features, along with a easy way to assign tasks to the development team members, while also providing a way of classifying the effort level for each task.
 
-You can find below information and references related with the project management in our team:
+## Release management
 
-* Backlog management: Product backlog and Iteration backlog in a [Github Projects board](https://github.com/orgs/FEUP-LEIC-ES-2022-23/projects/68);
-* Release management: [v0](#), v1, v2, v3, v...;
-* Iteration planning and retrospectives:
-  * plans: screenshots of Github Projects board at begin and end of each iteration;
-  * retrospectives: meeting notes in a document in the repository
+Each version before the offical release, should be labeled with 0.X, where X starts on 1, and is incremented with each release.
+
+After the official release, all versions should follow the same rule, but with 1.X and X starting on 0.

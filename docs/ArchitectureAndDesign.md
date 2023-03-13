@@ -21,9 +21,9 @@ Our physical architecture is constituded by 3 different physical devices:
 
 ![DeploymentView](../images/DeploymentView.jpg)
 
-### Vertical prototype
+## Vertical prototype
 
 The vertical prototype features the main page of the application.
-This page allows the user to navigate through posts.
-Each post features a automatic blurred image, a title, tags (which are horizontally scrollable, in case they don't fit) and it's location.
+This page allows the user to navigate through posts of lost or found items. It possesses a list of scrollable categories on top, followed by a search bar, along with a button on the lower corner, whose fucntion will be to allow the user to post an item as well. The functionality of these will be implemented in the future.
+Each post features a automatic blurred image, a title, tags (which are horizontally scrollable, in case they don't fit) and its location.
 The user can read more about the first post, by tapping on it.

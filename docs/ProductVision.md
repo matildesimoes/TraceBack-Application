@@ -16,4 +16,4 @@ A lost and found service for the academic community around the University of Por
 
 ## Assumptions and dependencies
 
-- Student email from sigarra
+- Student email from sigarra (@up.pt)

@@ -2,6 +2,8 @@ import 'dart:ui';
 import 'package:TraceBack/post.dart';
 import 'package:flutter/material.dart';
 
+import 'createFoundPost.dart';
+
 const Color mainColor = Color(0xFF1D3D5C);
 
 const Color grey = Color(0xFFEBEAEA);
@@ -35,7 +37,12 @@ class _MainPageState extends State<MainPage> {
           child: FittedBox(
             child: FloatingActionButton(
               backgroundColor: mainColor,
-              onPressed: () {  },
+              onPressed: () {
+                Navigator.of(context)
+                    .push(
+                    MaterialPageRoute(builder: (context) => CreateFoundPost())
+                );
+              },
               child: const Icon(Icons.add),
             ),
           ),

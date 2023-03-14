@@ -19,16 +19,6 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
           backgroundColor: mainColor,
           toolbarHeight: 80,
         ),
-        floatingActionButton: FractionallySizedBox (
-          widthFactor: 0.2,
-          child: FittedBox(
-            child: FloatingActionButton(
-              backgroundColor: mainColor,
-              onPressed: () {  },
-              child: const Icon(Icons.add),
-            ),
-          ),
-        ),
         drawer: SideMenu(),
       ),
     );

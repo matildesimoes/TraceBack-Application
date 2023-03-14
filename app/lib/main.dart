@@ -52,8 +52,8 @@ class _MainPageState extends State<MainPage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
           children: [
-            BottomButton("Found"),
-            BottomButton("Lost")
+            BottomButton(text: "Found"),
+            BottomButton(text: "Lost")
           ],
         ),
         drawer: SideMenu(),
@@ -66,7 +66,7 @@ class BottomButton extends StatelessWidget {
 
   final String text;
 
-  BottomButton(this.text);
+  BottomButton({required this.text});
 
   @override
   Widget build(BuildContext context) => Expanded(

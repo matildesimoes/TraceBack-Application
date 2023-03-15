@@ -21,9 +21,29 @@ class _EditProfilePageState extends State<EditProfilePage> {
           child: Column(
             children: [
               SizedBox(height: 35),
-              CircleAvatar(
-                radius: 70,
-                backgroundColor: grey,
+              Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 70,
+                    backgroundColor: grey,
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: Icon(
+                        Icons.camera_alt,
+                        color: mainColor,
+                        size: 24,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 16),
               Padding(
@@ -41,7 +61,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
               ),
               EditBox(text: "Name"),
-              EditBox(text: 'Email',),
+              EditBox(text: "Email",),
               EditBox(text: "Phone Number"),
             ],
           ),

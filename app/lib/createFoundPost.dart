@@ -87,85 +87,6 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                 SizedBox(
                   height: 20,
                 ),
-                GestureDetector(
-                  onTap: (){
-                    FocusScope.of(context).unfocus();
-                    new TextEditingController().clear();
-                  },
-                  child: TextFormField(
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      label: Text("Location"),
-                      hintText: "Select location >",
-                      suffixIcon: IconButton(
-                        onPressed: (){},
-                        icon: Icon(Icons.location_on, color: mainColor)
-                      ),
-                      filled: true,
-                      fillColor: grey,
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25),
-                          borderSide: BorderSide(
-                              color: mainColor,
-                              width: 2,
-                              style: BorderStyle.solid
-                          )
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25),
-                          borderSide: BorderSide(
-                              color: mainColor,
-                              width: 1,
-                              style: BorderStyle.solid
-                          )
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                GestureDetector(
-                  onTap: (){
-                    FocusScope.of(context).unfocus();
-                    _dateController.clear();
-                  },
-                  child: TextFormField(
-                    readOnly: true,
-                    controller: _dateController,
-                    decoration: InputDecoration(
-                        label: Text("Date"),
-                        hintText: "Click calendar >",
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            _showDatePicker();
-                          },
-                          icon: Icon(Icons.calendar_month, color: mainColor),
-                        ),
-                      filled: true,
-                      fillColor: grey,
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25),
-                          borderSide: BorderSide(
-                              color: mainColor,
-                              width: 2,
-                              style: BorderStyle.solid
-                          )
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25),
-                          borderSide: BorderSide(
-                              color: mainColor,
-                              width: 1,
-                              style: BorderStyle.solid
-                          )
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
                 DropDownTextField(
                   textFieldDecoration: InputDecoration(
                       label: Text("Category"),
@@ -247,7 +168,86 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                       borderRadius: BorderRadius.circular(25),
                     )
                   ),
-                )
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                GestureDetector(
+                  onTap: (){
+                    FocusScope.of(context).unfocus();
+                    new TextEditingController().clear();
+                  },
+                  child: TextFormField(
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      label: Text("Location"),
+                      hintText: "Select location >",
+                      suffixIcon: IconButton(
+                          onPressed: (){},
+                          icon: Icon(Icons.location_on, color: mainColor)
+                      ),
+                      filled: true,
+                      fillColor: grey,
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                          borderSide: BorderSide(
+                              color: mainColor,
+                              width: 2,
+                              style: BorderStyle.solid
+                          )
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                          borderSide: BorderSide(
+                              color: mainColor,
+                              width: 1,
+                              style: BorderStyle.solid
+                          )
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                GestureDetector(
+                  onTap: (){
+                    FocusScope.of(context).unfocus();
+                    _dateController.clear();
+                  },
+                  child: TextFormField(
+                    readOnly: true,
+                    controller: _dateController,
+                    decoration: InputDecoration(
+                      label: Text("Date"),
+                      hintText: "Click calendar >",
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          _showDatePicker();
+                        },
+                        icon: Icon(Icons.calendar_month, color: mainColor),
+                      ),
+                      filled: true,
+                      fillColor: grey,
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                          borderSide: BorderSide(
+                              color: mainColor,
+                              width: 2,
+                              style: BorderStyle.solid
+                          )
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                          borderSide: BorderSide(
+                              color: mainColor,
+                              width: 1,
+                              style: BorderStyle.solid
+                          )
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           )

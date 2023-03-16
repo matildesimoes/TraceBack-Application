@@ -37,7 +37,7 @@ class _MainPageState extends State<MainPage> {
           child: FittedBox(
             child: FloatingActionButton(
               backgroundColor: mainColor,
-              onPressed: () {
+              onPressed: (){
                 Navigator.of(context)
                     .push(
                     MaterialPageRoute(builder: (context) => CreateFoundPost())
@@ -47,13 +47,15 @@ class _MainPageState extends State<MainPage> {
             ),
           ),
         ),
-        body: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            CategoryBar(),
-            SearchBar(),
-            PostsTimeline()
-          ],
+        body: Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              CategoryBar(),
+              SearchBar(),
+              PostsTimeline()
+            ],
+          ),
         ),
         bottomNavigationBar: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

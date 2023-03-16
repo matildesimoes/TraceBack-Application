@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'main.dart';
+import 'package:image_picker/image_picker.dart';
+
 
 class EditProfilePage extends StatefulWidget {
   @override
@@ -120,8 +122,7 @@ class EditBox extends StatelessWidget{
               FocusScope.of(context).unfocus();
               new TextEditingController().clear();
             },
-            child: TextFormField(
-              readOnly: true,
+            child: TextField(
               decoration: InputDecoration(
                 label: Text(text),
                 hintText: "$text >",

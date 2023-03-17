@@ -14,7 +14,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   File _image = File('logo.png');
 
   Future getImage(ImageSource source) async {
-    final pickedFile = await ImagePicker().getImage(source: source);
+    final pickedFile = await ImagePicker().pickImage(source: source);
 
     setState(() {
       if (pickedFile != null) {
@@ -25,17 +25,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
     });
   }
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        drawer: SideMenu(),
+        home: Scaffold(
         appBar: AppBar(
-          backgroundColor: mainColor,
-          toolbarHeight: 80,
-        ),
-        body: SingleChildScrollView(
-          child: Column(
+        backgroundColor: mainColor,
+        toolbarHeight: 80,
+    ),
+    body: SingleChildScrollView(
+    child: Form(
+    key: _formKey,
+    child: Column(
             children: [
               SizedBox(height: 35),
               Stack(
@@ -120,6 +123,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 width: 200,
                 child: ElevatedButton(
                   onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      // se dados forem válidos
+                    }
                     // função para salvar as informações
                   },
                   style: ButtonStyle(
@@ -144,6 +150,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
         ),
       ),
+        ),
     );
   }
 }
@@ -155,8 +162,6 @@ class EditBox extends StatelessWidget{
   EditBox({required this.text, required this.hintText});
 
   final controller = TextEditingController();
-
-
 
   @override
   Widget build(BuildContext context) => Container(
@@ -177,7 +182,7 @@ class EditBox extends StatelessWidget{
             },
             child: TextFormField(
               keyboardType: TextInputType.emailAddress,
-                controller: controller,
+              controller: controller,
               decoration: InputDecoration(
                 label: Text(text),
                 hintText: hintText,

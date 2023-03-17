@@ -3,6 +3,8 @@ import 'package:TraceBack/post.dart';
 import 'package:TraceBack/profile.dart';
 import 'package:flutter/material.dart';
 
+import 'createFoundPost.dart';
+
 const Color mainColor = Color(0xFF1D3D5C);
 const Color grey = Color(0xFFEBEAEA);
 
@@ -30,30 +32,23 @@ class _MainPageState extends State<MainPage> {
           backgroundColor: mainColor,
           toolbarHeight: 80,
         ),
-        floatingActionButton: FractionallySizedBox (
-          widthFactor: 0.2,
-          child: FittedBox(
-            child: FloatingActionButton(
-              backgroundColor: mainColor,
-              onPressed: () {  },
-              child: const Icon(Icons.add),
-            ),
+        floatingActionButton: CreatePostButton(),
+        body: Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              CategoryBar(),
+              SearchBar(),
+              PostsTimeline()
+            ],
           ),
-        ),
-        body: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            CategoryBar(),
-            SearchBar(),
-            PostsTimeline()
-          ],
         ),
         bottomNavigationBar: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
           children: [
-            BottomButton("Found"),
-            BottomButton("Lost")
+            BottomButton(text: "Found"),
+            BottomButton(text: "Lost")
           ],
         ),
         drawer: SideMenu(),
@@ -62,11 +57,35 @@ class _MainPageState extends State<MainPage> {
   }
 }
 
+class CreatePostButton extends StatelessWidget {
+  const CreatePostButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FractionallySizedBox (
+      widthFactor: 0.2,
+      child: FittedBox(
+        child: FloatingActionButton(
+          backgroundColor: mainColor,
+          onPressed: (){
+            Navigator.of(context)
+                .push(
+                MaterialPageRoute(builder: (context) => CreateFoundPost())
+            );
+          },
+          child: const Icon(Icons.add),
+        ),
+      ),
+    );
+  }
+}
+
+
 class BottomButton extends StatelessWidget {
 
   final String text;
 
-  BottomButton(this.text);
+  BottomButton({required this.text});
 
   @override
   Widget build(BuildContext context) => Expanded(

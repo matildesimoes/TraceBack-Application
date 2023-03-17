@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 import 'main.dart';
+import 'map.dart';
 
 class CreateFoundPost extends StatefulWidget {
   const CreateFoundPost({Key? key}) : super(key: key);
@@ -184,7 +185,12 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                       label: Text("Location"),
                       hintText: "Select location >",
                       suffixIcon: IconButton(
-                          onPressed: (){},
+                          onPressed: (){
+                            Navigator.of(context)
+                                .push(
+                                MaterialPageRoute(builder: (context) => LocationSelect())
+                            );
+                          },
                           icon: Icon(Icons.location_on, color: mainColor)
                       ),
                       filled: true,
@@ -279,3 +285,18 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
 }
 
 
+class LocationSelect extends StatefulWidget {
+  const LocationSelect({Key? key}) : super(key: key);
+
+  @override
+  State<LocationSelect> createState() => _LocationSelectState();
+}
+
+class _LocationSelectState extends State<LocationSelect> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: MapSample(),
+    );
+  }
+}

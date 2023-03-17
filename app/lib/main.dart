@@ -32,21 +32,7 @@ class _MainPageState extends State<MainPage> {
           backgroundColor: mainColor,
           toolbarHeight: 80,
         ),
-        floatingActionButton: FractionallySizedBox (
-          widthFactor: 0.2,
-          child: FittedBox(
-            child: FloatingActionButton(
-              backgroundColor: mainColor,
-              onPressed: (){
-                Navigator.of(context)
-                    .push(
-                    MaterialPageRoute(builder: (context) => CreateFoundPost())
-                );
-              },
-              child: const Icon(Icons.add),
-            ),
-          ),
-        ),
+        floatingActionButton: CreatePostButton(),
         body: Container(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -70,6 +56,30 @@ class _MainPageState extends State<MainPage> {
     );
   }
 }
+
+class CreatePostButton extends StatelessWidget {
+  const CreatePostButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FractionallySizedBox (
+      widthFactor: 0.2,
+      child: FittedBox(
+        child: FloatingActionButton(
+          backgroundColor: mainColor,
+          onPressed: (){
+            Navigator.of(context)
+                .push(
+                MaterialPageRoute(builder: (context) => CreateFoundPost())
+            );
+          },
+          child: const Icon(Icons.add),
+        ),
+      ),
+    );
+  }
+}
+
 
 class BottomButton extends StatelessWidget {
 

@@ -38,41 +38,55 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(
-                            'David',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
+                          Padding(
+                            padding: EdgeInsets.only(left: 20.0),
+                            child: Text(
+                              'David',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                           SizedBox(height: 8),
-                          Text(
-                            'david@gmail.com',
-                            style: TextStyle(
-                              fontSize: 16,
+                          Padding(
+                            padding: EdgeInsets.only(left: 20.0),
+                            child: Text(
+                              'david@gmail.com',
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
                             ),
                           ),
                           SizedBox(height: 8),
-                          Text(
-                            '967848691',
-                            style: TextStyle(
-                              fontSize: 16,
+                          Padding(
+                            padding: EdgeInsets.only(left: 20.0),
+                            child: Text(
+                              '967848691',
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
                             ),
                           ),
                           SizedBox(height: 16),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: mainColor,
-                            ),
-                            child: Text('Edit profile'),
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .push(
+                          Padding(
+                            padding: EdgeInsets.only(left: 20.0),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: mainColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              child: Text('Edit Profile'),
+                              onPressed: () {
+                                Navigator.of(context).push(
                                   MaterialPageRoute(
-                                      builder: (context) => EditProfilePage()
-                                  )
-                              );
-                            },
+                                    builder: (context) => EditProfilePage(),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ],
                       ),

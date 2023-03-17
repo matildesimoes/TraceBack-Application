@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:TraceBack/profile.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'package:image_picker/image_picker.dart';
@@ -31,6 +32,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
+        drawer: SideMenu(),
         appBar: AppBar(
         backgroundColor: mainColor,
         toolbarHeight: 80,
@@ -120,14 +122,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
               SizedBox(height: 40),
               Container(
                 height: 50,
-                margin: EdgeInsets.only(top: 10),
+                margin: EdgeInsets.only(top: 5),
                 width: 200,
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      // se dados forem válidos
+                      Navigator.of(context)
+                          .push(
+                          MaterialPageRoute(
+                              builder: (context) => ProfilePage()
+                          )
+                      );
                     }
-                    // função para salvar as informações
+                    // função para guardar as informações
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(mainColor),
@@ -251,7 +258,7 @@ class phoneValidator {
       return 'Please enter a phone number';
     }
 
-    final upEmailRegex = RegExp(r'^[0-9]+$');
+    final upEmailRegex = RegExp(r'^[0-9]*$');
     if (!upEmailRegex.hasMatch(value)) {
       return 'Please enter a valid phone number';
     }

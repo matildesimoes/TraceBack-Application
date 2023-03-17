@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'main.dart';
@@ -10,6 +11,20 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
+  File _image = File('logo.png');
+
+  Future getImage(ImageSource source) async {
+    final pickedFile = await ImagePicker().getImage(source: source);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,20 +43,53 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   CircleAvatar(
                     radius: 70,
                     backgroundColor: grey,
+                    backgroundImage: _image != null ? FileImage(_image) : null,
                   ),
                   Positioned(
                     bottom: 0,
                     right: 0,
                     child: Container(
-                      padding: EdgeInsets.all(5),
+                      padding: EdgeInsets.all(2),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(50),
                       ),
-                      child: Icon(
-                        Icons.camera_alt,
-                        color: mainColor,
-                        size: 24,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.camera_alt,
+                          color: mainColor,
+                          size: 24,
+                        ),
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return SafeArea(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    ListTile(
+                                      leading: Icon(Icons.camera_alt),
+                                      title: Text("Take a photo"),
+                                      onTap: () {
+                                        getImage(ImageSource.camera);
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: Icon(Icons.photo_library),
+                                      title: Text("Choose from gallery"),
+                                      onTap: () {
+                                        getImage(ImageSource.gallery);
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -62,9 +110,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                 ),
               ),
-              EditBox(text: "Name"),
-              EditBox(text: "Email",),
-              EditBox(text: "Phone Number"),
+              EditBox(text: "Name", hintText: "Name"),
+              EditBox(text: "Email", hintText: "upXXXXXXXXX@up.pt"),
+              EditBox(text: "Phone Number", hintText: "Phone Number"),
               SizedBox(height: 40),
               Container(
                 height: 50,
@@ -103,7 +151,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
 class EditBox extends StatelessWidget{
 
   final String text;
-  EditBox({required this.text});
+  final String hintText;
+  EditBox({required this.text, required this.hintText});
+
+  final controller = TextEditingController();
+
+
 
   @override
   Widget build(BuildContext context) => Container(
@@ -122,10 +175,12 @@ class EditBox extends StatelessWidget{
               FocusScope.of(context).unfocus();
               new TextEditingController().clear();
             },
-            child: TextField(
+            child: TextFormField(
+              keyboardType: TextInputType.emailAddress,
+                controller: controller,
               decoration: InputDecoration(
                 label: Text(text),
-                hintText: "$text >",
+                hintText: hintText,
                 suffixIcon: IconButton(
                   onPressed: () {},
                   icon: Icon(Icons.edit, color: mainColor),
@@ -147,6 +202,23 @@ class EditBox extends StatelessWidget{
                       style: BorderStyle.solid),
                 ),
               ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter an email address';
+                }
+
+                final emailRegex = RegExp(r'^\S+@\S+\.\S+$');
+                if (!emailRegex.hasMatch(value)) {
+                  return 'Please enter a valid email address';
+                }
+
+                final upEmailRegex = RegExp(r'^up[0-9]+@up\.pt$');
+                if (!upEmailRegex.hasMatch(value)) {
+                  return 'Please enter a valid UP email address';
+                }
+
+                return null;
+              },
             ),
           ),
         ),

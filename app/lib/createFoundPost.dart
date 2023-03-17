@@ -40,6 +40,7 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             title: const Text(
               "Post Found Item",
@@ -246,6 +247,26 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                           )
                       ),
                     ),
+                  ),
+                ),
+                Spacer(),
+                Container(
+                  height: 50,
+                  width: 150,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30)
+                  ),
+                  child: TextButton.icon(
+                    onPressed: (){},
+                    label: Text(
+                      "Post",
+                      style: TextStyle(
+                          color: Colors.white
+                      ),
+                    ),
+                    icon: Icon(Icons.post_add, color: Colors.white,),
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(mainColor),                   ),
                   ),
                 ),
               ],

@@ -1,11 +1,11 @@
 import 'dart:ui';
 import 'package:TraceBack/post.dart';
+import 'package:TraceBack/profile.dart';
 import 'package:flutter/material.dart';
 
 import 'createFoundPost.dart';
 
 const Color mainColor = Color(0xFF1D3D5C);
-
 const Color grey = Color(0xFFEBEAEA);
 
 void main() {
@@ -462,7 +462,7 @@ class SideMenu extends StatelessWidget {
         ),
         SideMenuButton("Home", Icon(Icons.home, color: mainColor), MainPage()),
         SideMenuButton("Chat", Icon(Icons.chat, color: mainColor), MainPage()),
-        SideMenuButton("Profile", Icon(Icons.account_circle, color: mainColor), MainPage()),
+        SideMenuButton("Profile", Icon(Icons.account_circle, color: mainColor), ProfilePage()),
         SideMenuButton("Settings", Icon(Icons.settings, color: mainColor), MainPage()),
         const Spacer(
           flex: 6,

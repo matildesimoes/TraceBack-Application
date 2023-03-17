@@ -75,7 +75,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: mainColor,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
                               ),
                               child: Text('Edit Profile'),

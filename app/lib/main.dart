@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:ui';
 import 'package:TraceBack/post.dart';
 import 'package:TraceBack/profile.dart';
@@ -22,37 +23,50 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
 
+  late Bool loggedIn;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text("TraceBack"),
-          centerTitle: true,
-          backgroundColor: mainColor,
-          toolbarHeight: 80,
-        ),
-        floatingActionButton: CreatePostButton(),
-        body: Container(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              CategoryBar(),
-              SearchBar(),
-              PostsTimeline()
-            ],
-          ),
-        ),
-        bottomNavigationBar: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      home: SearchPage()
+    );
+  }
+}
 
-          children: [
-            BottomButton(text: "Found"),
-            BottomButton(text: "Lost")
+class SearchPage extends StatelessWidget {
+  const SearchPage({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("TraceBack"),
+        centerTitle: true,
+        backgroundColor: mainColor,
+        toolbarHeight: 80,
+      ),
+      floatingActionButton: CreatePostButton(),
+      body: Container(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            CategoryBar(),
+            SearchBar(),
+            PostsTimeline()
           ],
         ),
-        drawer: SideMenu(),
       ),
+      bottomNavigationBar: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+        children: [
+          BottomButton(text: "Found"),
+          BottomButton(text: "Lost")
+        ],
+      ),
+      drawer: SideMenu(),
     );
   }
 }
@@ -68,9 +82,8 @@ class CreatePostButton extends StatelessWidget {
         child: FloatingActionButton(
           backgroundColor: mainColor,
           onPressed: (){
-            Navigator.of(context)
-                .push(
-                MaterialPageRoute(builder: (context) => CreateFoundPost())
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => CreateFoundPost())
             );
           },
           child: const Icon(Icons.add),

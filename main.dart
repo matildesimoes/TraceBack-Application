@@ -1,11 +1,11 @@
 import 'dart:ui';
+import 'package:TraceBack/initial.dart';
 import 'package:TraceBack/post.dart';
 import 'package:TraceBack/profile.dart';
 import 'package:flutter/material.dart';
 
 import 'createFoundPost.dart';
-import 'initial.dart';
-import 'signUp.dart';
+
 
 const Color mainColor = Color(0xFF1D3D5C);
 const Color grey = Color(0xFFEBEAEA);

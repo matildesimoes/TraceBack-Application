@@ -4,7 +4,8 @@ import 'initial.dart';
 import 'main.dart';
 import 'dart:ui';
 import 'dart:io';
-import 'editprofile.dart';
+import 'editBox.dart';
+
 
 
 class LoginPage extends StatefulWidget {

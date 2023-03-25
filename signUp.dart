@@ -1,7 +1,7 @@
 import 'package:TraceBack/profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'editprofile.dart';
+import 'editBox.dart';
 import 'main.dart';
 import 'dart:ui';
 

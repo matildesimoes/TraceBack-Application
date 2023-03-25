@@ -13,7 +13,7 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
 
-  File _image = File('logo.png');
+  File? _image;
 
   Future getImage(ImageSource source) async {
     final pickedFile = await ImagePicker().pickImage(source: source);
@@ -49,7 +49,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   CircleAvatar(
                     radius: 70,
                     backgroundColor: grey,
-                    backgroundImage: _image != null ? FileImage(_image) : null,
+                    backgroundImage: _image != null ? FileImage(_image!) : null,
                   ),
                   Positioned(
                     bottom: 0,
@@ -179,43 +179,42 @@ class EditBox extends StatelessWidget {
       padding: EdgeInsets.all(2),
       width: 370,
       child:
-      Expanded(
-        child: TextFormField(
-          keyboardType: TextInputType.emailAddress,
-          controller: controller,
-          decoration: InputDecoration(
-            label: Text(text),
-            hintText: hintText,
-            suffixIcon: IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.edit, color: mainColor),
-            ),
-            filled: true,
-            fillColor: grey,
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(25),
-              borderSide: BorderSide(
-                  color: mainColor,
-                  width: 2,
-                  style: BorderStyle.solid),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(25),
-              borderSide: BorderSide(
-                  color: mainColor,
-                  width: 1,
-                  style: BorderStyle.solid),
-            ),
+      TextFormField(
+        keyboardType: TextInputType.emailAddress,
+        controller: controller,
+        decoration: InputDecoration(
+          label: Text(text),
+          hintText: hintText,
+          suffixIcon: IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.edit, color: mainColor),
           ),
-          validator: text == "Name"
-              ? (value) => nameValidator.validate(value)
-              : text == "Email"
-              ? (value) => emailValidator.validate(value)
-              : text == "Phone Number"
-              ? (value) => phoneValidator.validate(value)
-              : null,
+          filled: true,
+          fillColor: grey,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(
+                color: mainColor,
+                width: 2,
+                style: BorderStyle.solid),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(
+                color: mainColor,
+                width: 1,
+                style: BorderStyle.solid),
+          ),
         ),
+        validator: text == "Name"
+            ? (value) => nameValidator.validate(value)
+            : text == "Email"
+            ? (value) => emailValidator.validate(value)
+            : text == "Phone Number"
+            ? (value) => phoneValidator.validate(value)
+            : null,
       ),
+
     );
   }
 }

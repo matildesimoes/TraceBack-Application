@@ -116,9 +116,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                 ),
               ),
-              EditBox(text: "Name", hintText: "Name"),
-              EditBox(text: "Email", hintText: "upXXXXXXXXX@up.pt"),
-              EditBox(text: "Phone Number", hintText: "Phone Number"),
+              EditBox(text: "Name", hintText: "Name", isPassword: false),
+              EditBox(text: "Email", hintText: "upXXXXXXXXX@up.pt",isPassword: false),
+              EditBox(text: "Phone Number", hintText: "Phone Number",isPassword: false),
               SizedBox(height: 40),
               Container(
                 height: 50,
@@ -162,67 +162,78 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 }
-
-class EditBox extends StatelessWidget {
-
+class EditBox extends StatefulWidget {
   final String text;
   final String hintText;
-  EditBox({required this.text, required this.hintText});
+ bool isPassword;
 
+  EditBox({required this.text, required this.hintText, required this.isPassword});
+
+  @override
+  _EditBoxState createState() => _EditBoxState();
+}
+
+class _EditBoxState extends State<EditBox> {
   final controller = TextEditingController();
+  
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top:8),
+      margin: EdgeInsets.only(top: 8),
       padding: EdgeInsets.all(2),
       width: 370,
-      child: Row(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: () {
-                FocusScope.of(context).unfocus();
-                new TextEditingController().clear();
-              },
-              child: TextFormField(
-                keyboardType: TextInputType.emailAddress,
-                controller: controller,
-                decoration: InputDecoration(
-                  label: Text(text),
-                  hintText: hintText,
-                  suffixIcon: IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.edit, color: mainColor),
+      
+      child: TextFormField(
+        keyboardType: widget.text == 'Email'
+            ? TextInputType.emailAddress
+            : TextInputType.text,
+        controller: controller,
+        obscureText: widget.isPassword,
+        decoration: InputDecoration(
+          label: Text(widget.text),
+          hintText: widget.hintText,
+          suffixIcon: widget.isPassword
+              ? IconButton(
+                  onPressed: () {
+                    setState(() {
+                      widget.isPassword = !widget.isPassword;
+                    });
+                  },
+                  icon: Icon(
+                    widget.isPassword ? Icons.visibility_off : Icons.visibility,
+                    color: Colors.grey,
                   ),
-                  filled: true,
-                  fillColor: grey,
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
-                    borderSide: BorderSide(
-                        color: mainColor,
-                        width: 2,
-                        style: BorderStyle.solid),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
-                    borderSide: BorderSide(
-                        color: mainColor,
-                        width: 1,
-                        style: BorderStyle.solid),
-                  ),
-                ),
-                validator: text == "Name"
-                    ? (value) => nameValidator.validate(value)
-                    : text == "Email"
-                    ? (value) => emailValidator.validate(value)
-                    : text == "Phone Number"
-                    ? (value) => phoneValidator.validate(value)
-                    : null,
-              ),
+                )
+              : null,
+          filled: true,
+          fillColor: Colors.grey[300],
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(
+              color: Colors.grey,
+              width: 2,
+              style: BorderStyle.solid,
             ),
           ),
-        ],
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(
+              color: Colors.blue,
+              width: 1,
+              style: BorderStyle.solid,
+            ),
+          ),
+        ),
+        validator: widget.text == "Name"
+            ? (value) => nameValidator.validate(value)
+            : widget.text == "Email"
+                ? (value) => emailValidator.validate(value)
+                : widget.text == "Phone Number"
+                    ? (value) => phoneValidator.validate(value)
+                    : widget.text == "Password"
+                        ? (value) => PasswordValidator.validate(value)
+                        : null,
       ),
     );
   }
@@ -236,6 +247,7 @@ class nameValidator {
     return null;
   }
 }
+
 
 class emailValidator {
   static String? validate(String? value) {
@@ -263,6 +275,27 @@ class phoneValidator {
       return 'Please enter a valid phone number';
     }
 
+    return null;
+  }
+}
+
+class PasswordValidator {
+  static String? validate(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password is required';
+    }
+    if (value.length < 8) {
+      return 'Password must be at least 8 characters long';
+    }
+    if (!RegExp(r'[a-z]').hasMatch(value)) {
+      return 'Password must contain at least one lowercase letter';
+    }
+    if (!RegExp(r'[A-Z]').hasMatch(value)) {
+      return 'Password must contain at least one uppercase letter';
+    }
+    if (!RegExp(r'[0-9]').hasMatch(value)) {
+      return 'Password must contain at least one digit';
+    }
     return null;
   }
 }

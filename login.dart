@@ -4,6 +4,8 @@ import 'initial.dart';
 import 'main.dart';
 import 'dart:ui';
 import 'dart:io';
+import 'editprofile.dart';
+
 
 class LoginPage extends StatefulWidget {
   @override
@@ -43,8 +45,8 @@ class _LoginPageState extends State<LoginPage>{
                     ),
                   ),
                 ),
-                EditBox(text: "Email", hintText: "upXXXXXXXXX@up.pt"),
-                EditBox(text: "Password", hintText: "Password"),
+                EditBox(text: "Email", hintText: "upXXXXXXXXX@up.pt",isPassword: false),
+                EditBox(text: "Password", hintText: "Password",isPassword: true),
                 SizedBox(height: 60),
                 Container(
                   height: 50,
@@ -87,108 +89,3 @@ class _LoginPageState extends State<LoginPage>{
     );
   }
 }
-class EditBox extends StatelessWidget {
-
-  final String text;
-  final String hintText;
-  EditBox({required this.text, required this.hintText});
-
-  final controller = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top:8),
-      padding: EdgeInsets.all(2),
-      width: 370,
-      child: Row(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: () {
-                FocusScope.of(context).unfocus();
-                new TextEditingController().clear();
-              },
-              child: TextFormField(
-                keyboardType: TextInputType.emailAddress,
-                controller: controller,
-                decoration: InputDecoration(
-                  label: Text(text),
-                  hintText: hintText,
-                  suffixIcon: IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.edit, color: mainColor),
-                  ),
-                  filled: true,
-                  fillColor: grey,
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
-                    borderSide: BorderSide(
-                        color: mainColor,
-                        width: 2,
-                        style: BorderStyle.solid),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
-                    borderSide: BorderSide(
-                        color: mainColor,
-                        width: 1,
-                        style: BorderStyle.solid),
-                  ),
-                ),
-                validator: text == "Name"
-                    ? (value) => nameValidator.validate(value)
-                    : text == "Email"
-                    ? (value) => emailValidator.validate(value)
-                    : text == "Phone Number"
-                    ? (value) => phoneValidator.validate(value)
-                    : null,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class nameValidator {
-  static String? validate(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter a name';
-    }
-    return null;
-  }
-}
-
-class emailValidator {
-  static String? validate(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter an UP email address';
-    }
-
-    final upEmailRegex = RegExp(r'^up[0-9]+@up\.pt$');
-    if (!upEmailRegex.hasMatch(value)) {
-      return 'Please enter a valid UP email address';
-    }
-
-    return null;
-  }
-}
-
-class phoneValidator {
-  static String? validate(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter a phone number';
-    }
-
-    final upEmailRegex = RegExp(r'^[0-9]*$');
-    if (!upEmailRegex.hasMatch(value)) {
-      return 'Please enter a valid phone number';
-    }
-
-    return null;
-  }
-}
-
-

@@ -15,6 +15,8 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
 
   List<String> tags = [];
 
+  TextEditingController textFieldController = new TextEditingController();
+
   var _dateController = TextEditingController(
     text: DateTime.now().day.toString() + "/" +
         DateTime.now().month.toString() + "/" +
@@ -23,10 +25,19 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
 
   void _showDatePicker() {
     showDatePicker(
+        builder: (BuildContext context, Widget? child) {
+          return Theme(
+            data: ThemeData.light().copyWith(
+              colorScheme: ColorScheme.light(primary: mainColor),
+            ),
+            child: child!,
+          );
+        },
         context: context,
         initialDate: DateTime.now(),
         firstDate: DateTime(2022),
-        lastDate: DateTime.now()
+        lastDate: DateTime.now(),
+
     ).then((value) {
       setState(() {
         _dateController.text =
@@ -39,8 +50,7 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
             title: const Text(
@@ -124,6 +134,7 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                   height: 20,
                 ),
                 TextFieldTags(
+                  tagsDistanceFromBorderEnd: 1,
                   textSeparators: [
                     " ", //seperate with space
                     ',', //sepearate with comma as well
@@ -131,12 +142,10 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                   ],
                   initialTags: tags,
                   onTag: (tag){
-                    print(tag);
                     //this will give tag when entered new single tag
                     tags.add(tag);
                   },
                   onDelete: (tag){
-                    print(tag);
                     //this will give single tag on delete
                     tags.remove(tag);
                   },
@@ -153,7 +162,8 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                       tagCancelIcon: Icon(Icons.cancel, size: 18.0, color: Colors.white),
                       tagPadding: EdgeInsets.all(6.0),
                   ),
-                  textFieldStyler: TextFieldStyler( //styling tag text field
+                  textFieldStyler: TextFieldStyler(
+                    helperText: "Enter Tags",
                     textFieldBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: mainColor, width: 2),
                       borderRadius: BorderRadius.circular(25),
@@ -168,11 +178,11 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                     textFieldEnabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: mainColor, width: 2),
                       borderRadius: BorderRadius.circular(25),
-                    )
+                    ),
                   ),
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
                 GestureDetector(
                   onTap: (){
@@ -180,17 +190,12 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                     new TextEditingController().clear();
                   },
                   child: TextFormField(
-                    readOnly: true,
+                    controller: textFieldController,
                     decoration: InputDecoration(
                       label: Text("Location"),
                       hintText: "Select location >",
                       suffixIcon: IconButton(
-                          onPressed: (){
-                            Navigator.of(context)
-                                .push(
-                                MaterialPageRoute(builder: (context) => LocationSelect())
-                            );
-                          },
+                          onPressed: _getLocation,
                           icon: Icon(Icons.location_on, color: mainColor)
                       ),
                       filled: true,
@@ -278,25 +283,13 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
               ],
             ),
           )
-      ),
-    );
+      );
   }
 
-}
-
-
-class LocationSelect extends StatefulWidget {
-  const LocationSelect({Key? key}) : super(key: key);
-
-  @override
-  State<LocationSelect> createState() => _LocationSelectState();
-}
-
-class _LocationSelectState extends State<LocationSelect> {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MapSample(),
+  void _getLocation() async {
+    final location = await Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => Map())
     );
+    textFieldController.text = location;
   }
 }

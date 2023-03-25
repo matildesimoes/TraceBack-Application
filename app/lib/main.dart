@@ -1,9 +1,13 @@
 import 'dart:ui';
+import 'package:TraceBack/initial.dart';
 import 'package:TraceBack/post.dart';
+import 'package:TraceBack/profile.dart';
 import 'package:flutter/material.dart';
 
-const Color mainColor = Color(0xFF1D3D5C);
+import 'createFoundPost.dart';
 
+
+const Color mainColor = Color(0xFF1D3D5C);
 const Color grey = Color(0xFFEBEAEA);
 
 void main() {
@@ -30,30 +34,23 @@ class _MainPageState extends State<MainPage> {
           backgroundColor: mainColor,
           toolbarHeight: 80,
         ),
-        floatingActionButton: FractionallySizedBox (
-          widthFactor: 0.2,
-          child: FittedBox(
-            child: FloatingActionButton(
-              backgroundColor: mainColor,
-              onPressed: () {  },
-              child: const Icon(Icons.add),
-            ),
+        floatingActionButton: CreatePostButton(),
+        body: Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              CategoryBar(),
+              SearchBar(),
+              PostsTimeline()
+            ],
           ),
-        ),
-        body: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            CategoryBar(),
-            SearchBar(),
-            PostsTimeline()
-          ],
         ),
         bottomNavigationBar: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
           children: [
-            BottomButton("Found"),
-            BottomButton("Lost")
+            BottomButton(text: "Found"),
+            BottomButton(text: "Lost")
           ],
         ),
         drawer: SideMenu(),
@@ -62,11 +59,35 @@ class _MainPageState extends State<MainPage> {
   }
 }
 
+class CreatePostButton extends StatelessWidget {
+  const CreatePostButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FractionallySizedBox (
+      widthFactor: 0.2,
+      child: FittedBox(
+        child: FloatingActionButton(
+          backgroundColor: mainColor,
+          onPressed: (){
+            Navigator.of(context)
+                .push(
+                MaterialPageRoute(builder: (context) => CreateFoundPost())
+            );
+          },
+          child: const Icon(Icons.add),
+        ),
+      ),
+    );
+  }
+}
+
+
 class BottomButton extends StatelessWidget {
 
   final String text;
 
-  BottomButton(this.text);
+  BottomButton({required this.text});
 
   @override
   Widget build(BuildContext context) => Expanded(
@@ -443,8 +464,10 @@ class SideMenu extends StatelessWidget {
         ),
         SideMenuButton("Home", Icon(Icons.home, color: mainColor), MainPage()),
         SideMenuButton("Chat", Icon(Icons.chat, color: mainColor), MainPage()),
-        SideMenuButton("Profile", Icon(Icons.account_circle, color: mainColor), MainPage()),
+        SideMenuButton("Profile", Icon(Icons.account_circle, color: mainColor), ProfilePage()),
         SideMenuButton("Settings", Icon(Icons.settings, color: mainColor), MainPage()),
+        SideMenuButton("Inicial", Icon(Icons.settings, color: mainColor), initialPage()),
+
         const Spacer(
           flex: 6,
         ),
@@ -573,4 +596,27 @@ class Category extends StatelessWidget{
       style: TextStyle(color: mainColor),
     )
   );
+}
+
+class GoBackButton extends StatelessWidget {
+  const GoBackButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FractionallySizedBox (
+      widthFactor: 0.2,
+      child: FittedBox(
+        child: FloatingActionButton(
+          backgroundColor: Colors.white,
+          onPressed: (){
+            Navigator.of(context)
+                .push(
+                MaterialPageRoute(builder: (context) => initialPage())
+            );
+          },
+          child: const Icon(Icons.arrow_back_ios),
+        ),
+      ),
+    );
+  }
 }

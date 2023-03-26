@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:TraceBack/profile.dart';
+import 'package:TraceBack/util/camera.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,18 +15,6 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
 
   File? _image;
-
-  Future getImage(ImageSource source) async {
-    final pickedFile = await ImagePicker().pickImage(source: source);
-
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
-    });
-  }
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -66,35 +55,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           color: mainColor,
                           size: 24,
                         ),
-                        onPressed: () {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return SafeArea(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    ListTile(
-                                      leading: Icon(Icons.camera_alt),
-                                      title: Text("Take a photo"),
-                                      onTap: () {
-                                        getImage(ImageSource.camera);
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: Icon(Icons.photo_library),
-                                      title: Text("Choose from gallery"),
-                                      onTap: () {
-                                        getImage(ImageSource.gallery);
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          );
+                        onPressed: () async {
+                          File? image = await ImageHandler.getImage(context);
+                          setState(() {
+                            _image = image;
+                          });
                         },
                       ),
                     ),
@@ -162,6 +127,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
       ),
     );
   }
+
+
 }
 
 class EditBox extends StatelessWidget {

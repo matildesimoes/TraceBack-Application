@@ -37,7 +37,6 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
         initialDate: DateTime.now(),
         firstDate: DateTime(2022),
         lastDate: DateTime.now(),
-
     ).then((value) {
       setState(() {
         _dateController.text =
@@ -134,6 +133,7 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                   height: 20,
                 ),
                 TextFieldTags(
+
                   tagsDistanceFromBorderEnd: 1,
                   textSeparators: [
                     " ", //seperate with space

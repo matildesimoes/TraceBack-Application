@@ -1,5 +1,6 @@
 import 'dart:ffi';
 import 'dart:ui';
+import 'package:TraceBack/initial.dart';
 import 'package:TraceBack/post.dart';
 import 'package:TraceBack/profile.dart';
 import 'package:flutter/material.dart';
@@ -92,7 +93,6 @@ class CreatePostButton extends StatelessWidget {
     );
   }
 }
-
 
 class BottomButton extends StatelessWidget {
 
@@ -477,6 +477,8 @@ class SideMenu extends StatelessWidget {
         SideMenuButton("Chat", Icon(Icons.chat, color: mainColor), MainPage()),
         SideMenuButton("Profile", Icon(Icons.account_circle, color: mainColor), ProfilePage()),
         SideMenuButton("Settings", Icon(Icons.settings, color: mainColor), MainPage()),
+        SideMenuButton("Inicial", Icon(Icons.settings, color: mainColor), initialPage()),
+
         const Spacer(
           flex: 6,
         ),
@@ -485,7 +487,12 @@ class SideMenu extends StatelessWidget {
             height: 60,
             color: mainColor,
             child:TextButton(
-                onPressed: (){},
+                onPressed: (){
+                  Navigator.of(context)
+                      .push(
+                      MaterialPageRoute(builder: (context) => initialPage())
+                      );
+                },
                 child: Text(
                   "Logout",
                   style: TextStyle(
@@ -499,6 +506,7 @@ class SideMenu extends StatelessWidget {
     )
 );
 }
+
 
 class SideMenuButton extends StatelessWidget{
 
@@ -605,4 +613,27 @@ class Category extends StatelessWidget{
       style: TextStyle(color: mainColor),
     )
   );
+}
+
+class GoBackButton extends StatelessWidget {
+  const GoBackButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FractionallySizedBox (
+      widthFactor: 0.2,
+      child: FittedBox(
+        child: FloatingActionButton(
+          backgroundColor: Colors.white,
+          onPressed: (){
+            Navigator.of(context)
+                .push(
+                MaterialPageRoute(builder: (context) => initialPage())
+            );
+          },
+          child: const Icon(Icons.arrow_back_ios),
+        ),
+      ),
+    );
+  }
 }

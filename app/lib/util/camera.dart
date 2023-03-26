@@ -50,7 +50,7 @@ class ImagePickerPopUp extends StatelessWidget {
             leading: Icon(Icons.photo_library),
             title: Text("Choose from gallery"),
             onTap: () async {
-              await getImage(ImageSource.camera);
+              await getImage(ImageSource.gallery);
               Navigator.pop(context, image);
             },
           ),

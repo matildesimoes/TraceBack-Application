@@ -4,7 +4,7 @@ import 'package:TraceBack/post.dart';
 import 'package:TraceBack/profile.dart';
 import 'package:flutter/material.dart';
 
-import 'createFoundPost.dart';
+import 'posts/create_found_post.dart';
 
 const Color mainColor = Color(0xFF1D3D5C);
 const Color grey = Color(0xFFEBEAEA);

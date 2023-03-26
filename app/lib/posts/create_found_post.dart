@@ -139,29 +139,31 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                   children: [
                     GestureDetector(
                       onTap: (){if(_image == null) setImage();},
-                      child: Container(
-                        height: 200,
-                        width: 200,
-                        decoration: BoxDecoration(
-                          color: grey,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: mainColor)
-                        ),
-                        child: _image != null ?
-                          ClipOval(
-                            child: FittedBox(
-                              fit: BoxFit.cover,
-                              child: ImageFiltered(
-                                child: Image.file(_image!),
-                                imageFilter: ImageFilter.blur(sigmaX: 1.3, sigmaY: 1.3),
-                              ),
-                            )
-                          ) :
-                          SizedBox(
-                            child: Expanded(child: Icon(Icons.image, color: Colors.black45)),
-                            width: 100,
-                            height: 100,
+                      child: Expanded(
+                        child: Container(
+                          height: 150,
+                          width: 150,
+                          decoration: BoxDecoration(
+                            color: grey,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: mainColor)
                           ),
+                          child: _image != null ?
+                            ClipOval(
+                              child: FittedBox(
+                                fit: BoxFit.cover,
+                                child: ImageFiltered(
+                                  child: Image.file(_image!),
+                                  imageFilter: ImageFilter.blur(sigmaX: 1.3, sigmaY: 1.3),
+                                ),
+                              )
+                            ) :
+                            SizedBox(
+                              child: Expanded(child: Icon(Icons.image, color: Colors.black45)),
+                              width: 100,
+                              height: 100,
+                            ),
+                        ),
                       ),
                     ),
                     Container(

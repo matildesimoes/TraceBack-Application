@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'main.dart';
+import 'timeline.dart';
 
 class Post extends StatefulWidget {
   const Post({Key? key}) : super(key: key);

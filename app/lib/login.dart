@@ -5,6 +5,7 @@ import 'main.dart';
 import 'dart:ui';
 import 'dart:io';
 import 'editBox.dart';
+import 'signUp.dart';
 
 
 
@@ -82,11 +83,40 @@ class _LoginPageState extends State<LoginPage>{
                   ),
                 ),
                 SizedBox(height: 32),
+                Container(
+                  height: 25,
+                  width: 300,
+                  margin: const EdgeInsets.only(top: 300),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context)
+                          .push(
+                          MaterialPageRoute(
+                              builder: (context) => signUpPage()
+                          )
+                      );
+                      // função para guardar as informações
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                      elevation: MaterialStateProperty.all<double>(0),
+                      side: MaterialStateProperty.all<BorderSide>(BorderSide.none),
+                      overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                    ),
+                    child: Text(
+                      "Dont have an account? SignUp",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: mainColor,
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
         ),
       ),
     );
-  }
-}
+  }}

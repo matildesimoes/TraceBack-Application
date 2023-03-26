@@ -476,7 +476,12 @@ class SideMenu extends StatelessWidget {
             height: 60,
             color: mainColor,
             child:TextButton(
-                onPressed: (){},
+                onPressed: (){
+                  Navigator.of(context)
+                      .push(
+                      MaterialPageRoute(builder: (context) => initialPage())
+                      );
+                },
                 child: Text(
                   "Logout",
                   style: TextStyle(
@@ -490,6 +495,7 @@ class SideMenu extends StatelessWidget {
     )
 );
 }
+
 
 class SideMenuButton extends StatelessWidget{
 

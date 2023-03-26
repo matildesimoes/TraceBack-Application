@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'editBox.dart';
 import 'main.dart';
 import 'dart:ui';
+import 'login.dart';
 
 
 class signUpPage extends StatefulWidget {
@@ -92,25 +93,19 @@ class _signUpPageState extends State<signUpPage>{
                   width: 300,
                   child: ElevatedButton(
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
                         Navigator.of(context)
                             .push(
                             MaterialPageRoute(
-                                builder: (context) => ProfilePage()
+                                builder: (context) => LoginPage()
                             )
                         );
-                      }
                       // função para guardar as informações
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.zero, // define a borda como zero
-                          side: BorderSide.none,
-
-                        ),
-                      ),
+                      elevation: MaterialStateProperty.all<double>(0),
+                      side: MaterialStateProperty.all<BorderSide>(BorderSide.none),
+                      overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
                     ),
                     child: Text(
                       "Already have an account? Login",

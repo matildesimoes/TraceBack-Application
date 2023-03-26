@@ -1,35 +1,34 @@
 import 'dart:io';
 
-import 'package:TraceBack/profile.dart';
-import 'package:TraceBack/signUp.dart';
+import 'package:TraceBack/profile/profile.dart';
+import 'package:TraceBack/authentication/signUp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'editprofile.dart';
+import '../profile/editprofile.dart';
 import 'login.dart';
-import 'main.dart';
+import '../posts/timeline.dart';
 import 'dart:ui';
 
 
-class initialPage extends StatefulWidget {
-  initialPage ({Key? key}) : super(key: key);
+class InitialPage extends StatefulWidget {
+  InitialPage ({Key? key}) : super(key: key);
   @override
-  State<initialPage> createState() => _initialPageState();
+  State<InitialPage> createState() => _InitialPageState();
 }
 
-class _initialPageState extends State<initialPage>{
+class _InitialPageState extends State<InitialPage>{
   
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        home: Scaffold(
+    return Scaffold(
         drawer: SideMenu(),
-    backgroundColor : mainColor,
-    body: SingleChildScrollView(
-    child: Form(
-    key: _formKey,
-    child: Column(
+        backgroundColor : mainColor,
+        body: SingleChildScrollView(
+        child: Form(
+        key: _formKey,
+        child: Column(
             children: [
               SizedBox(height: 45),
               Padding(
@@ -66,7 +65,6 @@ class _initialPageState extends State<initialPage>{
             ],
           ),
         ),
-      ),
       ),
     );
   }

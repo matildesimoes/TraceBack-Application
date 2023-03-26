@@ -6,8 +6,8 @@ import 'package:TraceBack/util/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:textfield_tags/textfield_tags.dart';
-import '../main.dart';
-import '../map.dart';
+import 'timeline.dart';
+import '../util/map.dart';
 
 class CreateFoundPost extends StatefulWidget {
   const CreateFoundPost({Key? key}) : super(key: key);

@@ -1,4 +1,4 @@
-import 'package:TraceBack/editprofile.dart';
+import 'package:TraceBack/profile/editprofile.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

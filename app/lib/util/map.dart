@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:TraceBack/posts/create_found_post.dart';
-import 'package:TraceBack/main.dart';
+import 'package:TraceBack/posts/timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';

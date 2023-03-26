@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:TraceBack/profile.dart';
+import 'package:TraceBack/profile/profile.dart';
 import 'package:TraceBack/util/camera.dart';
 import 'package:flutter/material.dart';
-import 'main.dart';
+import '../posts/timeline.dart';
 import 'package:image_picker/image_picker.dart';
 
 
@@ -20,8 +20,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        home: Scaffold(
+  return Scaffold(
         drawer: SideMenu(),
         appBar: AppBar(
         backgroundColor: mainColor,
@@ -123,7 +122,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ],
           ),
         ),
-      ),
       ),
     );
   }

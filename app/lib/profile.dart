@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'editprofile.dart';
 import 'main.dart';
-import 'editBox.dart';
 
 class ProfilePage extends StatefulWidget{
 
@@ -11,6 +10,8 @@ class ProfilePage extends StatefulWidget{
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+
+  var backend = new backEnd();
 
   @override
   Widget build(BuildContext context){
@@ -42,7 +43,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           Padding(
                             padding: EdgeInsets.only(left: 20.0),
                             child: Text(
-                              'David',
+                              backend.name!.toString(),
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
@@ -53,7 +54,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           Padding(
                             padding: EdgeInsets.only(left: 20.0),
                             child: Text(
-                              'david@gmail.com',
+                              backend.email!.toString(),
                               style: TextStyle(
                                 fontSize: 16,
                               ),
@@ -63,7 +64,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           Padding(
                             padding: EdgeInsets.only(left: 20.0),
                             child: Text(
-                              '967848691',
+                              backend.contact!.toString(),
                               style: TextStyle(
                                 fontSize: 16,
                               ),
@@ -100,5 +101,28 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
     );
+  }
+}
+
+class backEnd {
+
+  backEnd(){}
+
+  Map<String, Object> doc = {
+    "Name" : "David",
+    "Email" : "up202112345@up.pt",
+    "Phone number" : "912345678",
+  };
+
+  Object? get name {
+    return doc["Name"];
+  }
+
+  Object? get email {
+    return doc["Email"];
+  }
+
+  Object? get contact {
+    return doc["Phone number"];
   }
 }

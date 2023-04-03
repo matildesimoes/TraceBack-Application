@@ -11,7 +11,7 @@ class ProfilePage extends StatefulWidget{
 
 class _ProfilePageState extends State<ProfilePage> {
 
-  var backend = new backEnd();
+  var backend = new BackEnd();
 
   @override
   Widget build(BuildContext context){
@@ -102,9 +102,9 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-class backEnd {
+class BackEnd {
 
-  backEnd(){}
+  BackEnd(){}
 
   Map<String, Object> doc = {
     "Name" : "David",

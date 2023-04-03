@@ -417,7 +417,7 @@ class PostsTimeline extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                       color: mainColor),
                                 ),
-    /*Text(
+                                /*Text(
                                   "Mariana",
                                   style: TextStyle(
                                       fontWeight: FontWeight.w400,
@@ -459,8 +459,6 @@ class SideMenu extends StatelessWidget {
         SideMenuButton("Chat", Icon(Icons.chat, color: mainColor), SearchPage()),
         SideMenuButton("Profile", Icon(Icons.account_circle, color: mainColor), ProfilePage()),
         SideMenuButton("Settings", Icon(Icons.settings, color: mainColor), SearchPage()),
-        SideMenuButton("Inicial", Icon(Icons.settings, color: mainColor), InitialPage()),
-
         const Spacer(
           flex: 6,
         ),

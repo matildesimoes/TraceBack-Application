@@ -1,17 +1,21 @@
-import 'dart:io';
-import 'dart:ui';
-import 'package:TraceBack/profile/profile.dart';
 import 'package:flutter/material.dart';
-import '../posts/timeline.dart';
-import 'package:image_picker/image_picker.dart';
 
-class EditBox extends StatelessWidget {
+class EditBox extends StatefulWidget {
   final String text;
   final String hintText;
-  bool isPassword;
+  final bool isPassword;
+  final TextEditingController? controller;
 
-  EditBox({required this.text, required this.hintText, this.isPassword = false});
+  EditBox({required this.text, required this.hintText, this.isPassword = false, this.controller});
 
+  @override
+  _EditBoxState createState() => _EditBoxState();
+}
+
+class _EditBoxState extends State<EditBox> {
+  bool obscureText = true;
+  String? password;
+  String? confirmPassword;
 
   @override
   Widget build(BuildContext context) {
@@ -20,23 +24,24 @@ class EditBox extends StatelessWidget {
       padding: EdgeInsets.all(2),
       width: 370,
       child: TextFormField(
-        keyboardType: this.text == 'Email'
+        keyboardType: widget.text == 'Email'
             ? TextInputType.emailAddress
             : TextInputType.text,
-        obscureText: this.isPassword,
+        obscureText: widget.isPassword ? obscureText : false,
         decoration: InputDecoration(
-          label: Text(this.text),
-          hintText: this.hintText,
-          suffixIcon: this.text == 'Password'
-              ? IconButton(
-                  onPressed: () {
-                      this.isPassword = !this.isPassword;
-                  },
-                  icon: Icon(
-                    this.isPassword ? Icons.visibility_off : Icons.visibility,
-                    color: Colors.grey,
-                  ),
-                )
+          label: Text(widget.text),
+          hintText: widget.hintText,
+          suffixIcon: widget.isPassword
+              ? GestureDetector(
+            onTap: () {
+              setState(() {
+                obscureText = !obscureText;
+              });
+            },
+            child: Icon(obscureText
+                ? Icons.visibility_off
+                : Icons.visibility),
+          )
               : null,
           filled: true,
           fillColor: Colors.grey[300],
@@ -57,20 +62,34 @@ class EditBox extends StatelessWidget {
             ),
           ),
         ),
-        validator: this.text == "Name"
+        onChanged: (value) {
+          if (widget.text == "Password") {
+            setState(() {
+              password = value;
+            });
+            if (confirmPassword != null && confirmPassword != value) {
+              setState(() {
+                confirmPassword = null;
+              });
+            }
+            password = value;
+          }
+        },
+        validator: widget.text == "Name"
             ? (value) => nameValidator.validate(value)
-            : this.text == "Email"
-                ? (value) => emailValidator.validate(value)
-                : this.text == "Phone Number"
-                    ? (value) => phoneValidator.validate(value)
-                    : this.text == "Password"
-                        ? (value) => PasswordValidator.validate(value)
-                        : null,
+            : widget.text == "Email"
+            ? (value) => emailValidator.validate(value)
+            : widget.text == "Phone Number"
+            ? (value) => phoneValidator.validate(value)
+            : widget.text == "Password"
+            ? (value) => passwordValidator.validate(value)
+            : widget.text == "Confirm Password"
+            ? (value) => confirmPasswordValidator.validate(value, password)
+            : null,
       ),
     );
   }
 }
-
 
 class nameValidator {
   static String? validate(String? value) {
@@ -80,7 +99,6 @@ class nameValidator {
     return null;
   }
 }
-
 
 class emailValidator {
   static String? validate(String? value) {
@@ -107,12 +125,11 @@ class phoneValidator {
     if (!upEmailRegex.hasMatch(value)) {
       return 'Please enter a valid phone number';
     }
-
     return null;
   }
 }
 
-class PasswordValidator {
+class passwordValidator {
   static String? validate(String? value) {
     if (value == null || value.isEmpty) {
       return 'Password is required';
@@ -128,6 +145,18 @@ class PasswordValidator {
     }
     if (!RegExp(r'[0-9]').hasMatch(value)) {
       return 'Password must contain at least one digit';
+    }
+    return null;
+  }
+}
+
+class confirmPasswordValidator {
+  static String? validate(String? value, String? password) {
+    if (value == null || value.isEmpty) {
+      return 'Confirm Password is required';
+    }
+    if (value != password) {
+      return 'Password does not match';
     }
     return null;
   }

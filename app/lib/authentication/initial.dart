@@ -1,15 +1,9 @@
-import 'dart:io';
-
-import 'package:TraceBack/profile/profile.dart';
 import 'package:TraceBack/authentication/signUp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import '../profile/editprofile.dart';
 import 'login.dart';
 import '../posts/timeline.dart';
 import 'dart:ui';
-
 
 class InitialPage extends StatefulWidget {
   InitialPage ({Key? key}) : super(key: key);
@@ -31,14 +25,14 @@ class _InitialPageState extends State<InitialPage>{
         child: Column(
             children: [
               SizedBox(height: 45),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.only(top: 80),
               child: CircleAvatar(
                 child: Align(
                   alignment: Alignment.center),
                     radius: 70,
                     backgroundColor: grey,
-                    backgroundImage: AssetImage("assets/logo.jpg"),
+                    backgroundImage: AssetImage("assets/logoApp.jpg"),
                   ),
               ),
               SizedBox(height: 16),
@@ -90,7 +84,7 @@ class SignUpButton extends StatelessWidget {
             Navigator.of(context)
                 .push(
                 MaterialPageRoute(
-                    builder: (context) => signUpPage()
+                    builder: (context) => SignUpPage()
                 )
             );
           }
@@ -104,7 +98,7 @@ class SignUpButton extends StatelessWidget {
             ),
           ),
         ),
-        child: Text(
+        child: const Text(
           "Sign Up",
           style: TextStyle(
             fontSize: 18,

@@ -24,13 +24,24 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
 
   TextEditingController titleController = new TextEditingController();
   SingleValueDropDownController categoryController = new SingleValueDropDownController();
-  TextFieldTagsController tagsController = new TextFieldTagsController();
+  TextfieldTagsController tagsController = new TextfieldTagsController();
   TextEditingController locationController = new TextEditingController();
   TextEditingController dateController = new TextEditingController(
       text: DateTime.now().day.toString() + "/" +
           DateTime.now().month.toString() + "/" +
           DateTime.now().year.toString()
   );
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    titleController.dispose();
+    categoryController.dispose();
+    tagsController.dispose();
+    locationController.dispose();
+    dateController.dispose();
+  }
 
   void _showDatePicker() {
     showDatePicker(
@@ -90,9 +101,9 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                 SizedBox(
                   height: 20,
                 ),
-                TagField(tags: tags, controller: tagsController),
+                TagField(controller: tagsController),
                 SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
                 LocationField(controller: locationController),
                 SizedBox(
@@ -130,40 +141,37 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                       ),
                     ),
                   ),
-
                 SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     GestureDetector(
                       onTap: (){if(_image == null) setImage();},
-                      child: Expanded(
-                        child: Container(
-                          height: 150,
-                          width: 150,
-                          decoration: BoxDecoration(
-                            color: grey,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: mainColor)
-                          ),
-                          child: _image != null ?
-                            ClipOval(
-                              child: FittedBox(
-                                fit: BoxFit.cover,
-                                child: ImageFiltered(
-                                  child: Image.file(_image!),
-                                  imageFilter: ImageFilter.blur(sigmaX: 1.3, sigmaY: 1.3),
-                                ),
-                              )
-                            ) :
-                            SizedBox(
-                              child: Expanded(child: Icon(Icons.image, color: Colors.black45)),
-                              width: 100,
-                              height: 100,
-                            ),
+                      child: Container(
+                        height: 150,
+                        width: 150,
+                        decoration: BoxDecoration(
+                          color: grey,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: mainColor)
                         ),
+                        child: _image != null ?
+                          ClipOval(
+                            child: FittedBox(
+                              fit: BoxFit.cover,
+                              child: ImageFiltered(
+                                child: Image.file(_image!),
+                                imageFilter: ImageFilter.blur(sigmaX: 1.3, sigmaY: 1.3),
+                              ),
+                            )
+                          ) :
+                          SizedBox(
+                            child: Icon(Icons.image, color: Colors.black45),
+                            width: 100,
+                            height: 100,
+                          ),
                       ),
                     ),
                     Container(
@@ -187,7 +195,7 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                 child: TextButton.icon(
                   onPressed: () {
                     String tagsString = "";
-                    for (String tag in tagsController.getAllTags) {
+                    for (String tag in tagsController.getTags!) {
                       tagsString += '$tag,';
                     }
                     FakePostBackend.addColection(
@@ -199,7 +207,6 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                         'date': dateController.text,
                       }
                     );
-                    tagsController.dispose();
                     Navigator.pop(context);
                   },
                   style: ButtonStyle(
@@ -238,62 +245,127 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
 }
 
 class TagField extends StatelessWidget {
-  const TagField({
+
+  TagField({
     super.key,
-    required this.tags,
-    required TextFieldTagsController controller,
+    required this.controller,
   });
 
-  final List<String> tags;
+  double _distanceToField = 1;
+
+  final TextfieldTagsController controller;
 
   @override
   Widget build(BuildContext context) {
-    return TextFieldTags(
-      tagsDistanceFromBorderEnd: 1,
-      textSeparators: [
-        " ", //seperate with space
-        ',', //sepearate with comma as well
-        ";"
-      ],
-      initialTags: tags,
-      onTag: (tag){
-        //this will give tag when entered new single tag
-        tags.add(tag);
-      },
-      onDelete: (tag){
-        //this will give single tag on delete
-        tags.remove(tag);
-      },
-      validator: (tag){
-        //add validation for tags
-        if(tag.length < 3){
-          return "Enter tag up to 3 characters.";
-        }
-        return null;
-      },
-      tagsStyler: TagsStyler( //styling tag style
-          tagTextStyle: TextStyle(fontWeight: FontWeight.normal, color: Colors.white),
-          tagDecoration: BoxDecoration(color: mainColor, borderRadius: BorderRadius.circular(20.0), ),
-          tagCancelIcon: Icon(Icons.cancel, size: 18.0, color: Colors.white),
-          tagPadding: EdgeInsets.all(6.0),
-      ),
-      textFieldStyler: TextFieldStyler(
-        helperText: "Enter Tags",
-        textFieldBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: mainColor, width: 2),
-          borderRadius: BorderRadius.circular(25),
-        ),
-        hintText: "Tags",
-        textFieldFilled: true,
-        textFieldFilledColor: grey,
-        textFieldFocusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: mainColor, width: 2),
-          borderRadius: BorderRadius.circular(25),
-        ),
-        textFieldEnabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: mainColor, width: 2),
-          borderRadius: BorderRadius.circular(25),
-        ),
+    _distanceToField = MediaQuery.of(context).size.width;
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(25),
+      child: TextFieldTags(
+        textfieldTagsController: controller,
+        textSeparators: const [' ', ','],
+        letterCase: LetterCase.normal,
+        /*validator: (String tag) {
+          if (tag == 'php') {
+            return 'No, please just no';
+          } else if (controller.getTags!.contains(tag)) {
+            return 'you already entered that';
+          }
+          return null;
+        },*/
+        inputfieldBuilder:
+            (context, tec, fn, error, onChanged, onSubmitted) {
+          return ((context, sc, tags, onTagDelete) {
+            return TextField(
+              controller: tec,
+              focusNode: fn,
+              decoration: InputDecoration(
+                isDense: true,
+                border: const OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: mainColor,
+                    width: 3.0,
+                  ),
+                ),
+                filled: true,
+                fillColor: grey,
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25),
+                    borderSide: BorderSide(
+                        color: mainColor,
+                        width: 2,
+                        style: BorderStyle.solid
+                    )
+                ),
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25),
+                    borderSide: BorderSide(
+                        color: mainColor,
+                        width: 2,
+                        style: BorderStyle.solid
+                    )
+                ),
+                hintText: controller.hasTags ? '' : "Enter tag...",
+                errorText: error,
+                prefixIconConstraints:
+                BoxConstraints(maxWidth: _distanceToField * 0.74),
+                prefixIcon: tags.isNotEmpty
+                    ?
+                  Padding(
+                    padding: const EdgeInsets.only(left: 2),
+                    child: SingleChildScrollView(
+                      controller: sc,
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                          children: tags.map((String tag) {
+                            return Container(
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(20.0),
+                                ),
+                                color: mainColor,
+                              ),
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 5.0),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10.0, vertical: 5.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  InkWell(
+                                    child: Text(
+                                      '#$tag',
+                                      style: const TextStyle(
+                                          color: Colors.white),
+                                    ),
+                                    onTap: () {
+                                      print("$tag selected");
+                                    },
+                                  ),
+                                  const SizedBox(width: 4.0),
+                                  InkWell(
+                                    child: const Icon(
+                                      Icons.cancel,
+                                      size: 14.0,
+                                      color: Color.fromARGB(
+                                          255, 233, 233, 233),
+                                    ),
+                                    onTap: () {
+                                      onTagDelete(tag);
+                                    },
+                                  )
+                                ],
+                              ),
+                            );
+                          }).toList()),
+                    ),
+                  )
+                    : null,
+              ),
+              onChanged: onChanged,
+              onSubmitted: onSubmitted,
+            );
+          });
+        },
       ),
     );
   }

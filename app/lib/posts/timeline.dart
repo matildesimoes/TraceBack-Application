@@ -4,6 +4,7 @@ import 'package:TraceBack/authentication/initial.dart';
 import 'package:TraceBack/authentication/login.dart';
 import 'package:TraceBack/posts/post.dart';
 import 'package:TraceBack/profile/profile.dart';
+import 'package:TraceBack/settings/privacy.dart';
 import 'package:flutter/material.dart';
 
 import 'create_found_post.dart';
@@ -458,7 +459,7 @@ class SideMenu extends StatelessWidget {
         SideMenuButton("Home", Icon(Icons.home, color: mainColor), SearchPage()),
         SideMenuButton("Chat", Icon(Icons.chat, color: mainColor), SearchPage()),
         SideMenuButton("Profile", Icon(Icons.account_circle, color: mainColor), ProfilePage()),
-        SideMenuButton("Settings", Icon(Icons.settings, color: mainColor), SearchPage()),
+        SideMenuButton("Settings", Icon(Icons.settings, color: mainColor), PrivacyPolicyPage()),
         const Spacer(
           flex: 6,
         ),

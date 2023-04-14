@@ -1,13 +1,15 @@
 
 class FakePostBackend{
 
-  static FakePostBackend instance = new FakePostBackend();
-
   static int id = 0;
 
   static Map<String,Map<String, Object>> collection = {};
 
-  static void addColection(Map<String, Object> document){
+  static Map<String,Map<String, Object>> getCollection() => collection;
+
+  static Map<String,Object>? getDocument(int id) => collection[id.toString()];
+
+  static void addToCollection(Map<String, Object> document){
     collection[id.toString()] = document;
     id++;
 

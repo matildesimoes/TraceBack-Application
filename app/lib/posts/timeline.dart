@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:TraceBack/authentication/initial.dart';
 import 'package:TraceBack/authentication/login.dart';
 import 'package:TraceBack/posts/post.dart';
+import 'package:TraceBack/posts/post_fake_backend.dart';
 import 'package:TraceBack/profile/profile.dart';
 import 'package:flutter/material.dart';
 
@@ -140,301 +141,184 @@ class Tag extends StatelessWidget {
   );
 }
 
+class PostPreview extends StatefulWidget {
 
-class PostsTimeline extends StatelessWidget {
+  late String title;
+
+  List<Tag> tags = [];
+
+  late String location;
+
+  String? imageURL;
+
+  PostPreview({super.key, required String tags, required this.title,
+    required this.location, this.imageURL}){
+
+    for (String tag in tags.split(',')) {
+      this.tags.add(Tag(tag));
+    }
+  }
 
   @override
-  Widget build(BuildContext context) => Expanded(
-    child: ListView(
-        children: [
-          GestureDetector(
-            onTap: (){
-              Navigator.of(context)
-                  .push(
-                MaterialPageRoute(builder: (context) => Post())
-              );
-            },
-            child: _Post1(),
-          ),
-          _Post2(),
-          _Post3(),
-          SizedBox(
-            height: 90,
-          )
-        ]
-    )
-  );
+  State<PostPreview> createState() => _PostPreviewState();
+}
 
-  Widget _Post3() {
-    return Container(
-      width:  double.maxFinite,
-      height: 130,
-      margin: const EdgeInsetsDirectional.only(
-          bottom: 30,
-          start: 20,
-          end: 20),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(80),
-          color: grey,
-          border: Border.all(
-              style: BorderStyle.solid,
-              color: grey
-          )
-      ),
-      child: Row(
-        children: [
-          Container(
-            height: 100.0,
-            width: 100.0,
-            margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
-            child: ClipOval(
-                child: ImageFiltered(
-                  child: Image(
-                    image: AssetImage("assets/jacket.jpg"),
-                  ),
-                  imageFilter: ImageFilter.blur(sigmaX: 1.2, sigmaY: 1.2),
-                )
-            ),
+class _PostPreviewState extends State<PostPreview> {
+
+  @override
+  void initState() {
+    title = widget.title;
+    tags = widget.tags;
+    location = widget.location;
+    imageURL = widget.imageURL;
+    super.initState();
+  }
+
+  late String title;
+
+  List<Tag> tags = [];
+
+  late String location;
+
+  late String? imageURL;
+
+  @override
+  Widget build(BuildContext context) =>
+      GestureDetector(
+        onTap: (){
+          Navigator.of(context)
+              .push(
+              MaterialPageRoute(builder: (context) => Post())
+          );
+        },
+        child: Container(
+          width:  double.maxFinite,
+          height: 130,
+          margin: const EdgeInsetsDirectional.only(
+              bottom: 30,
+              start: 20,
+              end: 20),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(80),
+              color: grey,
+              border: Border.all(
+                  style: BorderStyle.solid,
+                  color: grey
+              )
           ),
-          Expanded (
-              child: Padding(
-                padding: EdgeInsets.only(left: 1, right: 40),
-                child: Column (
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(top: 10),
-                      child: const Text(
-                        "Brown Jacket",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+          child: Row(
+            children: [
+              Container(
+                height: 100.0,
+                width: 100.0,
+                margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
+                child: ClipOval(
+                    child: imageURL == null ?
+                      Container(
+                        color: Colors.black12,
+                        child: Icon(Icons.photo)
+                      )
+                        :
+                      ImageFiltered(
+                        child: Image(
+                          image: AssetImage("assets/SamsungS10.jpg"),
                         ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 40,
+                        imageFilter: ImageFilter.blur(sigmaX: 1.2, sigmaY: 1.2),
+                      )
+                ),
+              ),
+              Expanded (
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 40),
+                    child: Column (
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(top: 10),
+                          child: Text(
+                            title,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 40,
                           child: ListView(
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
-                            children: [
-                              Tag("Jacket"),
-                              Tag("Brown"),
-                              Tag("Zara"),
-                              Tag("Old")
-                            ],
-                          )
-                    ),
-                    Expanded (
-                        child:Align(
-                            alignment: AlignmentDirectional.centerStart,
-                            child: Row (
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "FEUP - Bar de Minas",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: mainColor),
-                                ),
-    /*Text(
-                                  "Alex",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      color: mainColor),
-                                )*/
-                              ],
-                            )
-                        )
-                    )
-                  ],
-                ),
-              )
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _Post2() {
-    return Container(
-      width:  double.maxFinite,
-      height: 130,
-      margin: const EdgeInsetsDirectional.only(
-          bottom: 30,
-          start: 20,
-          end: 20),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(80),
-          color: grey,
-          border: Border.all(
-              style: BorderStyle.solid,
-              color: grey
-          )
-      ),
-      child: Row(
-        children: [
-          Container(
-            height: 100.0,
-            width: 100.0,
-            margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
-            child: ClipOval(
-                child: ImageFiltered(
-                  child: Image(
-                    image: AssetImage("assets/BrokenWatch.jpg"),
-                  ),
-                  imageFilter: ImageFilter.blur(sigmaX: 1.2, sigmaY: 1.2),
-                )
-            ),
-          ),
-          Expanded (
-              child: Padding(
-                padding: EdgeInsets.only(right: 30),
-                child: Column (
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(top: 10),
-                      child: const Text(
-                        "Broken Apple Watch",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                            children: tags,
+                          ),
                         ),
-                      ),
-                    ),
-                    SizedBox(
-                        height: 40,
-                          child: ListView(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            children: [
-                              Tag("Watch"),
-                              Tag("White")
-                            ],
-                          )
-                    ),
-                    Expanded (
-                        child:Align(
-                            alignment: AlignmentDirectional.centerStart,
-                            child: Row (
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "FDUP - 3.12",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: mainColor),
-                                ),
-                                /*
-                                Text(
-                                  "Tiago",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      color: mainColor),
-                                )*/
-                              ],
-                            )
-                        )
-                    )
-                  ],
-                ),
-              )
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _Post1() {
-    return Container(
-      width:  double.maxFinite,
-      height: 130,
-      margin: const EdgeInsetsDirectional.only(
-          bottom: 30,
-          start: 20,
-          end: 20),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(80),
-          color: grey,
-          border: Border.all(
-              style: BorderStyle.solid,
-              color: grey
-          )
-      ),
-      child: Row(
-        children: [
-          Container(
-            height: 100.0,
-            width: 100.0,
-            margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
-            child: ClipOval(
-                child: ImageFiltered(
-                  child: Image(
-                    image: AssetImage("assets/SamsungS10.jpg"),
-                  ),
-                  imageFilter: ImageFilter.blur(sigmaX: 1.2, sigmaY: 1.2),
-                )
-            ),
-          ),
-          Expanded (
-              child: Padding(
-                padding: EdgeInsets.only(right: 40),
-                child: Column (
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 10),
-                      child: const Text(
-                        "Samsung Galaxy S10+",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 40,
-                        child: ListView(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          children: [
-                            Tag("Phone"),
-                            Tag("Samsung"),
-                            Tag("S10+")
-                          ],
-                      ),
-                    ),
-                    Expanded (
-                        child:Align(
-                            alignment: AlignmentDirectional.centerStart,
-                            child: Row (
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "FEUP - B203",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: mainColor),
-                                ),
-                                /*Text(
+                        Expanded (
+                            child:Align(
+                                alignment: AlignmentDirectional.centerStart,
+                                child: Row (
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      location,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: mainColor),
+                                    ),
+                                    /*Text(
                                   "Mariana",
                                   style: TextStyle(
                                       fontWeight: FontWeight.w400,
                                       color: mainColor),
                                 )*/
-                              ],
+                                  ],
+                                )
                             )
                         )
-                    )
-                  ],
-                ),
+                      ],
+                    ),
+                  )
               )
-          )
-        ],
-      ),
-    );
+            ],
+          ),
+        ),
+      );
+}
+
+class PostsTimeline extends StatefulWidget {
+
+  @override
+  State<PostsTimeline> createState() => _PostsTimelineState();
+}
+
+class _PostsTimelineState extends State<PostsTimeline> {
+
+  Future<void> refresh() async {
+    setState(() {});
   }
+  @override
+  Widget build(BuildContext context) =>
+      Expanded(
+          child: RefreshIndicator(
+            onRefresh: refresh,
+            child: ListView.builder(
+
+                itemBuilder: (BuildContext context, int index) {
+
+                  Map<String, Object>? document = FakePostBackend.getDocument(
+                      index);
+                  if (document == null) {
+                    return null;
+                  }
+
+                  String title = document['title'].toString();
+                  String tags = document['tags'].toString();
+                  String location = document['location'].toString();
+
+                  return PostPreview(title: title, tags: tags,
+                      location: location);
+                }
+            ),
+          )
+      );
 }
 
 class SideMenu extends StatelessWidget {

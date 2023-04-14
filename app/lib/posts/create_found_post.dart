@@ -198,7 +198,8 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                     for (String tag in tagsController.getTags!) {
                       tagsString += '$tag,';
                     }
-                    FakePostBackend.addColection(
+                    tagsString = tagsString.substring(0, tagsString.length-1);
+                    FakePostBackend.addToCollection(
                       {
                         'title': titleController.text,
                         'category': categoryController.dropDownValue!.value,

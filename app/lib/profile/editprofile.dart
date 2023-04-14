@@ -4,8 +4,6 @@ import 'package:TraceBack/profile/profile.dart';
 import 'package:TraceBack/util/camera.dart';
 import 'package:flutter/material.dart';
 import '../posts/timeline.dart';
-import 'package:image_picker/image_picker.dart';
-
 
 class EditProfilePage extends StatefulWidget {
   @override

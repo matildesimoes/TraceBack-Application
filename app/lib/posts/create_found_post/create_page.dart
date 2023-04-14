@@ -22,7 +22,8 @@ class CreateFoundPost extends StatefulWidget {
 class _CreateFoundPostState extends State<CreateFoundPost> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool imageSelected = false;
+  bool _imageSelected = false;
+  bool _clicked = false;
 
   List<String> tags = [];
 
@@ -43,8 +44,15 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
     if (image != null){
       setState(() {
         _image = image;
+        _imageSelected = true;
       });
     }
+  }
+
+  setClicked(bool cond){
+    setState(() {
+      _clicked = cond;
+    });
   }
 
   @override
@@ -106,35 +114,48 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                 SizedBox(
                   height: 20,
                 ),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    GestureDetector(
-                      onTap: (){if(_image == null) setImage();},
-                      child: Container(
-                        height: 150,
-                        width: 150,
-                        decoration: BoxDecoration(
-                          color: grey,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: mainColor)
-                        ),
-                        child: _image != null ?
-                          ClipOval(
-                            child: FittedBox(
-                              fit: BoxFit.cover,
-                              child: ImageFiltered(
-                                child: Image.file(_image!),
-                                imageFilter: ImageFilter.blur(sigmaX: 1.3, sigmaY: 1.3),
+                    Column(
+                      children: [
+                        GestureDetector(
+                          onTap: (){if(_image == null) setImage();},
+                          child: Container(
+                            height: 150,
+                            width: 150,
+                            decoration: BoxDecoration(
+                              color: grey,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: mainColor)
+                            ),
+                            child: _image != null ?
+                              ClipOval(
+                                child: FittedBox(
+                                  fit: BoxFit.cover,
+                                  child: ImageFiltered(
+                                    child: Image.file(_image!),
+                                    imageFilter: ImageFilter.blur(sigmaX: 1.3, sigmaY: 1.3),
+                                  ),
+                                )
+                              ) :
+                              SizedBox(
+                                child: Icon(Icons.image, color: Colors.black45),
+                                width: 100,
+                                height: 100,
                               ),
-                            )
-                          ) :
-                          SizedBox(
-                            child: Icon(Icons.image, color: Colors.black45),
-                            width: 100,
-                            height: 100,
                           ),
-                      ),
+                        ),
+                        !_imageSelected  && _clicked ?
+                        Padding(
+                          padding: const EdgeInsets.only(top: 6),
+                          child: Text(
+                            "Please upload an image",
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ) : Container()
+                      ],
                     ),
                     Container(
                       width: 60,
@@ -152,12 +173,14 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                 ),
                 Spacer(),
                 PostButton(
-                    formKey: _formKey,
-                    tagsController: tagsController,
-                    titleController: titleController,
-                    categoryController: categoryController,
-                    locationController: locationController,
-                    dateController: dateController
+                  clicked: setClicked,
+                  imageSelected: _imageSelected,
+                  formKey: _formKey,
+                  tagsController: tagsController,
+                  titleController: titleController,
+                  categoryController: categoryController,
+                  locationController: locationController,
+                  dateController: dateController
                 ),
               ],
             ),
@@ -280,9 +303,12 @@ class LocationField extends StatelessWidget {
   }
 }
 
-class PostButton extends StatelessWidget {
-  const PostButton({
+class PostButton extends StatefulWidget {
+
+   PostButton({
     super.key,
+    required this.clicked,
+    required this.imageSelected,
     required GlobalKey<FormState> formKey,
     required this.tagsController,
     required this.titleController,
@@ -291,6 +317,8 @@ class PostButton extends StatelessWidget {
     required this.dateController,
   }) : _formKey = formKey;
 
+  late dynamic Function(bool) clicked;
+  late bool imageSelected;
   final GlobalKey<FormState> _formKey;
   final TextfieldTagsController tagsController;
   final TextEditingController titleController;
@@ -299,48 +327,61 @@ class PostButton extends StatelessWidget {
   final TextEditingController dateController;
 
   @override
+  State<PostButton> createState() => _PostButtonState();
+}
+
+class _PostButtonState extends State<PostButton> {
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      width: 200,
-      child: TextButton.icon(
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            String tagsString = "";
-            for (String tag in tagsController.getTags!) {
-              tagsString += '$tag,';
-            }
-            FakePostBackend.addColection(
-                {
-                  'title': titleController.text,
-                  'category': categoryController.dropDownValue!
-                      .value,
-                  'tags': tagsString,
-                  'location': locationController.text,
-                  'date': dateController.text,
+    return Column(
+      children: [
+        Container(
+          height: 50,
+          width: 200,
+          child: TextButton.icon(
+            onPressed: () {
+              setState(() {
+                widget.clicked(true);
+              });
+              if (widget._formKey.currentState!.validate() && widget.imageSelected) {
+                String tagsString = "";
+                for (String tag in widget.tagsController.getTags!) {
+                  tagsString += '$tag,';
                 }
-            );
-            Navigator.pop(context);
-          }
-        },
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(mainColor),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(25.0),
+                FakePostBackend.addColection(
+                    {
+                      'title': widget.titleController.text,
+                      'category': widget.categoryController.dropDownValue!
+                          .value,
+                      'tags': tagsString,
+                      'location': widget.locationController.text,
+                      'date': widget.dateController.text,
+                    }
+                );
+                Navigator.pop(context);
+              }
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(mainColor),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                ),
+              ),
             ),
+            label: Text(
+              "Post",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            icon: Icon(Icons.post_add, color: Colors.white,),
           ),
         ),
-        label: Text(
-          "Post",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        icon: Icon(Icons.post_add, color: Colors.white,),
-      ),
+      ],
     );
   }
 }

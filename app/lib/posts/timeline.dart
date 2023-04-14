@@ -114,41 +114,40 @@ class Tag extends StatelessWidget {
   const Tag(this.text, {super.key});
 
   @override
-  Widget build(BuildContext context) => Container(
-      alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(
-            vertical: 5,
-            horizontal: 10
+  Widget build(BuildContext context) => IntrinsicWidth(
+    child: Container(
+        alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(
+              vertical: 5,
+              horizontal: 10
+          ),
+        margin: const EdgeInsetsDirectional.only(
+            top: 10,
+            end: 10
         ),
-      margin: const EdgeInsetsDirectional.only(
-          top: 10,
-          end: 10
-      ),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(80),
-          color: mainColor,
-          border: Border.all(
-              style: BorderStyle.solid,
-              color: mainColor
-          )
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-            color: Colors.white
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(80),
+            color: mainColor,
+            border: Border.all(
+                style: BorderStyle.solid,
+                color: mainColor
+            )
         ),
-      )
+        child: Text(
+          text,
+          style: const TextStyle(
+              color: Colors.white
+          ),
+        )
+    ),
   );
 }
 
 class PostPreview extends StatefulWidget {
 
   late String title;
-
   List<Tag> tags = [];
-
   late String location;
-
   String? imageURL;
 
   PostPreview({super.key, required String tags, required this.title,
@@ -188,7 +187,8 @@ class _PostPreviewState extends State<PostPreview> {
         onTap: (){
           Navigator.of(context)
               .push(
-              MaterialPageRoute(builder: (context) => Post())
+              MaterialPageRoute(builder: (context) =>
+                  Post(title: title, tags: tags, location: location, imageURL: imageURL))
           );
         },
         child: Container(
@@ -300,7 +300,6 @@ class _PostsTimelineState extends State<PostsTimeline> {
           child: RefreshIndicator(
             onRefresh: refresh,
             child: ListView.builder(
-
                 itemBuilder: (BuildContext context, int index) {
 
                   Map<String, Object>? document = FakePostBackend.getDocument(

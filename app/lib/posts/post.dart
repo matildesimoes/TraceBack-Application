@@ -3,13 +3,27 @@ import 'package:flutter/material.dart';
 import 'timeline.dart';
 
 class Post extends StatefulWidget {
-  const Post({Key? key}) : super(key: key);
+
+  late String title;
+  List<Tag> tags = [];
+  late String location;
+  String? imageURL;
+
+  Post({Key? key, required this.tags, required this.title,
+    required this.location, this.imageURL}) : super(key: key);
 
   @override
   State<Post> createState() => _PostState();
 }
 
 class _PostState extends State<Post> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) => MaterialApp(
     home: Scaffold(
@@ -28,7 +42,7 @@ class _PostState extends State<Post> {
                 Title(
                   color: mainColor,
                   child: Text(
-                    "Samsung Galaxy S10+",
+                    widget.title,
                     style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -54,18 +68,16 @@ class _PostState extends State<Post> {
               alignment: Alignment.centerLeft,
               child: Wrap(
                 direction: Axis.horizontal,
-                children: <Widget>[
-                  IntrinsicWidth(child: Tag("Phone")),
-                  IntrinsicWidth(child: Tag("Samsung")),
-                  IntrinsicWidth(child: Tag("S10+")),
-                ],
+                children: widget.tags,
               ),
             ),
             Spacer(),
             Container(
               alignment: Alignment.centerLeft,
               margin: EdgeInsets.symmetric(vertical: 10),
-              child: Text("FEUP - B203", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),),
+              child: Text(
+                widget.location,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),),
             ),
             Container(
               height: 250,

@@ -6,7 +6,7 @@ import 'package:TraceBack/posts/post.dart';
 import 'package:TraceBack/profile/profile.dart';
 import 'package:flutter/material.dart';
 
-import 'create_found_post.dart';
+import 'create_found_post/create_page.dart';
 
 const Color mainColor = Color(0xFF1D3D5C);
 const Color grey = Color(0xFFEBEAEA);

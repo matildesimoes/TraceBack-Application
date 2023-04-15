@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../posts/timeline.dart';
 import 'dart:ui';
-import '../util/editBox.dart';
 import 'signUp.dart';
 
 
@@ -43,9 +42,9 @@ class _LoginPageState extends State<LoginPage>{
                 ),
               ),
               SizedBox(height: 10),
-              EditBox(text: "Email", hintText: "upXXXXXXXXX@up.pt", isPassword: false),
+              EditBox(text: "Email", hintText: "upXXXXXXXXX@up.pt"),
               SizedBox(height: 10),
-              EditBox(text: "Password", hintText: "Password", isPassword: true),
+              EditBox(text: "Password", hintText: "Password"),
               SizedBox(height: 30),
               Container(
                 height: 50,
@@ -58,7 +57,6 @@ class _LoginPageState extends State<LoginPage>{
                           MaterialPageRoute(builder: (context) => SearchPage())
                       );
                     }
-                    // função para guardar as informações
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(mainColor),
@@ -115,6 +113,56 @@ class _LoginPageState extends State<LoginPage>{
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class EditBox extends StatefulWidget {
+  final String text;
+  final String hintText;
+
+  EditBox({required this.text, required this.hintText});
+
+  @override
+  _EditBoxState createState() => _EditBoxState();
+}
+
+class _EditBoxState extends State<EditBox> {
+  bool obscureText = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 8),
+      padding: EdgeInsets.all(2),
+      width: 370,
+      child: TextFormField(
+        keyboardType: widget.text == 'Email'
+            ? TextInputType.emailAddress
+            : TextInputType.text,
+        decoration: InputDecoration(
+          label: Text(widget.text),
+          hintText: widget.hintText,
+          filled: true,
+          fillColor: Colors.grey[300],
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(
+              color: Colors.grey,
+              width: 2,
+              style: BorderStyle.solid,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(
+              color: Colors.blue,
+              width: 1,
+              style: BorderStyle.solid,
+            ),
           ),
         ),
       ),

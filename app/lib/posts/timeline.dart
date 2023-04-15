@@ -1,13 +1,11 @@
-import 'dart:ffi';
 import 'dart:ui';
 import 'package:TraceBack/authentication/initial.dart';
-import 'package:TraceBack/authentication/login.dart';
 import 'package:TraceBack/posts/post.dart';
 import 'package:TraceBack/posts/post_fake_backend.dart';
 import 'package:TraceBack/profile/profile.dart';
-import 'package:TraceBack/settings/privacy.dart';
+import 'package:TraceBack/terms&guidelines/guidelines.dart';
+import 'package:TraceBack/terms&guidelines/privacyInformation.dart';
 import 'package:flutter/material.dart';
-
 import 'create_found_post/create_page.dart';
 
 const Color mainColor = Color(0xFF1D3D5C);
@@ -342,7 +340,8 @@ class SideMenu extends StatelessWidget {
         SideMenuButton("Home", Icon(Icons.home, color: mainColor), SearchPage()),
         SideMenuButton("Chat", Icon(Icons.chat, color: mainColor), SearchPage()),
         SideMenuButton("Profile", Icon(Icons.account_circle, color: mainColor), ProfilePage()),
-        SideMenuButton("Settings", Icon(Icons.settings, color: mainColor), PrivacyPolicyPage()),
+        SideMenuButton("Terms", Icon(Icons.privacy_tip, color: mainColor), PrivacyInformationPage()),
+        SideMenuButton("Guidelines", Icon(Icons.explicit, color: mainColor), GuidelinesPage()),
         const Spacer(
           flex: 6,
         ),

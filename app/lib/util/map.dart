@@ -54,6 +54,11 @@ class MapState extends State<Map> {
           zoom: 17.5,
         );
       });
+      if (widget.text.isEmpty || selectedMarker == null) {
+        _setMarker_(
+            currentPosition!.target.latitude, currentPosition!.target.longitude
+        );
+      }
     }
   }
 
@@ -63,11 +68,6 @@ class MapState extends State<Map> {
   @override
   initState(){
     loadLocation();
-    if (widget.text.isEmpty) {
-      _setMarker_(
-          currentPosition!.target.latitude, currentPosition!.target.longitude
-      );
-    }
   }
 
   @override

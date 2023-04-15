@@ -52,7 +52,8 @@ class _PostButtonState extends State<PostButton> {
                 for (String tag in widget.tagsController.getTags!) {
                   tagsString += '$tag,';
                 }
-                FakePostBackend.addColection(
+                tagsString = tagsString.substring(0, tagsString.length - 1);
+                FakePostBackend.addToCollection(
                     {
                       'title': widget.titleController.text,
                       'category': widget.categoryController.dropDownValue!

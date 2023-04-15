@@ -15,8 +15,7 @@ class TagField extends StatelessWidget {
   double? _distanceToField;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  final TextEditingController controller;
-  final TextfieldTagsController tagController = TextfieldTagsController();
+  final TextfieldTagsController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +24,11 @@ class TagField extends StatelessWidget {
       borderRadius: BorderRadius.circular(25),
       child: TextFieldTags(
         key: formKey,
-        textEditingController: controller,
-        textfieldTagsController: tagController,
+        textfieldTagsController: controller,
         textSeparators: const [' ', ','],
         letterCase: LetterCase.normal,
         validator: (String tag) {
-          if (tagController.getTags!.contains(tag)) {
+          if (controller.getTags!.contains(tag)) {
             return 'you already entered that';
           }
           return null;
@@ -49,7 +47,7 @@ class TagField extends StatelessWidget {
                 focusedBorder: border(mainColor),
                 errorBorder:border(Colors.red),
                 focusedErrorBorder: border(Colors.red),
-                hintText: tagController.hasTags ? '' : "Enter tag...",
+                hintText: controller.hasTags ? '' : "Enter tag...",
                 errorText: error,
                 prefixIconConstraints:
                 BoxConstraints(maxWidth: _distanceToField! * 0.74),

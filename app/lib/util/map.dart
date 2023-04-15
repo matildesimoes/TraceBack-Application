@@ -55,11 +55,6 @@ class MapState extends State<Map> {
         );
       });
     }
-    if (widget.text.isEmpty || selectedMarker == null) {
-      _setMarker_(
-          currentPosition!.target.latitude, currentPosition!.target.longitude
-      );
-    }
   }
 
   static CameraPosition? currentPosition;
@@ -68,6 +63,11 @@ class MapState extends State<Map> {
   @override
   initState(){
     loadLocation();
+    if (widget.text.isEmpty) {
+      _setMarker_(
+          currentPosition!.target.latitude, currentPosition!.target.longitude
+      );
+    }
   }
 
   @override

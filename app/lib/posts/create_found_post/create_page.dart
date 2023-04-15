@@ -45,12 +45,14 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
     return true;
   }
 
-  TextEditingController titleController = TextEditingController();
-  SingleValueDropDownController categoryController = SingleValueDropDownController();
-  TextEditingController tagsController = TextEditingController();
-  TextEditingController locationController = TextEditingController();
-  TextEditingController dateController = TextEditingController(
-      text: "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}"
+  TextEditingController titleController = new TextEditingController();
+  SingleValueDropDownController categoryController = new SingleValueDropDownController();
+  TextfieldTagsController tagsController = new TextfieldTagsController();
+  TextEditingController locationController = new TextEditingController();
+  TextEditingController dateController = new TextEditingController(
+      text: DateTime.now().day.toString() + "/" +
+          DateTime.now().month.toString() + "/" +
+          DateTime.now().year.toString()
   );
 
   setClicked(bool cond){

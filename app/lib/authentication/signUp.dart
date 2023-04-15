@@ -1,10 +1,10 @@
 import 'package:TraceBack/profile/profile.dart';
+import 'package:TraceBack/terms&guidelines/privacyInformation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../util/editBox.dart';
 import '../posts/timeline.dart';
 import 'dart:ui';
-import 'login.dart';
 
 
 class SignUpPage extends StatefulWidget {
@@ -15,7 +15,6 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage>{
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _passwordVisible = false;
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,10 +97,9 @@ class _SignUpPageState extends State<SignUpPage>{
                       Navigator.of(context)
                           .push(
                           MaterialPageRoute(
-                              builder: (context) => LoginPage()
+                              builder: (context) => PrivacyInformationPage()
                           )
                       );
-                      // função para guardar as informações
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(Colors.white),

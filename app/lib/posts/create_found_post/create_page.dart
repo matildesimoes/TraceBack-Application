@@ -73,9 +73,7 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus!.unfocus(),
-      child: Scaffold(
+    return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: const Text(
@@ -139,7 +137,7 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
             ),
           ),
         )
-      ),
+
     );
   }
 }

@@ -9,7 +9,9 @@ import 'package:geocoder/geocoder.dart';
 
 class Map extends StatefulWidget {
 
-  const Map({Key? key}) : super(key: key);
+  late String text;
+
+  Map(this.text, {Key? key}) : super(key: key);
 
   @override
   State<Map> createState() => MapState();
@@ -20,7 +22,7 @@ class MapState extends State<Map> {
   final Completer<GoogleMapController> _controller =
     Completer<GoogleMapController>();
 
-  Future<LocationData?> getLocation() async{
+  Future<LocationData?> loadLocation() async{
 
     Location location = new Location();
 
@@ -43,42 +45,51 @@ class MapState extends State<Map> {
       }
     }
 
-    return location.getLocation();
-  }
-
-  static CameraPosition currentPostition = const CameraPosition(
-    target: LatLng(41.17866515706367, -8.59612434972457),
-    zoom: 13,
-  );
-
-
-  static Marker selectedMarker = Marker(
-    markerId: MarkerId("Selected"),
-    icon: BitmapDescriptor.defaultMarker
-  );
-
-  Map(){
-    _init_();
-  }
-
-  _init_() async {
-    LocationData? locationData;
-
-    await getLocation().then((value) {
-      locationData = value;
-    });
+    LocationData locationData = await location.getLocation();
 
     if (locationData != null){
-      currentPostition = CameraPosition(
-        target: LatLng(locationData!.latitude!, locationData!.longitude!),
-        zoom: 17.5,
+      setState(() {
+        currentPosition = CameraPosition(
+          target: LatLng(locationData.latitude!, locationData.longitude!),
+          zoom: 17.5,
+        );
+      });
+    }
+  }
+
+  static CameraPosition? currentPosition;
+  static Marker? selectedMarker;
+
+  @override
+  initState(){
+    loadLocation();
+    if (widget.text.isEmpty) {
+      _setMarker_(
+          currentPosition!.target.latitude, currentPosition!.target.longitude
       );
-      _setMarker_(locationData!.latitude!, locationData!.longitude!);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget map;
+    if (currentPosition != null && selectedMarker != null) {
+      map = GoogleMap(
+        zoomControlsEnabled: false,
+        mapType: MapType.hybrid,
+        initialCameraPosition: currentPosition!,
+        markers: {selectedMarker!},
+        onMapCreated: (GoogleMapController controller) {
+          _controller.complete(controller);
+        },
+        onTap:(LatLng latlng){
+          _setMarker_(latlng.latitude, latlng.longitude);
+        },
+      );
+    }
+    else
+      map = Center(child: CircularProgressIndicator(color: mainColor,),);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mainColor,
@@ -92,18 +103,7 @@ class MapState extends State<Map> {
       body: Stack(
         children: [
           Expanded(
-            child: GoogleMap(
-              zoomControlsEnabled: false,
-              mapType: MapType.hybrid,
-              initialCameraPosition: currentPostition,
-              markers: {selectedMarker},
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-              },
-              onTap:(LatLng latlng){
-                _setMarker_(latlng.latitude, latlng.longitude);
-              },
-            ),
+            child: map
           ),
           Positioned(
             bottom: 0,
@@ -141,20 +141,9 @@ class MapState extends State<Map> {
 
     LocationData? locationData;
 
-    await getLocation().then((value) {
-      locationData = value;
-    });
+    await loadLocation();
 
-    if (locationData != null){
-      setState(() {
-        currentPostition = CameraPosition(
-          target: LatLng(locationData!.latitude!, locationData!.longitude!),
-          zoom: 17.5,
-        );
-      }
-      );
-    }
-    controller.animateCamera(CameraUpdate.newCameraPosition(currentPostition));
+    controller.animateCamera(CameraUpdate.newCameraPosition(currentPosition!));
   }
 
   _setMarker_(double lat, double lon) {
@@ -171,8 +160,8 @@ class MapState extends State<Map> {
 
   Future<String> getAdress() async {
 
-    final coordinates = new Coordinates(
-        selectedMarker.position.latitude, selectedMarker.position.longitude);
+    final coordinates = Coordinates(
+        selectedMarker!.position.latitude, selectedMarker!.position.longitude);
     var addresses = await Geocoder.local.findAddressesFromCoordinates(
         coordinates);
     var first = addresses.first;

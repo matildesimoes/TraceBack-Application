@@ -74,69 +74,69 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          title: const Text(
-            "Post Found Item",
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: 23,
-                fontWeight: FontWeight.bold
-            ),
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: const Text(
+          "Post Found Item",
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 23,
+              fontWeight: FontWeight.bold
           ),
-          centerTitle: true,
-          backgroundColor: mainColor,
-          toolbarHeight: 80,
         ),
-        drawer: SideMenu(),
-        body: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                TitleField(controller: titleController),
-                SizedBox(
-                  height: 20,
-                ),
-                CategoryDropdown(controller: categoryController),
-                SizedBox(
-                  height: 20,
-                ),
-                TagField(controller: tagsController),
-                SizedBox(
-                  height: 20,
-                ),
-                LocationField(controller: locationController),
-                SizedBox(
-                  height: 20,
-                ),
-                DatePicker(controller: dateController,),
-                SizedBox(
-                  height: 20,
-                ),
-                ImageSelector(
-                    setImage: setImage,
-                    getImage: getImage,
-                    imageValidates: imageValidates),
-                Spacer(),
-                PostButton(
-                  clicked: setClicked,
-                  imageSelected: _imageSelected,
-                  formKey: _formKey,
-                  tagsController: tagsController,
-                  titleController: titleController,
-                  categoryController: categoryController,
-                  locationController: locationController,
-                  dateController: dateController
-                ),
-              ],
-            ),
+        centerTitle: true,
+        backgroundColor: mainColor,
+        toolbarHeight: 80,
+      ),
+      drawer: SideMenu(),
+      body: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              SizedBox(
+                height: 20,
+              ),
+              TitleField(controller: titleController),
+              SizedBox(
+                height: 20,
+              ),
+              CategoryDropdown(controller: categoryController),
+              SizedBox(
+                height: 20,
+              ),
+              TagField(controller: tagsController),
+              SizedBox(
+                height: 20,
+              ),
+              LocationField(controller: locationController),
+              SizedBox(
+                height: 20,
+              ),
+              DatePicker(controller: dateController,),
+              SizedBox(
+                height: 20,
+              ),
+              ImageSelector(
+                  setImage: setImage,
+                  getImage: getImage,
+                  imageValidates: imageValidates),
+              Spacer(),
+              PostButton(
+                clicked: setClicked,
+                imageSelected: _imageSelected,
+                formKey: _formKey,
+                tagsController: tagsController,
+                titleController: titleController,
+                categoryController: categoryController,
+                locationController: locationController,
+                dateController: dateController
+              ),
+            ],
           ),
-        )
+        ),
+      )
 
     );
   }
@@ -223,7 +223,7 @@ class LocationField extends StatelessWidget {
 
   void _getLocation(BuildContext context) async {
     final location = await Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => Map())
+        MaterialPageRoute(builder: (context) => Map(controller.text))
     );
     controller.text = location;
   }

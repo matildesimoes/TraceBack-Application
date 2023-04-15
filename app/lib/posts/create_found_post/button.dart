@@ -23,7 +23,7 @@ class PostButton extends StatefulWidget {
   late dynamic Function(bool) clicked;
   late bool imageSelected;
   final GlobalKey<FormState> _formKey;
-  final TextfieldTagsController tagsController;
+  final TextEditingController tagsController;
   final TextEditingController titleController;
   final SingleValueDropDownController categoryController;
   final TextEditingController locationController;
@@ -48,17 +48,12 @@ class _PostButtonState extends State<PostButton> {
                 widget.clicked(true);
               });
               if (widget._formKey.currentState!.validate() && widget.imageSelected) {
-                String tagsString = "";
-                for (String tag in widget.tagsController.getTags!) {
-                  tagsString += '$tag,';
-                }
-                tagsString = tagsString.substring(0, tagsString.length - 1);
                 FakePostBackend.addToCollection(
                     {
                       'title': widget.titleController.text,
                       'category': widget.categoryController.dropDownValue!
                           .value,
-                      'tags': tagsString,
+                      'tags': widget.tagsController.text,
                       'location': widget.locationController.text,
                       'date': widget.dateController.text,
                     }

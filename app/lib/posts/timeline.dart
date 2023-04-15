@@ -256,11 +256,16 @@ class _PostPreviewState extends State<PostPreview> {
                                 child: Row (
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      location,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: mainColor),
+                                    Expanded(
+                                      child: SingleChildScrollView (
+                                        scrollDirection: Axis.horizontal,
+                                        child: Text(
+                                          location,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: mainColor),
+                                        ),
+                                      ),
                                     ),
                                     /*Text(
                                   "Mariana",

@@ -135,6 +135,7 @@ class _EditBoxState extends State<EditBox> {
 
   @override
   Widget build(BuildContext context) {
+    bool isPassword = widget.text == 'Password';
     return Container(
       margin: EdgeInsets.only(top: 8),
       padding: EdgeInsets.all(2),
@@ -143,6 +144,7 @@ class _EditBoxState extends State<EditBox> {
         keyboardType: widget.text == 'Email'
             ? TextInputType.emailAddress
             : TextInputType.text,
+        obscureText: isPassword ? obscureText : false,
         decoration: InputDecoration(
           label: Text(widget.text),
           hintText: widget.hintText,
@@ -164,6 +166,18 @@ class _EditBoxState extends State<EditBox> {
               style: BorderStyle.solid,
             ),
           ),
+          suffixIcon: isPassword
+              ? IconButton(
+            icon: Icon(obscureText
+                ? Icons.visibility_off
+                : Icons.visibility),
+            onPressed: () {
+              setState(() {
+                obscureText = !obscureText;
+              });
+            },
+          )
+              : null,
         ),
       ),
     );

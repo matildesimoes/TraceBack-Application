@@ -1,13 +1,14 @@
 import 'dart:ui';
 import 'package:TraceBack/authentication/initial.dart';
-import 'package:TraceBack/posts/post.dart';
-import 'package:TraceBack/posts/found_fake_backend.dart';
+import 'package:TraceBack/posts/found_post/found_post.dart';
+import 'package:TraceBack/posts/found_post/found_fake_backend.dart';
 import 'package:TraceBack/profile/profile.dart';
 import 'package:TraceBack/terms&guidelines/guidelines.dart';
 import 'package:TraceBack/terms&guidelines/privacyInformation.dart';
 import 'package:flutter/material.dart';
-import 'create_found_post/create_page.dart';
-import 'lost_fake_backend.dart';
+import 'found_post/create_found_post.dart';
+import 'lost_post/create_lost_post.dart';
+import 'lost_post/lost_fake_backend.dart';
 
 const Color mainColor = Color(0xFF1D3D5C);
 const Color grey = Color(0xFFEBEAEA);
@@ -37,7 +38,7 @@ class _SearchPageState extends State<SearchPage> {
         backgroundColor: mainColor,
         toolbarHeight: 80,
       ),
-      floatingActionButton: CreatePostButton(),
+      floatingActionButton: CreatePostButton(_navBarIndex),
       body: Container(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -86,7 +87,12 @@ class _SearchPageState extends State<SearchPage> {
 }
 
 class CreatePostButton extends StatelessWidget {
-  const CreatePostButton({Key? key}) : super(key: key);
+
+  late int navBarIndex;
+
+  List<Widget> createPost = [CreateFoundPost(), CreateLostPost()];
+
+  CreatePostButton(this.navBarIndex, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +103,7 @@ class CreatePostButton extends StatelessWidget {
           backgroundColor: mainColor,
           onPressed: (){
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => CreateFoundPost())
+              MaterialPageRoute(builder: (context) => createPost[navBarIndex])
             );
           },
           child: const Icon(Icons.add),
@@ -218,7 +224,7 @@ class _PostPreviewState extends State<PostPreview> {
           Navigator.of(context)
               .push(
               MaterialPageRoute(builder: (context) =>
-                  Post(title: title, tags: tags, location: location, imageURL: imageURL))
+                  Found_Post(title: title, tags: tags, location: location, imageURL: imageURL))
           );
         },
         child: Container(

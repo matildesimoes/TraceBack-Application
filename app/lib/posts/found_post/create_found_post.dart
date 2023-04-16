@@ -1,15 +1,15 @@
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:TraceBack/posts/create_found_post/tag_field.dart';
+import 'package:TraceBack/posts/create_post_util/tag_field.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 import '../timeline.dart';
 import '../../util/map.dart';
 import 'button.dart';
-import 'date_picker.dart';
-import 'image_selector.dart';
+import '../create_post_util/date_picker.dart';
+import '../create_post_util/image_selector.dart';
 
 class CreateFoundPost extends StatefulWidget {
   const CreateFoundPost({Key? key}) : super(key: key);
@@ -49,10 +49,8 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
   SingleValueDropDownController categoryController = new SingleValueDropDownController();
   TextfieldTagsController tagsController = new TextfieldTagsController();
   TextEditingController locationController = new TextEditingController();
-  TextEditingController dateController = new TextEditingController(
-      text: DateTime.now().day.toString() + "/" +
-          DateTime.now().month.toString() + "/" +
-          DateTime.now().year.toString()
+  TextEditingController dateController = TextEditingController(
+      text: "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}"
   );
 
   setClicked(bool cond){
@@ -89,55 +87,65 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
         toolbarHeight: 80,
       ),
       drawer: SideMenu(),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Form(
+      body: Form(
           key: _formKey,
-          child: Column(
-            children: [
-              SizedBox(
-                height: 20,
-              ),
-              TitleField(controller: titleController),
-              SizedBox(
-                height: 20,
-              ),
-              CategoryDropdown(controller: categoryController),
-              SizedBox(
-                height: 20,
-              ),
-              TagField(controller: tagsController),
-              SizedBox(
-                height: 20,
-              ),
-              LocationField(controller: locationController),
-              SizedBox(
-                height: 20,
-              ),
-              DatePicker(controller: dateController,),
-              SizedBox(
-                height: 20,
-              ),
-              ImageSelector(
-                  setImage: setImage,
-                  getImage: getImage,
-                  imageValidates: imageValidates),
-              Spacer(),
-              PostButton(
-                clicked: setClicked,
-                imageSelected: _imageSelected,
-                formKey: _formKey,
-                tagsController: tagsController,
-                titleController: titleController,
-                categoryController: categoryController,
-                locationController: locationController,
-                dateController: dateController
-              ),
-            ],
+          child: Scrollbar(
+            thickness: 7,
+            thumbVisibility: true,
+            radius: Radius.circular(10),
+            child: Column(
+              children: [
+                Expanded(
+                  flex: 20,
+                  child: ListView(
+                    padding: EdgeInsetsDirectional.symmetric(horizontal: 15),
+                    children: [
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TitleField(controller: titleController),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      CategoryDropdown(controller: categoryController),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TagField(controller: tagsController),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      LocationField(controller: locationController),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      DatePicker(controller: dateController,),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      ImageSelector(
+                          setImage: setImage,
+                          getImage: getImage,
+                          imageValidates: imageValidates),
+                    ],
+                  ),
+                ),
+                Spacer(),
+                SubmitFoundButton(
+                    clicked: setClicked,
+                    imageSelected: _imageSelected,
+                    formKey: _formKey,
+                    tagsController: tagsController,
+                    titleController: titleController,
+                    categoryController: categoryController,
+                    locationController: locationController,
+                    dateController: dateController
+                ),
+                SizedBox(height: 10,)
+              ],
+            ),
           ),
         ),
-      )
-
     );
   }
 }

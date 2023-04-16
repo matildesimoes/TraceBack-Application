@@ -3,12 +3,12 @@ import 'dart:ui';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:textfield_tags/textfield_tags.dart';
-import '../found_fake_backend.dart';
+import 'found_fake_backend.dart';
 import '../timeline.dart';
 
-class PostButton extends StatefulWidget {
+class SubmitFoundButton extends StatefulWidget {
 
-  PostButton({
+  SubmitFoundButton({
     super.key,
     required this.clicked,
     required this.imageSelected,
@@ -30,10 +30,10 @@ class PostButton extends StatefulWidget {
   final TextEditingController dateController;
 
   @override
-  State<PostButton> createState() => _PostButtonState();
+  State<SubmitFoundButton> createState() => _SubmitFoundButtonState();
 }
 
-class _PostButtonState extends State<PostButton> {
+class _SubmitFoundButtonState extends State<SubmitFoundButton> {
 
   @override
   Widget build(BuildContext context) {

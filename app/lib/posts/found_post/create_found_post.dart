@@ -1,13 +1,14 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:TraceBack/posts/create_post_util/description_field.dart';
 import 'package:TraceBack/posts/create_post_util/tag_field.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 import '../timeline.dart';
 import '../../util/map.dart';
-import 'button.dart';
+import 'submit_button.dart';
 import '../create_post_util/date_picker.dart';
 import '../create_post_util/image_selector.dart';
 
@@ -52,6 +53,7 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
   TextEditingController dateController = TextEditingController(
       text: "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}"
   );
+  TextEditingController descriptionController = TextEditingController();
 
   setClicked(bool cond){
     setState(() {
@@ -123,6 +125,10 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                       SizedBox(
                         height: 20,
                       ),
+                      DescriptionField(controller: descriptionController),
+                      SizedBox(
+                        height: 20,
+                      ),
                       ImageSelector(
                           setImage: setImage,
                           getImage: getImage,
@@ -132,14 +138,15 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                 ),
                 Spacer(),
                 SubmitFoundButton(
-                    clicked: setClicked,
-                    imageSelected: _imageSelected,
-                    formKey: _formKey,
-                    tagsController: tagsController,
-                    titleController: titleController,
-                    categoryController: categoryController,
-                    locationController: locationController,
-                    dateController: dateController
+                  clicked: setClicked,
+                  imageSelected: _imageSelected,
+                  formKey: _formKey,
+                  tagsController: tagsController,
+                  titleController: titleController,
+                  categoryController: categoryController,
+                  locationController: locationController,
+                  dateController: dateController,
+                  descriptionController: descriptionController,
                 ),
                 SizedBox(height: 10,)
               ],

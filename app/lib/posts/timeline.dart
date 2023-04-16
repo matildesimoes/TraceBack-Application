@@ -189,8 +189,9 @@ class PostPreview extends StatefulWidget {
   PostPreview({super.key, required String tags, required this.title,
     required this.location, this.imageURL}){
 
-    for (String tag in tags.split(',')) {
-      this.tags.add(Tag(tag));
+    if (tags.isNotEmpty)
+      for (String tag in tags.split(',')) {
+        this.tags.add(Tag(tag));
     }
   }
 
@@ -199,24 +200,6 @@ class PostPreview extends StatefulWidget {
 }
 
 class _PostPreviewState extends State<PostPreview> {
-
-  @override
-  void initState() {
-    title = widget.title;
-    tags = widget.tags;
-    location = widget.location;
-    imageURL = widget.imageURL;
-    super.initState();
-  }
-
-  late String title;
-
-  List<Tag> tags = [];
-
-  late String location;
-
-  late String? imageURL;
-
   @override
   Widget build(BuildContext context) =>
       GestureDetector(
@@ -224,7 +207,12 @@ class _PostPreviewState extends State<PostPreview> {
           Navigator.of(context)
               .push(
               MaterialPageRoute(builder: (context) =>
-                  Found_Post(title: title, tags: tags, location: location, imageURL: imageURL))
+                  Found_Post(
+                      title: widget.title,
+                      tags: widget.tags,
+                      location: widget.location,
+                      imageURL: widget.imageURL))
+
           );
         },
         child: Container(
@@ -249,7 +237,7 @@ class _PostPreviewState extends State<PostPreview> {
                 width: 100.0,
                 margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
                 child: ClipOval(
-                    child: imageURL == null ?
+                    child: widget.imageURL == null ?
                       Container(
                         color: Colors.black12,
                         child: Icon(Icons.photo)
@@ -272,7 +260,7 @@ class _PostPreviewState extends State<PostPreview> {
                         Padding(
                           padding: EdgeInsets.only(top: 10),
                           child: Text(
-                            title,
+                            widget.title,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -284,7 +272,7 @@ class _PostPreviewState extends State<PostPreview> {
                           child: ListView(
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
-                            children: tags,
+                            children: widget.tags,
                           ),
                         ),
                         Expanded (
@@ -297,7 +285,7 @@ class _PostPreviewState extends State<PostPreview> {
                                       child: SingleChildScrollView (
                                         scrollDirection: Axis.horizontal,
                                         child: Text(
-                                          location,
+                                          widget.location,
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               color: mainColor),
@@ -340,22 +328,27 @@ class _FoundTimelineState extends State<FoundTimeline> {
       Expanded(
           child: RefreshIndicator(
             onRefresh: refresh,
-            child: ListView.builder(
-                itemBuilder: (BuildContext context, int index) {
+            child: Scrollbar(
+              thickness: 7,
+              thumbVisibility: true,
+              radius: Radius.circular(10),
+              child: ListView.builder(
+                  itemBuilder: (BuildContext context, int index) {
 
-                  Map<String, Object>? document = FakeFoundBackend.getDocument(
-                      index);
-                  if (document == null) {
-                    return null;
+                    Map<String, Object>? document = FakeFoundBackend.getDocument(
+                        index);
+                    if (document == null) {
+                      return null;
+                    }
+
+                    String title = document['title'].toString();
+                    String tags = document['tags'].toString();
+                    String location = document['location'].toString();
+
+                    return PostPreview(title: title, tags: tags,
+                        location: location);
                   }
-
-                  String title = document['title'].toString();
-                  String tags = document['tags'].toString();
-                  String location = document['location'].toString();
-
-                  return PostPreview(title: title, tags: tags,
-                      location: location);
-                }
+              ),
             ),
           )
       );
@@ -377,22 +370,27 @@ class _LostTimeline extends State<LostTimeline> {
       Expanded(
           child: RefreshIndicator(
             onRefresh: refresh,
-            child: ListView.builder(
-                itemBuilder: (BuildContext context, int index) {
+            child: Scrollbar(
+                thickness: 7,
+                thumbVisibility: true,
+                radius: Radius.circular(10),
+                child: ListView.builder(
+                  itemBuilder: (BuildContext context, int index) {
 
-                  Map<String, Object>? document = FakeLostBackend.getDocument(
-                      index);
-                  if (document == null) {
-                    return null;
+                    Map<String, Object>? document = FakeLostBackend.getDocument(
+                        index);
+                    if (document == null) {
+                      return null;
+                    }
+
+                    String title = document['title'].toString();
+                    String tags = document['tags'].toString();
+                    String location = document['location'].toString();
+
+                    return PostPreview(title: title, tags: tags,
+                        location: location);
                   }
-
-                  String title = document['title'].toString();
-                  String tags = document['tags'].toString();
-                  String location = document['location'].toString();
-
-                  return PostPreview(title: title, tags: tags,
-                      location: location);
-                }
+              ),
             ),
           )
       );

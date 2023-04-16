@@ -3,23 +3,26 @@ import 'dart:ui';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:textfield_tags/textfield_tags.dart';
-
+import 'found_fake_backend.dart';
 import '../timeline.dart';
-import 'lost_fake_backend.dart';
 
-class SubmitLostButton extends StatefulWidget {
+class SubmitFoundButton extends StatefulWidget {
 
-  SubmitLostButton({
+  SubmitFoundButton({
     super.key,
+    required this.clicked,
+    required this.imageSelected,
     required GlobalKey<FormState> formKey,
     required this.tagsController,
     required this.titleController,
     required this.categoryController,
     required this.locationController,
     required this.dateController,
-    required this.descriptionController,
+    required this.descriptionController
   }) : _formKey = formKey;
 
+  late dynamic Function(bool) clicked;
+  late bool imageSelected;
   final GlobalKey<FormState> _formKey;
   final TextfieldTagsController tagsController;
   final TextEditingController titleController;
@@ -29,10 +32,10 @@ class SubmitLostButton extends StatefulWidget {
   final TextEditingController descriptionController;
 
   @override
-  State<SubmitLostButton> createState() => _SubmitLostButtonState();
+  State<SubmitFoundButton> createState() => _SubmitFoundButtonState();
 }
 
-class _SubmitLostButtonState extends State<SubmitLostButton> {
+class _SubmitFoundButtonState extends State<SubmitFoundButton> {
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +46,18 @@ class _SubmitLostButtonState extends State<SubmitLostButton> {
           width: 200,
           child: TextButton.icon(
             onPressed: () {
-              if (widget._formKey.currentState!.validate()) {
+              setState(() {
+                widget.clicked(true);
+              });
+              if (widget._formKey.currentState!.validate() && widget.imageSelected) {
                 String tagsString = "";
-                for (String tag in widget.tagsController.getTags!) {
-                  tagsString += '$tag,';
+                if (widget.tagsController.hasTags){
+                  for (String tag in widget.tagsController.getTags!) {
+                    tagsString += '$tag,';
+                  }
+                  tagsString = tagsString.substring(0, tagsString.length - 1);
                 }
-                tagsString = tagsString.substring(0, tagsString.length - 1);
-                FakeLostBackend.addToCollection(
+                FakeFoundBackend.addToCollection(
                     {
                       'title': widget.titleController.text,
                       'category': widget.categoryController.dropDownValue!

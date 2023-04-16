@@ -75,6 +75,7 @@ class SignUpButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      key: Key("Sign Up"),
       height: 60,
       margin: EdgeInsets.only(top: 3),
       width: 275,
@@ -118,6 +119,7 @@ class LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      key: Key("Login"),
       height: 60,
       margin: EdgeInsets.only(top: 5),
       width: 275,

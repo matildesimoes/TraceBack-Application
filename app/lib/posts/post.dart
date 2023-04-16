@@ -11,9 +11,15 @@ class Post extends StatefulWidget {
   List<Tag> tags = [];
   late String location;
   String? imageURL;
+  late String description;
 
-  Post({Key? key, required this.tags, required this.title,
-    required this.location, this.imageURL}) : super(key: key);
+  Post({Key? key,
+    required this.tags,
+    required this.title,
+    required this.location,
+    this.imageURL,
+    required this.description}
+      ) : super(key: key);
 
   @override
   State<Post> createState() => _PostState();
@@ -78,98 +84,122 @@ class _PostState extends State<Post> {
               children: [
                 Expanded(
                   flex: 20,
-                  child: ListView(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                            child: Title(
-                              color: mainColor,
-                              child: Text(
-                                widget.title,
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: mainColor
+                  child: Scrollbar(
+                    thickness: 7,
+                    thumbVisibility: true,
+                    radius: Radius.circular(10),
+                    child: ListView(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(
+                              child: Title(
+                                color: mainColor,
+                                child: Text(
+                                  widget.title,
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: mainColor
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          Container(
-                            height: 100.0,
-                            width: 100.0,
-                            child: ClipOval(
-                                child: ImageFiltered(
-                                  child: Image(
-                                    image: AssetImage("assets/SamsungS10.jpg"),
-                                  ),
-                                  imageFilter: ImageFilter.blur(
-                                      sigmaX: 1.2, sigmaY: 1.2),
-                                )
-                            ),
-                          )
-                        ],
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Wrap(
-                          direction: Axis.horizontal,
-                          children: widget.tags,
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.symmetric(vertical: 10),
-                        child: Text(
-                          widget.location,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 15),),
-                      ),
-                      SizedBox(
-                        height: 250,
-                        child: map ??
-                            Center(
-                                child: CircularProgressIndicator(color: mainColor)
-                            ),
-                      ),
-                      SizedBox(height: 10,),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                            height: 40,
-                            width: 110,
-                            margin: EdgeInsets.only(bottom: 20),
-                            child: Padding(
-                                padding: EdgeInsets.only(right: 10),
-                                child: TextButton(
-                                  style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty.all<
-                                          Color>(mainColor),
-                                      shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(50),
-                                          )
-                                      )
-                                  ),
-                                  onPressed: () {},
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(30),
-                                        child: Image.asset("assets/profile.jpg"),
-                                      ),
-                                      Text("Mariana",
-                                        style: TextStyle(color: Colors.white),)
-                                    ],
-                                  ),
-                                )
+                            Container(
+                              height: 100.0,
+                              width: 100.0,
+                              child: ClipOval(
+                                  child: widget.imageURL == null ?
+                                  Container(
+                                      color: Colors.black12,
+                                      child: Icon(Icons.photo)
+                                  )
+                                      :
+                                  ImageFiltered(
+                                    child: Image(
+                                      image: AssetImage("assets/SamsungS10.jpg"),
+                                    ),
+                                    imageFilter: ImageFilter.blur(sigmaX: 1.2, sigmaY: 1.2),
+                                  )
+                              ),
                             )
+                          ],
                         ),
-                      ),
-                    ],
+                        SizedBox(height: 20,),
+                        widget.description.isNotEmpty ?
+                          Container(
+                            padding: EdgeInsets.all(10),
+                            child: Center(
+                                child: Flexible(
+                                    child: Text(widget.description))),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: grey
+                            ),
+                          ) : SizedBox.shrink()
+                        ,
+                        SizedBox(height: 15,),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Wrap(
+                            direction: Axis.horizontal,
+                            children: widget.tags,
+                          ),
+                        ),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          margin: EdgeInsets.symmetric(vertical: 10),
+                          child: Text(
+                            widget.location,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15),),
+                        ),
+                        SizedBox(
+                          height: 250,
+                          child: map ??
+                              Center(
+                                  child: CircularProgressIndicator(color: mainColor)
+                              ),
+                        ),
+                        SizedBox(height: 10,),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Container(
+                              height: 40,
+                              width: 110,
+                              margin: EdgeInsets.only(bottom: 20),
+                              child: Padding(
+                                  padding: EdgeInsets.only(right: 10),
+                                  child: TextButton(
+                                    style: ButtonStyle(
+                                        backgroundColor: MaterialStateProperty.all<
+                                            Color>(mainColor),
+                                        shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(50),
+                                            )
+                                        )
+                                    ),
+                                    onPressed: () {},
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(30),
+                                          child: Image.asset("assets/profile.jpg"),
+                                        ),
+                                        Text("Mariana",
+                                          style: TextStyle(color: Colors.white),)
+                                      ],
+                                    ),
+                                  )
+                              )
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Spacer(),

@@ -190,9 +190,10 @@ class PostPreview extends StatefulWidget {
   List<Tag> tags = [];
   late String location;
   String? imageURL;
+  late String description;
 
   PostPreview({super.key, required String tags, required this.title,
-    required this.location, this.imageURL}){
+    required this.location, this.imageURL, required this.description}){
 
     if (tags.isNotEmpty)
       for (String tag in tags.split(',')) {
@@ -212,11 +213,13 @@ class _PostPreviewState extends State<PostPreview> {
           Navigator.of(context)
               .push(
               MaterialPageRoute(builder: (context) =>
-                  Post(
-                      title: widget.title,
-                      tags: widget.tags,
-                      location: widget.location,
-                      imageURL: widget.imageURL)
+                Post(
+                  title: widget.title,
+                  tags: widget.tags,
+                  location: widget.location,
+                  imageURL: widget.imageURL,
+                  description: widget.description,
+                )
               )
           );
         },
@@ -349,9 +352,10 @@ class _FoundTimelineState extends State<FoundTimeline> {
                     String title = document['title'].toString();
                     String tags = document['tags'].toString();
                     String location = document['location'].toString();
+                    String description = document['description'].toString();
 
                     return PostPreview(title: title, tags: tags,
-                        location: location);
+                        location: location, description: description,);
                   }
               ),
             ),
@@ -391,9 +395,10 @@ class _LostTimeline extends State<LostTimeline> {
                     String title = document['title'].toString();
                     String tags = document['tags'].toString();
                     String location = document['location'].toString();
+                    String description = document['description'].toString();
 
                     return PostPreview(title: title, tags: tags,
-                        location: location);
+                        location: location, description: description,);
                   }
               ),
             ),

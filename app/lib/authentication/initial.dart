@@ -88,7 +88,6 @@ class SignUpButton extends StatelessWidget {
                 )
             );
           }
-          // função para guardar as informações
         },
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(Colors.white),

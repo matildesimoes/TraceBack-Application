@@ -17,6 +17,7 @@ class _SignUpPageState extends State<SignUpPage>{
 
   Widget build(BuildContext context) {
     return Scaffold(
+      key: Key("Sign Page"),
         appBar: AppBar(
           leading: IconButton(
             icon: Icon(Icons.arrow_back),

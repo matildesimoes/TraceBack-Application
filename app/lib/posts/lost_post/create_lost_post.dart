@@ -1,28 +1,27 @@
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:TraceBack/posts/create_found_post/tag_field.dart';
+import 'package:TraceBack/posts/create_post_util/tag_field.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:textfield_tags/textfield_tags.dart';
+import '../create_post_util/description_field.dart';
+import '../create_post_util/date_picker.dart';
+import '../create_post_util/image_selector.dart';
 import '../timeline.dart';
 import '../../util/map.dart';
-import 'button.dart';
-import 'date_picker.dart';
-import 'image_selector.dart';
+import 'submit_button.dart';
 
-class CreateFoundPost extends StatefulWidget {
-  const CreateFoundPost({Key? key}) : super(key: key);
+class CreateLostPost extends StatefulWidget {
+  const CreateLostPost({Key? key}) : super(key: key);
 
   @override
-  State<CreateFoundPost> createState() => _CreateFoundPostState();
+  State<CreateLostPost> createState() => _CreateLostPostState();
 }
 
-class _CreateFoundPostState extends State<CreateFoundPost> {
+class _CreateLostPostState extends State<CreateLostPost> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _imageSelected = false;
-  bool _clicked = false;
 
   List<String> tags = [];
 
@@ -34,32 +33,23 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
   setImage(File? _image){
     setState(() {
       this._image = _image;
-      _imageSelected = true;
     });
   }
 
   imageValidates(){
-    if (!_imageSelected && _clicked) {
-      return false;
-    }
     return true;
   }
 
-  TextEditingController titleController = new TextEditingController();
-  SingleValueDropDownController categoryController = new SingleValueDropDownController();
-  TextfieldTagsController tagsController = new TextfieldTagsController();
-  TextEditingController locationController = new TextEditingController();
-  TextEditingController dateController = new TextEditingController(
-      text: DateTime.now().day.toString() + "/" +
-          DateTime.now().month.toString() + "/" +
-          DateTime.now().year.toString()
+  TextEditingController titleController = TextEditingController();
+  SingleValueDropDownController categoryController = SingleValueDropDownController();
+  TextfieldTagsController tagsController = TextfieldTagsController();
+  TextEditingController locationController = TextEditingController();
+  TextEditingController dateController = TextEditingController(
+      text: "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}"
   );
+  TextEditingController descriptionController = TextEditingController();
 
-  setClicked(bool cond){
-    setState(() {
-      _clicked = cond;
-    });
-  }
+
 
   @override
   void dispose() {
@@ -77,7 +67,7 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text(
-          "Post Found Item",
+          "Post Lost Item",
           style: TextStyle(
               color: Colors.white,
               fontSize: 23,
@@ -90,49 +80,68 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
       ),
       drawer: SideMenu(),
       body: Padding(
-        padding: const EdgeInsets.all(15),
+        padding: const EdgeInsets.all(0),
         child: Form(
           key: _formKey,
           child: Column(
-            children: [
+            children: <Widget>[
+              Expanded(
+                child: Scrollbar(
+                  thickness: 7,
+                  thumbVisibility: true,
+                  radius: Radius.circular(10),
+                  child: ListView(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    children: [
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TitleField(controller: titleController),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      CategoryDropdown(controller: categoryController),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TagField(controller: tagsController),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      LocationField(controller: locationController),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      DatePicker(controller: dateController,),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      DescriptionField(controller: descriptionController),
+                      SizedBox(height: 20),
+                      ImageSelector(
+                          setImage: setImage,
+                          getImage: getImage,
+                          imageValidates: imageValidates
+                      )
+                    ],
+                  ),
+                ),
+              ),
               SizedBox(
                 height: 20,
               ),
-              TitleField(controller: titleController),
-              SizedBox(
-                height: 20,
-              ),
-              CategoryDropdown(controller: categoryController),
-              SizedBox(
-                height: 20,
-              ),
-              TagField(controller: tagsController),
-              SizedBox(
-                height: 20,
-              ),
-              LocationField(controller: locationController),
-              SizedBox(
-                height: 20,
-              ),
-              DatePicker(controller: dateController,),
-              SizedBox(
-                height: 20,
-              ),
-              ImageSelector(
-                  setImage: setImage,
-                  getImage: getImage,
-                  imageValidates: imageValidates),
-              Spacer(),
-              PostButton(
-                clicked: setClicked,
-                imageSelected: _imageSelected,
+              SubmitLostButton(
                 formKey: _formKey,
                 tagsController: tagsController,
                 titleController: titleController,
                 categoryController: categoryController,
                 locationController: locationController,
-                dateController: dateController
+                dateController: dateController,
+                descriptionController: descriptionController
               ),
+              SizedBox(
+                height: 10,
+              )
             ],
           ),
         ),
@@ -141,8 +150,6 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
     );
   }
 }
-
-
 
 class TitleField extends StatelessWidget {
   final TextEditingController controller;

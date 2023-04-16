@@ -1,12 +1,15 @@
 import 'dart:ui';
 import 'package:TraceBack/authentication/initial.dart';
 import 'package:TraceBack/posts/post.dart';
-import 'package:TraceBack/posts/post_fake_backend.dart';
+import 'package:TraceBack/posts/found_post/found_fake_backend.dart';
 import 'package:TraceBack/profile/profile.dart';
 import 'package:TraceBack/terms&guidelines/guidelines.dart';
 import 'package:TraceBack/terms&guidelines/privacyInformation.dart';
 import 'package:flutter/material.dart';
-import 'create_found_post/create_page.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
+import 'found_post/create_found_post.dart';
+import 'lost_post/create_lost_post.dart';
+import 'lost_post/lost_fake_backend.dart';
 
 const Color mainColor = Color(0xFF1D3D5C);
 const Color grey = Color(0xFFEBEAEA);
@@ -20,7 +23,13 @@ class SearchPage extends StatefulWidget {
   State<SearchPage> createState() => _SearchPageState();
 }
 
+
 class _SearchPageState extends State<SearchPage> {
+
+  int _navBarIndex = 0;
+
+  List<Widget> timelines = [FoundTimeline(), LostTimeline()];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,32 +39,65 @@ class _SearchPageState extends State<SearchPage> {
         backgroundColor: mainColor,
         toolbarHeight: 80,
       ),
-      floatingActionButton: CreatePostButton(),
+      floatingActionButton: CreatePostButton(_navBarIndex),
       body: Container(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             CategoryBar(),
             SearchBar(),
-            PostsTimeline()
+            timelines[_navBarIndex]
           ],
         ),
       ),
-      bottomNavigationBar: Row(
+      bottomNavigationBar: Container(
+        color: mainColor,
+        padding: EdgeInsetsDirectional.symmetric(vertical: 10),
+        child: GNav(
+          iconSize: 30.0,
+          gap: 8,
+          backgroundColor: mainColor,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          color: Colors.white,
+          rippleColor: Colors.white,
+          activeColor: mainColor,
+          tabBackgroundColor: Colors.white,
+          tabs: [
+            GButton(
+              icon: Icons.check_box_rounded,
+              text: "Found Items"
+            ),
+            GButton(
+              icon: Icons.indeterminate_check_box_rounded,
+              text: "Lost Items",
+            )
+          ],
+          onTabChange: (index){
+            setState(() {
+              _navBarIndex = index;
+            });
+          },
+        ),
+      )/*Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
         children: [
           BottomButton(text: "Found"),
           BottomButton(text: "Lost")
         ],
-      ),
+      )*/,
       drawer: SideMenu(),
     );
   }
 }
 
 class CreatePostButton extends StatelessWidget {
-  const CreatePostButton({Key? key}) : super(key: key);
+
+  late int navBarIndex;
+
+  List<Widget> createPost = [CreateFoundPost(), CreateLostPost()];
+
+  CreatePostButton(this.navBarIndex, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +108,7 @@ class CreatePostButton extends StatelessWidget {
           backgroundColor: mainColor,
           onPressed: (){
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => CreateFoundPost())
+              MaterialPageRoute(builder: (context) => createPost[navBarIndex])
             );
           },
           child: const Icon(Icons.add),
@@ -148,12 +190,14 @@ class PostPreview extends StatefulWidget {
   List<Tag> tags = [];
   late String location;
   String? imageURL;
+  late String description;
 
   PostPreview({super.key, required String tags, required this.title,
-    required this.location, this.imageURL}){
+    required this.location, this.imageURL, required this.description}){
 
-    for (String tag in tags.split(',')) {
-      this.tags.add(Tag(tag));
+    if (tags.isNotEmpty)
+      for (String tag in tags.split(',')) {
+        this.tags.add(Tag(tag));
     }
   }
 
@@ -162,24 +206,6 @@ class PostPreview extends StatefulWidget {
 }
 
 class _PostPreviewState extends State<PostPreview> {
-
-  @override
-  void initState() {
-    title = widget.title;
-    tags = widget.tags;
-    location = widget.location;
-    imageURL = widget.imageURL;
-    super.initState();
-  }
-
-  late String title;
-
-  List<Tag> tags = [];
-
-  late String location;
-
-  late String? imageURL;
-
   @override
   Widget build(BuildContext context) =>
       GestureDetector(
@@ -187,7 +213,14 @@ class _PostPreviewState extends State<PostPreview> {
           Navigator.of(context)
               .push(
               MaterialPageRoute(builder: (context) =>
-                  Post(title: title, tags: tags, location: location, imageURL: imageURL))
+                Post(
+                  title: widget.title,
+                  tags: widget.tags,
+                  location: widget.location,
+                  imageURL: widget.imageURL,
+                  description: widget.description,
+                )
+              )
           );
         },
         child: Container(
@@ -212,7 +245,7 @@ class _PostPreviewState extends State<PostPreview> {
                 width: 100.0,
                 margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
                 child: ClipOval(
-                    child: imageURL == null ?
+                    child: widget.imageURL == null ?
                       Container(
                         color: Colors.black12,
                         child: Icon(Icons.photo)
@@ -235,7 +268,7 @@ class _PostPreviewState extends State<PostPreview> {
                         Padding(
                           padding: EdgeInsets.only(top: 10),
                           child: Text(
-                            title,
+                            widget.title,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -247,7 +280,7 @@ class _PostPreviewState extends State<PostPreview> {
                           child: ListView(
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
-                            children: tags,
+                            children: widget.tags,
                           ),
                         ),
                         Expanded (
@@ -260,7 +293,7 @@ class _PostPreviewState extends State<PostPreview> {
                                       child: SingleChildScrollView (
                                         scrollDirection: Axis.horizontal,
                                         child: Text(
-                                          location,
+                                          widget.location,
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               color: mainColor),
@@ -287,13 +320,13 @@ class _PostPreviewState extends State<PostPreview> {
       );
 }
 
-class PostsTimeline extends StatefulWidget {
+class FoundTimeline extends StatefulWidget {
 
   @override
-  State<PostsTimeline> createState() => _PostsTimelineState();
+  State<FoundTimeline> createState() => _FoundTimelineState();
 }
 
-class _PostsTimelineState extends State<PostsTimeline> {
+class _FoundTimelineState extends State<FoundTimeline> {
 
   Future<void> refresh() async {
     setState(() {});
@@ -303,22 +336,71 @@ class _PostsTimelineState extends State<PostsTimeline> {
       Expanded(
           child: RefreshIndicator(
             onRefresh: refresh,
-            child: ListView.builder(
-                itemBuilder: (BuildContext context, int index) {
+            child: Scrollbar(
+              thickness: 7,
+              thumbVisibility: true,
+              radius: Radius.circular(10),
+              child: ListView.builder(
+                  itemBuilder: (BuildContext context, int index) {
 
-                  Map<String, Object>? document = FakePostBackend.getDocument(
-                      index);
-                  if (document == null) {
-                    return null;
+                    Map<String, Object>? document = FakeFoundBackend.getDocument(
+                        index);
+                    if (document == null) {
+                      return null;
+                    }
+
+                    String title = document['title'].toString();
+                    String tags = document['tags'].toString();
+                    String location = document['location'].toString();
+                    String description = document['description'].toString();
+
+                    return PostPreview(title: title, tags: tags,
+                        location: location, description: description,);
                   }
+              ),
+            ),
+          )
+      );
+}
 
-                  String title = document['title'].toString();
-                  String tags = document['tags'].toString();
-                  String location = document['location'].toString();
+class LostTimeline extends StatefulWidget {
 
-                  return PostPreview(title: title, tags: tags,
-                      location: location);
-                }
+  @override
+  State<LostTimeline> createState() => _LostTimeline();
+}
+
+class _LostTimeline extends State<LostTimeline> {
+
+  Future<void> refresh() async {
+    setState(() {});
+  }
+  @override
+  Widget build(BuildContext context) =>
+      Expanded(
+          child: RefreshIndicator(
+            onRefresh: refresh,
+            child: Scrollbar(
+                thickness: 7,
+                thumbVisibility: true,
+                radius: Radius.circular(10),
+                child: ListView.builder(
+                  itemBuilder: (BuildContext context, int index) {
+
+                    Map<String, Object>? document = FakeLostBackend.getDocument(
+                        index);
+                    if (document == null) {
+                      return null;
+                    }
+
+                    String title = document['title'].toString();
+                    String tags = document['tags'].toString();
+                    String location = document['location'].toString();
+                    String description = document['description'].toString();
+
+                    return PostPreview(title: title, tags: tags,
+                        location: location, description: description,);
+                  }
+              ),
             ),
           )
       );

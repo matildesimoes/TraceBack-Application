@@ -1,9 +1,11 @@
 
-class FakePostBackend{
+class FakeLostBackend{
 
-  static int id = 0;
+  static int id = 1;
 
-  static Map<String,Map<String, Object>> collection = {};
+  static Map<String,Map<String, Object>> collection = {
+    '0':{'title': 'Iphone SE', 'category': 'IT Devices','tags': 'White', 'location': 'FCUP, Porto'},
+  };
 
   static Map<String,Map<String, Object>> getCollection() => collection;
 

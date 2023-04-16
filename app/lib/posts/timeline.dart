@@ -1,12 +1,13 @@
 import 'dart:ui';
 import 'package:TraceBack/authentication/initial.dart';
 import 'package:TraceBack/posts/post.dart';
-import 'package:TraceBack/posts/post_fake_backend.dart';
+import 'package:TraceBack/posts/found_fake_backend.dart';
 import 'package:TraceBack/profile/profile.dart';
 import 'package:TraceBack/terms&guidelines/guidelines.dart';
 import 'package:TraceBack/terms&guidelines/privacyInformation.dart';
 import 'package:flutter/material.dart';
 import 'create_found_post/create_page.dart';
+import 'lost_fake_backend.dart';
 
 const Color mainColor = Color(0xFF1D3D5C);
 const Color grey = Color(0xFFEBEAEA);
@@ -20,7 +21,13 @@ class SearchPage extends StatefulWidget {
   State<SearchPage> createState() => _SearchPageState();
 }
 
+
 class _SearchPageState extends State<SearchPage> {
+
+  int _navBarIndex = 0;
+
+  List<Widget> timelines = [FoundTimeline(), LostTimeline()];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,18 +44,42 @@ class _SearchPageState extends State<SearchPage> {
           children: <Widget>[
             CategoryBar(),
             SearchBar(),
-            PostsTimeline()
+            timelines[_navBarIndex]
           ],
         ),
       ),
-      bottomNavigationBar: Row(
+      bottomNavigationBar: BottomNavigationBar(
+        iconSize: 30.0,
+        unselectedLabelStyle: TextStyle(color: Colors.white),
+        unselectedItemColor: Colors.white,
+        currentIndex: _navBarIndex,
+        type: BottomNavigationBarType.fixed,
+        selectedFontSize: 15,
+        unselectedFontSize: 15,
+        backgroundColor: mainColor,
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.check_box_rounded),
+              label: "Found"
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.indeterminate_check_box_rounded),
+              label: "Lost",
+          )
+        ],
+        onTap: (index){
+          setState(() {
+            _navBarIndex = index;
+          });
+        },
+      )/*Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
         children: [
           BottomButton(text: "Found"),
           BottomButton(text: "Lost")
         ],
-      ),
+      )*/,
       drawer: SideMenu(),
     );
   }
@@ -287,13 +318,13 @@ class _PostPreviewState extends State<PostPreview> {
       );
 }
 
-class PostsTimeline extends StatefulWidget {
+class FoundTimeline extends StatefulWidget {
 
   @override
-  State<PostsTimeline> createState() => _PostsTimelineState();
+  State<FoundTimeline> createState() => _FoundTimelineState();
 }
 
-class _PostsTimelineState extends State<PostsTimeline> {
+class _FoundTimelineState extends State<FoundTimeline> {
 
   Future<void> refresh() async {
     setState(() {});
@@ -306,7 +337,44 @@ class _PostsTimelineState extends State<PostsTimeline> {
             child: ListView.builder(
                 itemBuilder: (BuildContext context, int index) {
 
-                  Map<String, Object>? document = FakePostBackend.getDocument(
+                  Map<String, Object>? document = FakeFoundBackend.getDocument(
+                      index);
+                  if (document == null) {
+                    return null;
+                  }
+
+                  String title = document['title'].toString();
+                  String tags = document['tags'].toString();
+                  String location = document['location'].toString();
+
+                  return PostPreview(title: title, tags: tags,
+                      location: location);
+                }
+            ),
+          )
+      );
+}
+
+class LostTimeline extends StatefulWidget {
+
+  @override
+  State<LostTimeline> createState() => _LostTimeline();
+}
+
+class _LostTimeline extends State<LostTimeline> {
+
+  Future<void> refresh() async {
+    setState(() {});
+  }
+  @override
+  Widget build(BuildContext context) =>
+      Expanded(
+          child: RefreshIndicator(
+            onRefresh: refresh,
+            child: ListView.builder(
+                itemBuilder: (BuildContext context, int index) {
+
+                  Map<String, Object>? document = FakeLostBackend.getDocument(
                       index);
                   if (document == null) {
                     return null;

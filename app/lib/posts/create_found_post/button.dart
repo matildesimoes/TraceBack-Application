@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:textfield_tags/textfield_tags.dart';
-import '../post_fake_backend.dart';
+import '../found_fake_backend.dart';
 import '../timeline.dart';
 
 class PostButton extends StatefulWidget {
@@ -53,7 +53,7 @@ class _PostButtonState extends State<PostButton> {
                   tagsString += '$tag,';
                 }
                 tagsString = tagsString.substring(0, tagsString.length - 1);
-                FakePostBackend.addToCollection(
+                FakeFoundBackend.addToCollection(
                     {
                       'title': widget.titleController.text,
                       'category': widget.categoryController.dropDownValue!

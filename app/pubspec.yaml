@@ -43,8 +43,9 @@ dependencies:
   google_maps_flutter: ^2.2.5
   textfield_tags: ^2.0.2
   location: ^4.2.0
-  geocoder: ^0.2.1
+  geocoding: ^2.1.0
   google_nav_bar: ^5.0.6
+  geolocator: ^9.0.2
 
 dev_dependencies:
   flutter_test:

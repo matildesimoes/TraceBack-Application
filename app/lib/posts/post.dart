@@ -1,7 +1,6 @@
-import 'dart:ffi';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:geocoder/geocoder.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'timeline.dart';
 
@@ -35,9 +34,9 @@ class _PostState extends State<Post> {
     super.initState();
   }
   loadMap() async {
-    var addresses = await Geocoder.local.findAddressesFromQuery(widget.location);
-    double lat = addresses.first.coordinates.latitude;
-    double long = addresses.first.coordinates.longitude;
+    List<Location> locations = await locationFromAddress(widget.location);
+    double lat = locations.first.latitude;
+    double long = locations.first.longitude;
     LatLng mapLocation = LatLng(lat, long);
 
     setState(() {

@@ -3,23 +3,23 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../timeline.dart';
+import 'timeline.dart';
 
-class Found_Post extends StatefulWidget {
+class Post extends StatefulWidget {
 
   late String title;
   List<Tag> tags = [];
   late String location;
   String? imageURL;
 
-  Found_Post({Key? key, required this.tags, required this.title,
+  Post({Key? key, required this.tags, required this.title,
     required this.location, this.imageURL}) : super(key: key);
 
   @override
-  State<Found_Post> createState() => _Found_PostState();
+  State<Post> createState() => _PostState();
 }
 
-class _Found_PostState extends State<Found_Post> {
+class _PostState extends State<Post> {
 
   Widget? map;
 

@@ -1,11 +1,12 @@
 import 'dart:ui';
 import 'package:TraceBack/authentication/initial.dart';
-import 'package:TraceBack/posts/found_post/found_post.dart';
+import 'package:TraceBack/posts/post.dart';
 import 'package:TraceBack/posts/found_post/found_fake_backend.dart';
 import 'package:TraceBack/profile/profile.dart';
 import 'package:TraceBack/terms&guidelines/guidelines.dart';
 import 'package:TraceBack/terms&guidelines/privacyInformation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'found_post/create_found_post.dart';
 import 'lost_post/create_lost_post.dart';
 import 'lost_post/lost_fake_backend.dart';
@@ -49,30 +50,34 @@ class _SearchPageState extends State<SearchPage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        iconSize: 30.0,
-        unselectedLabelStyle: TextStyle(color: Colors.white),
-        unselectedItemColor: Colors.white,
-        currentIndex: _navBarIndex,
-        type: BottomNavigationBarType.fixed,
-        selectedFontSize: 15,
-        unselectedFontSize: 15,
-        backgroundColor: mainColor,
-        items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.check_box_rounded),
-              label: "Found"
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.indeterminate_check_box_rounded),
-              label: "Lost",
-          )
-        ],
-        onTap: (index){
-          setState(() {
-            _navBarIndex = index;
-          });
-        },
+      bottomNavigationBar: Container(
+        color: mainColor,
+        padding: EdgeInsetsDirectional.symmetric(vertical: 10),
+        child: GNav(
+          iconSize: 30.0,
+          gap: 8,
+          backgroundColor: mainColor,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          color: Colors.white,
+          rippleColor: Colors.white,
+          activeColor: mainColor,
+          tabBackgroundColor: Colors.white,
+          tabs: [
+            GButton(
+              icon: Icons.check_box_rounded,
+              text: "Found Items"
+            ),
+            GButton(
+              icon: Icons.indeterminate_check_box_rounded,
+              text: "Lost Items",
+            )
+          ],
+          onTabChange: (index){
+            setState(() {
+              _navBarIndex = index;
+            });
+          },
+        ),
       )/*Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
@@ -207,12 +212,12 @@ class _PostPreviewState extends State<PostPreview> {
           Navigator.of(context)
               .push(
               MaterialPageRoute(builder: (context) =>
-                  Found_Post(
+                  Post(
                       title: widget.title,
                       tags: widget.tags,
                       location: widget.location,
-                      imageURL: widget.imageURL))
-
+                      imageURL: widget.imageURL)
+              )
           );
         },
         child: Container(

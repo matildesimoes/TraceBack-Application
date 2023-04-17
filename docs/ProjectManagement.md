@@ -22,11 +22,3 @@ End of iteration 2
 Each version before the offical release, should be labeled with 0.X, where X starts on 1, and is incremented with each release.
 
 After the official release, all versions should follow the same rule, but with 1.X and X starting on 0.
-
-## Board history
-
-End of iteration 0
-![img.png](../images/BoardIteration0.png)
-
-End of iteration 1
-![img_1.png](../images/BoardIteration1.png)

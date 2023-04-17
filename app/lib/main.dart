@@ -22,7 +22,7 @@ class _TraceBackState extends State<TraceBack> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: SearchPage()
+        home: InitialPage()
     );
   }
 }

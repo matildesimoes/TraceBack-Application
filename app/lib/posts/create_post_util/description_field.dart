@@ -62,11 +62,11 @@ class _DescriptionFieldState extends State<DescriptionField> {
                         Spacer(),
                         TextButton(
                           onPressed: (){
+                            FocusScope.of(context).unfocus();
+                            Navigator.of(context).pop();
                             setState(() {
                               widget.controller.text = tempController.text;
                             });
-                            Navigator.of(context).pop();
-                            FocusScope.of(context).unfocus();
                           },
                           child: Text(
                             "Submit",

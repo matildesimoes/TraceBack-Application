@@ -91,7 +91,7 @@ class _PostState extends State<Post> {
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
+                          children: <Widget>[
                             Flexible(
                               child: Title(
                                 color: mainColor,
@@ -125,27 +125,23 @@ class _PostState extends State<Post> {
                             )
                           ],
                         ),
+                        Wrap(
+                          direction: Axis.horizontal,
+                          children: widget.tags,
+                        ),
                         SizedBox(height: 20,),
-                        widget.description.isNotEmpty ?
-                          Container(
-                            padding: EdgeInsets.all(10),
-                            child: Center(
-                                child: Flexible(
-                                    child: Text(widget.description))),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: grey
-                            ),
-                          ) : SizedBox.shrink()
+                        widget.description.isNotEmpty
+                            && widget.description != "null" ?
+                        Container(
+                          padding: EdgeInsets.all(10),
+                          child: Text(widget.description),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: grey
+                          ),
+                        ) : SizedBox.shrink()
                         ,
                         SizedBox(height: 15,),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Wrap(
-                            direction: Axis.horizontal,
-                            children: widget.tags,
-                          ),
-                        ),
                         Container(
                           alignment: Alignment.centerLeft,
                           margin: EdgeInsets.symmetric(vertical: 10),

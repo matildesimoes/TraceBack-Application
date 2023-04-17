@@ -15,8 +15,6 @@ You can find here details about the product TraceBack, from a high-level vision 
   * [Vertical prototype](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC06T4/blob/develop/docs/ArchitectureAndDesign.md#vertical-prototype)
 * [Project management](https://github.com/FEUP-LEIC-ES-2022-23/2LEIC06T4/blob/develop/docs/ProjectManagement.md#board-history)
 
-First iteration ![img.png](img.png);
-
 So far, contributions are exclusively made by the initial team, but we hope to open them to the community, in all areas and topics: requirements, technologies, development, experimentation, testing, etc.
 
 Please contact us!

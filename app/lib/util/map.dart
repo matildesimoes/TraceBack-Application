@@ -1,15 +1,18 @@
 import 'dart:async';
 
-import 'package:TraceBack/posts/create_found_post.dart';
+import 'package:TraceBack/posts/found_post/create_found_post.dart';
 import 'package:TraceBack/posts/timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:geocoder/geocoder.dart';
 
 class Map extends StatefulWidget {
 
-  const Map({Key? key}) : super(key: key);
+  late String text;
+
+  Map(this.text, {Key? key}) : super(key: key);
 
   @override
   State<Map> createState() => MapState();
@@ -20,65 +23,84 @@ class MapState extends State<Map> {
   final Completer<GoogleMapController> _controller =
     Completer<GoogleMapController>();
 
-  Future<LocationData?> getLocation() async{
+  Future<LocationData?> loadLocation() async{
 
-    Location location = new Location();
+    bool serviceEnabled;
+    LocationPermission permission;
 
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
 
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
-        return null;
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('Location permissions are denied');
       }
     }
 
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        return null;
-      }
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
     }
 
-    return location.getLocation();
-  }
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    Position position = await Geolocator.getCurrentPosition();
 
-  static CameraPosition currentPostition = const CameraPosition(
-    target: LatLng(41.17866515706367, -8.59612434972457),
-    zoom: 13,
-  );
-
-
-  static Marker selectedMarker = Marker(
-    markerId: MarkerId("Selected"),
-    icon: BitmapDescriptor.defaultMarker
-  );
-
-  Map(){
-    _init_();
-  }
-
-  _init_() async {
-    LocationData? locationData;
-
-    await getLocation().then((value) {
-      locationData = value;
-    });
-
-    if (locationData != null){
-      currentPostition = CameraPosition(
-        target: LatLng(locationData!.latitude!, locationData!.longitude!),
+    setState(() {
+      currentPosition = CameraPosition(
+        target: LatLng(position.latitude, position.longitude),
         zoom: 17.5,
       );
-      _setMarker_(locationData!.latitude!, locationData!.longitude!);
+    });
+    if (widget.text.isEmpty || selectedMarker == null) {
+      _setMarker_(
+          currentPosition!.target.latitude, currentPosition!.target.longitude
+      );
     }
+  }
+
+  static CameraPosition? currentPosition;
+  static Marker? selectedMarker;
+
+  @override
+  initState(){
+    loadLocation();
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget map;
+    if (currentPosition != null && selectedMarker != null) {
+      map = GoogleMap(
+        zoomControlsEnabled: false,
+        mapType: MapType.hybrid,
+        initialCameraPosition: currentPosition!,
+        markers: {selectedMarker!},
+        onMapCreated: (GoogleMapController controller) {
+          _controller.complete(controller);
+        },
+        onTap:(LatLng latlng){
+          _setMarker_(latlng.latitude, latlng.longitude);
+        },
+      );
+    }
+    else
+      map = Center(child: CircularProgressIndicator(color: mainColor,),);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mainColor,
@@ -91,20 +113,7 @@ class MapState extends State<Map> {
       ),
       body: Stack(
         children: [
-          Expanded(
-            child: GoogleMap(
-              zoomControlsEnabled: false,
-              mapType: MapType.hybrid,
-              initialCameraPosition: currentPostition,
-              markers: {selectedMarker},
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-              },
-              onTap:(LatLng latlng){
-                _setMarker_(latlng.latitude, latlng.longitude);
-              },
-            ),
-          ),
+          map,
           Positioned(
             bottom: 0,
             right: 0,
@@ -141,20 +150,9 @@ class MapState extends State<Map> {
 
     LocationData? locationData;
 
-    await getLocation().then((value) {
-      locationData = value;
-    });
+    await loadLocation();
 
-    if (locationData != null){
-      setState(() {
-        currentPostition = CameraPosition(
-          target: LatLng(locationData!.latitude!, locationData!.longitude!),
-          zoom: 17.5,
-        );
-      }
-      );
-    }
-    controller.animateCamera(CameraUpdate.newCameraPosition(currentPostition));
+    controller.animateCamera(CameraUpdate.newCameraPosition(currentPosition!));
   }
 
   _setMarker_(double lat, double lon) {
@@ -169,14 +167,10 @@ class MapState extends State<Map> {
 
   }
 
-  Future<String> getAdress() async {
+  Future<String?> getAdress() async {
 
-    final coordinates = new Coordinates(
-        selectedMarker.position.latitude, selectedMarker.position.longitude);
-    var addresses = await Geocoder.local.findAddressesFromCoordinates(
-        coordinates);
-    var first = addresses.first;
-
-    return first.addressLine;
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        selectedMarker!.position.latitude, selectedMarker!.position.longitude);
+    return "${placemarks.first.street},${placemarks.first.locality}";
   }
 }

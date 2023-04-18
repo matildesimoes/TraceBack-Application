@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../util/camera.dart';
 import 'timeline.dart';
 
 class Post extends StatefulWidget {
@@ -9,14 +10,14 @@ class Post extends StatefulWidget {
   late String title;
   List<Tag> tags = [];
   late String location;
-  String? imageURL;
+  String imageURL;
   late String description;
 
   Post({Key? key,
     required this.tags,
     required this.title,
     required this.location,
-    this.imageURL,
+    required this.imageURL,
     required this.description}
       ) : super(key: key);
 
@@ -28,11 +29,20 @@ class _PostState extends State<Post> {
 
   Widget? map;
 
+  Widget? photo;
+
   @override
   void initState(){
+    loadPhoto();
     loadMap();
     super.initState();
   }
+
+  void loadPhoto() async {
+    photo = await ImageHandler().getPictureFrame(widget.imageURL);
+    setState(() {});
+  }
+
   loadMap() async {
     List<Location> locations = await locationFromAddress(widget.location);
     double lat = locations.first.latitude;
@@ -105,24 +115,12 @@ class _PostState extends State<Post> {
                                 ),
                               ),
                             ),
-                            Container(
-                              height: 100.0,
-                              width: 100.0,
-                              child: ClipOval(
-                                  child: widget.imageURL == null ?
-                                  Container(
-                                      color: Colors.black12,
-                                      child: Icon(Icons.photo)
-                                  )
-                                      :
-                                  ImageFiltered(
-                                    child: Image(
-                                      image: AssetImage("assets/SamsungS10.jpg"),
-                                    ),
-                                    imageFilter: ImageFilter.blur(sigmaX: 1.2, sigmaY: 1.2),
-                                  )
-                              ),
-                            )
+                            photo ?? Container(
+                                height: 100.0,
+                                width: 100.0,
+                                margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
+                                child: CircularProgressIndicator(color: mainColor,)
+                            ),
                           ],
                         ),
                         Wrap(

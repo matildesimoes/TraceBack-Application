@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import '../util/camera.dart';
 import 'found_post/create_found_post.dart';
 import 'lost_post/create_lost_post.dart';
 import 'lost_post/lost_backend.dart';
@@ -190,11 +191,11 @@ class PostPreview extends StatefulWidget {
   late String title;
   List<Tag> tags = [];
   late String location;
-  String? imageURL;
+  late String imageURL;
   late String description;
 
   PostPreview({super.key, required String tags, required this.title,
-    required this.location, this.imageURL, required this.description}){
+    required this.location, required this.imageURL, required this.description}){
 
     if (tags.isNotEmpty)
       for (String tag in tags.split(',')) {
@@ -207,118 +208,119 @@ class PostPreview extends StatefulWidget {
 }
 
 class _PostPreviewState extends State<PostPreview> {
+
+  Widget? photo;
+
+  void initPhoto() async {
+    photo = await ImageHandler().getPictureFrame(widget.imageURL);
+    setState(() {});
+  }
+
   @override
-  Widget build(BuildContext context) =>
-      GestureDetector(
-        onTap: (){
-          Navigator.of(context)
-              .push(
-              MaterialPageRoute(builder: (context) =>
-                Post(
+  void initState() {
+    initPhoto();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => Post(
                   title: widget.title,
                   tags: widget.tags,
                   location: widget.location,
                   imageURL: widget.imageURL,
                   description: widget.description,
-                )
-              )
-          );
-        },
-        child: Container(
-          width:  double.maxFinite,
-          height: 130,
-          margin: const EdgeInsetsDirectional.only(
-              bottom: 30,
-              start: 20,
-              end: 20),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(80),
-              color: grey,
-              border: Border.all(
-                  style: BorderStyle.solid,
-                  color: grey
-              )
-          ),
-          child: Row(
-            children: [
-              Container(
-                height: 100.0,
-                width: 100.0,
-                margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
-                child: ClipOval(
-                    child: widget.imageURL == null ?
-                      Container(
-                        color: Colors.black12,
-                        child: Icon(Icons.photo)
-                      )
-                        :
-                      ImageFiltered(
-                        child: Image(
-                          image: AssetImage("assets/SamsungS10.jpg"),
-                        ),
-                        imageFilter: ImageFilter.blur(sigmaX: 1.2, sigmaY: 1.2),
-                      )
-                ),
-              ),
-              Expanded (
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 40),
-                    child: Column (
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(top: 10),
-                          child: Text(
-                            widget.title,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 40,
-                          child: ListView(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            children: widget.tags,
-                          ),
-                        ),
-                        Expanded (
-                            child:Align(
-                                alignment: AlignmentDirectional.centerStart,
-                                child: Row (
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: SingleChildScrollView (
-                                        scrollDirection: Axis.horizontal,
-                                        child: Text(
-                                          widget.location,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: mainColor),
-                                        ),
-                                      ),
-                                    ),
-                                    /*Text(
+                )));
+      },
+      child: Container(
+        width: double.maxFinite,
+        height: 130,
+        margin:
+            const EdgeInsetsDirectional.only(bottom: 30, start: 20, end: 20),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(80),
+            color: grey,
+            border: Border.all(style: BorderStyle.solid, color: grey)),
+        child: Row(
+          children: [
+            (widget.imageURL != "null") ?
+            photo ?? LoadingPhoto() : SizedBox(width: 40),
+            Expanded(
+                child: Padding(
+              padding: EdgeInsets.only(right: 40),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Text(
+                      widget.title,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 40,
+                    child: ListView(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      children: widget.tags,
+                    ),
+                  ),
+                  Expanded(
+                      child: Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Text(
+                                    widget.location,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: mainColor),
+                                  ),
+                                ),
+                              ),
+                              /*Text(
                                   "Mariana",
                                   style: TextStyle(
                                       fontWeight: FontWeight.w400,
                                       color: mainColor),
                                 )*/
-                                  ],
-                                )
-                            )
-                        )
-                      ],
-                    ),
-                  )
-              )
-            ],
-          ),
+                            ],
+                          )))
+                ],
+              ),
+            ))
+          ],
         ),
-      );
+      ),
+    );
+  }
+}
+
+class LoadingPhoto extends StatelessWidget {
+  const LoadingPhoto({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 100.0,
+      width: 100.0,
+      margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
+      child: CircularProgressIndicator(color: mainColor,)
+    );
+  }
 }
 
 class FoundTimeline extends StatefulWidget {
@@ -383,7 +385,6 @@ class _LostTimeline extends State<LostTimeline> {
 
 Widget getPosts(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
     Future<void> Function() refresh) {
-  List<Map<String, dynamic>> documents = [];
 
   if(docs.isEmpty) {
     return Expanded(
@@ -404,31 +405,31 @@ Widget getPosts(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
     );
   }
   else {
-
-    for (var snapshot in docs){
-      documents.add(snapshot.data());
-    }
-    return RefreshIndicator(
-      onRefresh: refresh,
-      child:Scrollbar(
+    return Expanded(
+      child: Scrollbar(
         thickness: 7,
         thumbVisibility: true,
         radius: const Radius.circular(10),
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: documents.length,
-          itemBuilder: (context, index) {
-            Map<String, dynamic> doc = documents.elementAt(index);
-            String title = doc['title'].toString();
-            String tags = doc['tags'].toString();
-            String location = doc['location'].toString();
-            String description = doc['description'].toString();
+        child: RefreshIndicator(
+          onRefresh: refresh,
+          child:ListView.builder(
+            shrinkWrap: true,
+            itemCount: docs.length,
+            itemBuilder: (context, index) {
+              var snapshot = docs.elementAt(index);
+              Map<String, dynamic> doc = snapshot.data();
+              String title = doc['title'].toString();
+              String tags = doc['tags'].toString();
+              String location = doc['location'].toString();
+              String description = doc['description'].toString();
+              String imageURL = doc['image_url'].toString();
 
-            return PostPreview(title: title, tags: tags,
-              location: location, description: description,);
-          }
-        ),
-      )
+              return PostPreview(title: title, tags: tags,
+                location: location, description: description, imageURL: imageURL);
+            }
+          ),
+
+  ))
     );
   }
 }

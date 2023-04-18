@@ -13,3 +13,4 @@ Feature: Authentication
     And I fill the "Password Confirm" field with "Password123"
     And I tap the "Register" button
     Then I should be navigated to the "Privacy Acceptance Page"
+

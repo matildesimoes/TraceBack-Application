@@ -4,7 +4,6 @@ import 'initial.dart';
 import '../posts/timeline.dart';
 import 'dart:ui';
 import 'dart:io';
-import '../util/editBox.dart';
 import 'signUp.dart';
 
 
@@ -57,7 +56,7 @@ Widget build(BuildContext context) {
                   SizedBox(height: constraints.maxHeight * 0.09),
                   Container(
                     width: fieldWidth,
-                    child: EditBox(text: "Email",hintText: "upXXXXXXXXX@up.pt",isPassword: false,),
+                    child: EditBox(text: "Email",hintText: "upXXXXXXXXX@up.pt"),
                   ),
                   SizedBox(height: constraints.maxHeight * 0.0025),
                   Container(
@@ -65,7 +64,6 @@ Widget build(BuildContext context) {
                     child: EditBox(
                       text: "Password",
                       hintText: "Password",
-                      isPassword: true,
                     ),
                   ),
                   SizedBox(height: constraints.maxHeight * 0.05),
@@ -137,4 +135,68 @@ Widget build(BuildContext context) {
     ),
   );
 }
+}
+
+class EditBox extends StatefulWidget {
+  final String text;
+  final String hintText;
+
+  EditBox({required this.text, required this.hintText});
+
+  @override
+  _EditBoxState createState() => _EditBoxState();
+}
+
+class _EditBoxState extends State<EditBox> {
+  bool obscureText = true;
+
+  @override
+  Widget build(BuildContext context) {
+    bool isPassword = widget.text == 'Password';
+    return Container(
+      margin: EdgeInsets.only(top: 8),
+      padding: EdgeInsets.all(2),
+      width: 370,
+      child: TextFormField(
+        keyboardType: widget.text == 'Email'
+            ? TextInputType.emailAddress
+            : TextInputType.text,
+        obscureText: isPassword ? obscureText : false,
+        decoration: InputDecoration(
+          label: Text(widget.text),
+          hintText: widget.hintText,
+          filled: true,
+          fillColor: Colors.grey[300],
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(
+              color: Colors.grey,
+              width: 2,
+              style: BorderStyle.solid,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(
+              color: Colors.blue,
+              width: 1,
+              style: BorderStyle.solid,
+            ),
+          ),
+          suffixIcon: isPassword
+              ? IconButton(
+            icon: Icon(obscureText
+                ? Icons.visibility_off
+                : Icons.visibility),
+            onPressed: () {
+              setState(() {
+                obscureText = !obscureText;
+              });
+            },
+          )
+              : null,
+        ),
+      ),
+    );
+  }
 }

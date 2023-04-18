@@ -44,7 +44,7 @@ class _PrivacyAcceptancePageState extends State<PrivacyAcceptancePage> {
                 'Privacy Policy\n',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 24,
+                  fontSize: 20,
                 ),
               ),
               Text(
@@ -67,7 +67,7 @@ class _PrivacyAcceptancePageState extends State<PrivacyAcceptancePage> {
                 'Responsibility Policy\n',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 24,
+                  fontSize: 20,
                 ),
               ),
               Text(

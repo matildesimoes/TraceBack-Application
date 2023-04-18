@@ -27,7 +27,7 @@ class _PrivacyInformationPageState extends State<PrivacyInformationPage> {
                 'Privacy Policy\n',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 24,
+                  fontSize: 20,
                 ),
               ),
               Text(
@@ -50,7 +50,7 @@ class _PrivacyInformationPageState extends State<PrivacyInformationPage> {
                 'Responsibility Policy\n',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 24,
+                  fontSize: 20,
                 ),
               ),
               Text(

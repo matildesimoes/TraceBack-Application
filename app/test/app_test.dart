@@ -5,7 +5,7 @@ import 'package:gherkin/gherkin.dart';
 import 'package:glob/glob.dart';
 
 import 'steps/initial_tests.dart';
-import 'steps/incompleteTest.dart';
+import 'steps/signUp.dart';
 
 Future<void> main() {
   final config = FlutterTestConfiguration()

@@ -57,7 +57,7 @@ class _SubmitFoundButtonState extends State<SubmitFoundButton> {
                   }
                   tagsString = tagsString.substring(0, tagsString.length - 1);
                 }
-                FakeFoundBackend.addToCollection(
+                FoundBackend().addToCollection(
                     {
                       'title': widget.titleController.text,
                       'category': widget.categoryController.dropDownValue!

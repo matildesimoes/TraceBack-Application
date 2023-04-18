@@ -5,11 +5,13 @@ import 'package:TraceBack/posts/found_post/found_fake_backend.dart';
 import 'package:TraceBack/profile/profile.dart';
 import 'package:TraceBack/terms&guidelines/guidelines.dart';
 import 'package:TraceBack/terms&guidelines/privacyInformation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'found_post/create_found_post.dart';
 import 'lost_post/create_lost_post.dart';
-import 'lost_post/lost_fake_backend.dart';
+import 'lost_post/lost_backend.dart';
 
 const Color mainColor = Color(0xFF1D3D5C);
 const Color grey = Color(0xFFEBEAEA);
@@ -42,7 +44,6 @@ class _SearchPageState extends State<SearchPage> {
       floatingActionButton: CreatePostButton(_navBarIndex),
       body: Container(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             CategoryBar(),
             SearchBar(),
@@ -328,39 +329,26 @@ class FoundTimeline extends StatefulWidget {
 
 class _FoundTimelineState extends State<FoundTimeline> {
 
-  Future<void> refresh() async {
-    setState(() {});
+  Widget? posts;
+
+  @override
+  void initState() {
+    refresh();
+    super.initState();
   }
+
+  Future<void> refresh() async {
+
+    var snapshots = await FoundBackend().getCollection().get();
+    var docs = snapshots.docs;
+    setState(() {
+      posts = getPosts(docs, refresh);
+    });
+  }
+
   @override
   Widget build(BuildContext context) =>
-      Expanded(
-          child: RefreshIndicator(
-            onRefresh: refresh,
-            child: Scrollbar(
-              thickness: 7,
-              thumbVisibility: true,
-              radius: Radius.circular(10),
-              child: ListView.builder(
-                  itemBuilder: (BuildContext context, int index) {
-
-                    Map<String, Object>? document = FakeFoundBackend.getDocument(
-                        index);
-                    if (document == null) {
-                      return null;
-                    }
-
-                    String title = document['title'].toString();
-                    String tags = document['tags'].toString();
-                    String location = document['location'].toString();
-                    String description = document['description'].toString();
-
-                    return PostPreview(title: title, tags: tags,
-                        location: location, description: description,);
-                  }
-              ),
-            ),
-          )
-      );
+    posts ?? CircularProgressIndicator(color: mainColor);
 }
 
 class LostTimeline extends StatefulWidget {
@@ -371,39 +359,78 @@ class LostTimeline extends StatefulWidget {
 
 class _LostTimeline extends State<LostTimeline> {
 
-  Future<void> refresh() async {
-    setState(() {});
-  }
+  Widget? posts;
+
   @override
-  Widget build(BuildContext context) =>
-      Expanded(
-          child: RefreshIndicator(
-            onRefresh: refresh,
-            child: Scrollbar(
-                thickness: 7,
-                thumbVisibility: true,
-                radius: Radius.circular(10),
-                child: ListView.builder(
-                  itemBuilder: (BuildContext context, int index) {
+  void initState() {
+    refresh();
+    super.initState();
+  }
 
-                    Map<String, Object>? document = FakeLostBackend.getDocument(
-                        index);
-                    if (document == null) {
-                      return null;
-                    }
+  Future<void> refresh() async {
+    var snapshots = await LostBackend().getCollection().get();
+    var docs = snapshots.docs;
+    setState(() {
+      posts = getPosts(docs, refresh);
+    });
+  }
 
-                    String title = document['title'].toString();
-                    String tags = document['tags'].toString();
-                    String location = document['location'].toString();
-                    String description = document['description'].toString();
+  @override
+  Widget build(BuildContext context) {
+    return posts ?? const CircularProgressIndicator(color: mainColor);
+  }
+}
 
-                    return PostPreview(title: title, tags: tags,
-                        location: location, description: description,);
-                  }
-              ),
-            ),
+Widget getPosts(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
+    Future<void> Function() refresh) {
+  List<Map<String, dynamic>> documents = [];
+
+  if(docs.isEmpty) {
+    return Expanded(
+      child:LayoutBuilder(
+        builder: (context, constraints) => RefreshIndicator(
+          onRefresh: refresh,
+          child: SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            child: SizedBox(
+              height: constraints.maxHeight / 2,
+              child: Center(
+                  child:Text("Currently, there are no items to show")
+              )
+            )
           )
-      );
+        )
+      )
+    );
+  }
+  else {
+
+    for (var snapshot in docs){
+      documents.add(snapshot.data());
+    }
+    return RefreshIndicator(
+      onRefresh: refresh,
+      child:Scrollbar(
+        thickness: 7,
+        thumbVisibility: true,
+        radius: const Radius.circular(10),
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: documents.length,
+          itemBuilder: (context, index) {
+            Map<String, dynamic> doc = documents.elementAt(index);
+            String title = doc['title'].toString();
+            String tags = doc['tags'].toString();
+            String location = doc['location'].toString();
+            String description = doc['description'].toString();
+
+            return PostPreview(title: title, tags: tags,
+              location: location, description: description,);
+          }
+        ),
+      )
+    );
+  }
 }
 
 class SideMenu extends StatelessWidget {

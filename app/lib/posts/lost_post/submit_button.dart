@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
 import '../timeline.dart';
-import 'lost_fake_backend.dart';
+import 'lost_backend.dart';
 
 class SubmitLostButton extends StatefulWidget {
 
@@ -51,7 +51,7 @@ class _SubmitLostButtonState extends State<SubmitLostButton> {
                   }
                   tagsString = tagsString.substring(0, tagsString.length - 1);
                 }
-                FakeLostBackend.addToCollection(
+                LostBackend().addToCollection(
                     {
                       'title': widget.titleController.text,
                       'category': widget.categoryController.dropDownValue!

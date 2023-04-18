@@ -1,9 +1,10 @@
-import 'package:TraceBack/posts/found_post/create_found_post.dart';
-import 'package:TraceBack/posts/timeline.dart';
+import 'package:TraceBack/firebase_initializer.dart';
 import 'package:flutter/material.dart';
 import 'authentication/initial.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FirebaseInitializer().initializeDefault();
   runApp(TraceBack());
 }
 

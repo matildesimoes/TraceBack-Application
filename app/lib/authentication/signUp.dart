@@ -1,137 +1,170 @@
 import 'package:TraceBack/profile/profile.dart';
-import 'package:TraceBack/terms&guidelines/privacyAcceptance.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../posts/timeline.dart';
 import 'dart:ui';
+import '../terms&guidelines/privacyAcceptance.dart';
+import 'login.dart';
 
 
 class SignUpPage extends StatefulWidget {
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  State<SignUpPage> createState() => _signUpPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage>{
+class _signUpPageState extends State<SignUpPage>{
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _passwordVisible = false;
 
   Widget build(BuildContext context) {
     return Scaffold(
       key: Key("Sign Page"),
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          backgroundColor: mainColor,
-          toolbarHeight: 80,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
         ),
-        body: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 30),
-                  child: Center(
-                    child: Container(
-                      child: Text(
-                        'Sign Up',
-                        style: TextStyle(
-                          fontSize: 24,
-                          color: mainColor,
-                          fontWeight: FontWeight.bold,
+        backgroundColor: mainColor,
+        toolbarHeight: 80,
+      ),
+      body: LayoutBuilder(
+        builder: ( context, constraints) {
+          final double maxWidth = constraints.maxWidth;
+          final double fieldWidth = maxWidth * 1;
+          final double buttonWidth = maxWidth * 0.6;
+          final double minHeight = 50;
+
+          return SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child:Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: constraints.maxHeight * 0.07),
+                    Container(
+                      margin: EdgeInsets.only(bottom:10),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Sign Up',
+                          style: TextStyle(
+                            fontSize: constraints.maxWidth * 0.07,
+                            color: mainColor,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-                SizedBox(height: 16),
-                EditBox(text: "Name", hintText: "Name", isPassword: false),
-                EditBox(text: "Email", hintText: "upXXXXXXXXX@up.pt", isPassword: false),
-                EditBox(text: "Phone Number", hintText: "Phone Number", isPassword: false),
-                EditBox(text: "Password", hintText: "Enter password", isPassword: true),
-                EditBox(text: "Confirm Password", hintText: "Confirm password", isPassword: true),
+                    SizedBox(height: constraints.maxHeight * 0.0025),
+                    Container(
+                        width: fieldWidth,
+                        child: EditBox(key: Key("Name"),text: "Name", hintText: "Name", isPassword: false)
+                    ),
+                    SizedBox(height: constraints.maxHeight * 0.0025),
+                    Container(
+                        width: fieldWidth,
+                        child: EditBox(key: Key("Email"),text: "Email", hintText: "upXXXXXXXXX@up.pt", isPassword: false)
+                    ),
+                    SizedBox(height: constraints.maxHeight * 0.0025),
+                    Container(
+                        width: fieldWidth,
+                        child: EditBox(key: Key("Phone Number"),text: "Phone Number", hintText: "Phone Number", isPassword: false)
+                    ),
+                    SizedBox(height: constraints.maxHeight * 0.0025),
+                    Container(
+                        width: fieldWidth,
+                        child: EditBox(key: Key("Password"),text: "Password", hintText: "Enter password", isPassword: true)
+                    ),
+                    SizedBox(height: constraints.maxHeight * 0.0025),
+                    Container(
+                        width: fieldWidth,
+                        child: EditBox(key: Key("Password Confirm"),text: "Confirm Password", hintText: "Confirm password", isPassword: true)
+                    ),
 
-                SizedBox(height: 15),
-                Container(
-                  height: 50,
-                  margin: EdgeInsets.only(top: 10, bottom: 5),
-                  width: 200,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        Navigator.of(context)
-                            .push(
-                            MaterialPageRoute(
+                    SizedBox(height: constraints.maxHeight * 0.05),
+                    Container(
+                      key: Key("Register"),
+                      height: constraints.maxHeight * 0.08,
+                      margin: EdgeInsets.only(top: constraints.maxHeight * 0.025, bottom: constraints.maxHeight * 0.0125),
+                      width: constraints.maxWidth * 0.5,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => PrivacyAcceptancePage()
                             )
-                        );
-                      }
-                      // função para guardar as informações
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(mainColor),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25.0),
+                            );
+                          }
+                        },
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(mainColor),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          "Register",
+                          style: TextStyle(
+                            fontSize: constraints.maxWidth * 0.045,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
-                    child: Text(
-                      "Register",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                    SizedBox(height: constraints.maxHeight * 0.025),
+                    Container(
+                      height: constraints.maxHeight * 0.03,
+                      width: constraints.maxWidth * 0.75,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginPage()));
+                        },
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                          elevation: MaterialStateProperty.all<double>(0),
+                          side: MaterialStateProperty.all<BorderSide>(BorderSide.none),
+                          overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                        ),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Already have an account?",
+                            style: TextStyle(
+                              fontSize: constraints.maxWidth * 0.045,
+                              fontWeight: FontWeight.bold,
+                              color: mainColor,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-                SizedBox(height: 50),
-                Container(
-                  height: 25,
-                  width: 300,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context)
-                          .push(
-                          MaterialPageRoute(
-                              builder: (context) => ProfilePage()
-                          )
-                      );
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                      elevation: MaterialStateProperty.all<double>(0),
-                      side: MaterialStateProperty.all<BorderSide>(BorderSide.none),
-                      overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                    ),
-                    child: Text(
-                      "Already have an account? Login",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: mainColor,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        )
+
+          );
+        },
+      ),
     );
   }
 }
 
+
 class EditBox extends StatefulWidget {
+  final Key key;
   final String text;
   final String hintText;
   final bool isPassword;
   final TextEditingController? controller;
 
-  EditBox({required this.text, required this.hintText, this.isPassword = false, this.controller});
+  EditBox({required this.text, required this.hintText, this.isPassword = false, this.controller, required this.key});
 
   @override
   _EditBoxState createState() => _EditBoxState();

@@ -148,8 +148,6 @@ class MapState extends State<Map> {
   Future<void> _backToInitial_() async {
     final GoogleMapController controller = await _controller.future;
 
-    LocationData? locationData;
-
     await loadLocation();
 
     controller.animateCamera(CameraUpdate.newCameraPosition(currentPosition!));

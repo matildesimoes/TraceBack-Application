@@ -27,15 +27,18 @@ class ImageHandler {
     else {
       String url = await FirebaseStorage.instance.refFromURL(imageURL).getDownloadURL();
       return Container(
-          height: 100.0,
-          width: 100.0,
-          margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
-          child: ClipOval(
-              child: ImageFiltered(
-                imageFilter: ImageFilter.blur(sigmaX: 1.2, sigmaY: 1.2),
-                child: Image.network(url),
-              )
+        height: 100.0,
+        width: 100.0,
+        margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
+        child: ClipOval(
+          child: ImageFiltered(
+            imageFilter: ImageFilter.blur(sigmaX: 1.2, sigmaY: 1.2),
+            child: FittedBox(
+              fit: BoxFit.fill,
+              child: Image.network(url),
+            ),
           )
+        )
       );
     }
   }

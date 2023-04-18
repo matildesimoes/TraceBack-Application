@@ -34,7 +34,7 @@ class UserIsInSignUpPage extends Given1WithWorld<String, FlutterWorld> {
 class EditBoxPage extends And2WithWorld<String, String,FlutterWorld> {
   @override
   Future<void> executeStep(String input1, String input2) async {
-    final word = find.text(input1);
+    final word = find.byValueKey(input1);
     await FlutterDriverUtils.enterText(world.driver, word, input2);
 
   }

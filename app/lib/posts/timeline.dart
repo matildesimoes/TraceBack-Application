@@ -14,8 +14,9 @@ import 'found_post/create_found_post.dart';
 import 'lost_post/create_lost_post.dart';
 import 'lost_post/lost_backend.dart';
 
-const Color mainColor = Color(0xFF1D3D5C);
-const Color grey = Color(0xFFEBEAEA);
+const Color mainColor = Color(0xFF008bde);
+const Color secondaryColor = Color(0xFFffba4e);
+const Color accent = Color(0xFFe4f4fb);
 
 class SearchPage extends StatefulWidget {
   const SearchPage({
@@ -62,7 +63,7 @@ class _SearchPageState extends State<SearchPage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           color: Colors.white,
           rippleColor: Colors.white,
-          activeColor: mainColor,
+          activeColor: secondaryColor,
           tabBackgroundColor: Colors.white,
           tabs: [
             GButton(
@@ -107,7 +108,7 @@ class CreatePostButton extends StatelessWidget {
       widthFactor: 0.2,
       child: FittedBox(
         child: FloatingActionButton(
-          backgroundColor: mainColor,
+          backgroundColor: secondaryColor,
           onPressed: (){
             Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => createPost[navBarIndex])
@@ -242,8 +243,8 @@ class _PostPreviewState extends State<PostPreview> {
             const EdgeInsetsDirectional.only(bottom: 30, start: 20, end: 20),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(80),
-            color: grey,
-            border: Border.all(style: BorderStyle.solid, color: grey)),
+            color: accent,
+            border: Border.all(style: BorderStyle.solid, color: accent)),
         child: Row(
           children: [
             (widget.imageURL != "null") ?
@@ -452,11 +453,11 @@ class SideMenu extends StatelessWidget {
               )
           ),
         ),
-        SideMenuButton("Home", Icon(Icons.home, color: mainColor), SearchPage()),
-        SideMenuButton("Chat", Icon(Icons.chat, color: mainColor), SearchPage()),
-        SideMenuButton("Profile", Icon(Icons.account_circle, color: mainColor), ProfilePage()),
-        SideMenuButton("Terms", Icon(Icons.privacy_tip, color: mainColor), PrivacyInformationPage()),
-        SideMenuButton("Guidelines", Icon(Icons.explicit, color: mainColor), GuidelinesPage()),
+        SideMenuButton("Home", Icon(Icons.home, color: mainColor)),
+        //SideMenuButton("Chat", Icon(Icons.chat, color: mainColor), SearchPage()),
+        SideMenuButton("Profile", Icon(Icons.account_circle, color: mainColor)),
+        SideMenuButton("Terms", Icon(Icons.privacy_tip, color: mainColor)),
+        SideMenuButton("Guidelines", Icon(Icons.explicit, color: mainColor)),
         const Spacer(
           flex: 6,
         ),
@@ -467,9 +468,7 @@ class SideMenu extends StatelessWidget {
             child:TextButton(
                 onPressed: (){
                   Navigator.of(context)
-                      .push(
-                      MaterialPageRoute(builder: (context) => InitialPage())
-                      );
+                      .popUntil(ModalRoute.withName("/"));
                 },
                 child: Text(
                   "Logout",
@@ -492,9 +491,30 @@ class SideMenuButton extends StatelessWidget{
 
   final String text;
 
-  final StatefulWidget page;
-
-  SideMenuButton(this.text, this.icon, this.page);
+  SideMenuButton(this.text, this.icon);
+  
+  navigate(BuildContext context){
+    switch (text){
+      case "Home": {
+        Navigator.of(context).popUntil(ModalRoute.withName("/Home"));
+        break;
+      }
+      case "Profile":
+        {
+          Navigator.of(context).popUntil(ModalRoute.withName("/Home"));
+          Navigator.of(context).pushNamed("/$text");
+          break;
+        }
+      case "Chats":
+        {
+          Navigator.of(context).popUntil(ModalRoute.withName("/Home"));
+          Navigator.of(context).pushNamed("/$text");
+          break;
+        }
+      default:
+        Navigator.of(context).pushNamed("/$text");
+    }
+  }
 
   @override
   Widget build(BuildContext context) => SizedBox(
@@ -505,10 +525,7 @@ class SideMenuButton extends StatelessWidget{
         alignment: Alignment.centerLeft
       ),
       onPressed: () {
-        Navigator.of(context)
-            .push(
-            MaterialPageRoute(builder: (context) => page)
-        );
+        navigate(context);
       },
       icon: icon,
       label: Text(text, style: TextStyle(color: mainColor),),
@@ -549,7 +566,7 @@ class SearchBar extends StatelessWidget{
       ),
       decoration: InputDecoration(
         filled: true,
-        fillColor: grey,
+        fillColor: accent,
         labelText: "search",
         enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(25),
@@ -569,7 +586,7 @@ class SearchBar extends StatelessWidget{
         ),
         suffixIconColor: mainColor,
         suffixIcon: IconButton(
-          icon: Icon(Icons.search_rounded),
+          icon: Icon(Icons.search_outlined,),
           onPressed: (){},
         ),
       ),

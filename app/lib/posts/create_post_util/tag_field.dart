@@ -42,7 +42,7 @@ class TagField extends StatelessWidget {
               decoration: InputDecoration(
                 isDense: true,
                 filled: true,
-                fillColor: grey,
+                fillColor: accent,
                 enabledBorder: border(mainColor),
                 focusedBorder: border(mainColor),
                 errorBorder:border(Colors.red),

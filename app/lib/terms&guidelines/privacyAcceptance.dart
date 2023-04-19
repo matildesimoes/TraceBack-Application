@@ -100,9 +100,7 @@ class _PrivacyAcceptancePageState extends State<PrivacyAcceptancePage> {
               child: Text('Accept'),
               onPressed: _acceptButtonEnabled
                   ? () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => SearchPage()),
-                );
+                Navigator.of(context).pushNamed("/Home");
               }
               : null,
             ),

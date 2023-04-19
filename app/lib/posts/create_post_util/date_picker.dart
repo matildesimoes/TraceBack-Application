@@ -53,7 +53,7 @@ class _DatePickerState extends State<DatePicker> {
           icon: Icon(Icons.calendar_month, color: mainColor),
         ),
         filled: true,
-        fillColor: grey,
+        fillColor: accent,
         enabledBorder: border(mainColor),
         focusedBorder: border(mainColor),
       ),

@@ -1,19 +1,41 @@
+import 'dart:io';
 
-class FakeFoundBackend{
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
-  static int id = 2;
+class FoundBackend{
 
-  static Map<String,Map<String, Object>> collection = {
-    '0':{'title': 'Samsung Galaxy A32', 'category': 'IT Devices','tags': 'Samsung,Black', 'location': 'FEUP, Porto'},
-    '1':{'title': 'Iphone SE', 'category': 'IT Devices','tags': 'Broken,White', 'location': 'Sala 103, FCUP, Porto'}
-  };
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  String collection = "Found Items";
 
-  static Map<String,Map<String, Object>> getCollection() => collection;
+  CollectionReference<Map<String, dynamic>> getCollection(){
 
-  static Map<String,Object>? getDocument(int id) => collection[id.toString()];
+    return firestore.collection(collection);
+  }
 
-  static void addToCollection(Map<String, Object> document){
-    collection[id.toString()] = document;
-    id++;
+  Future<String> addToCollection(Map<String, dynamic> doc) async {
+    var ref = await firestore.collection(collection).add(doc);
+    return ref.id;
+  }
+
+  Future<String> upload(File image, String id) async {
+
+    Reference ref = FirebaseStorage.instance
+        .ref()
+        .child('found_items')
+        .child('/$id.jpg');
+
+    final metadata = SettableMetadata(
+      contentType: 'image/jpeg',
+      customMetadata: {'picked-file-path': image.path},
+    );
+
+    TaskSnapshot task = await ref.putFile(File(image.path), metadata);
+
+    return task.ref.getDownloadURL();
+  }
+
+  void addURL(String id, String url) {
+    firestore.collection(collection).doc(id).update({"image_url": url});
   }
 }

@@ -5,11 +5,14 @@ import 'package:TraceBack/posts/found_post/found_fake_backend.dart';
 import 'package:TraceBack/profile/profile.dart';
 import 'package:TraceBack/terms&guidelines/guidelines.dart';
 import 'package:TraceBack/terms&guidelines/privacyInformation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import '../util/camera.dart';
 import 'found_post/create_found_post.dart';
 import 'lost_post/create_lost_post.dart';
-import 'lost_post/lost_fake_backend.dart';
+import 'lost_post/lost_backend.dart';
 
 const Color mainColor = Color(0xFF1D3D5C);
 const Color grey = Color(0xFFEBEAEA);
@@ -42,7 +45,6 @@ class _SearchPageState extends State<SearchPage> {
       floatingActionButton: CreatePostButton(_navBarIndex),
       body: Container(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             CategoryBar(),
             SearchBar(),
@@ -189,11 +191,11 @@ class PostPreview extends StatefulWidget {
   late String title;
   List<Tag> tags = [];
   late String location;
-  String? imageURL;
+  late String imageURL;
   late String description;
 
   PostPreview({super.key, required String tags, required this.title,
-    required this.location, this.imageURL, required this.description}){
+    required this.location, required this.imageURL, required this.description}){
 
     if (tags.isNotEmpty)
       for (String tag in tags.split(',')) {
@@ -206,118 +208,119 @@ class PostPreview extends StatefulWidget {
 }
 
 class _PostPreviewState extends State<PostPreview> {
+
+  Widget? photo;
+
+  void initPhoto() async {
+    photo = await ImageHandler().getPictureFrame(widget.imageURL);
+    setState(() {});
+  }
+
   @override
-  Widget build(BuildContext context) =>
-      GestureDetector(
-        onTap: (){
-          Navigator.of(context)
-              .push(
-              MaterialPageRoute(builder: (context) =>
-                Post(
+  void initState() {
+    initPhoto();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => Post(
                   title: widget.title,
                   tags: widget.tags,
                   location: widget.location,
                   imageURL: widget.imageURL,
                   description: widget.description,
-                )
-              )
-          );
-        },
-        child: Container(
-          width:  double.maxFinite,
-          height: 130,
-          margin: const EdgeInsetsDirectional.only(
-              bottom: 30,
-              start: 20,
-              end: 20),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(80),
-              color: grey,
-              border: Border.all(
-                  style: BorderStyle.solid,
-                  color: grey
-              )
-          ),
-          child: Row(
-            children: [
-              Container(
-                height: 100.0,
-                width: 100.0,
-                margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
-                child: ClipOval(
-                    child: widget.imageURL == null ?
-                      Container(
-                        color: Colors.black12,
-                        child: Icon(Icons.photo)
-                      )
-                        :
-                      ImageFiltered(
-                        child: Image(
-                          image: AssetImage("assets/SamsungS10.jpg"),
-                        ),
-                        imageFilter: ImageFilter.blur(sigmaX: 1.2, sigmaY: 1.2),
-                      )
-                ),
-              ),
-              Expanded (
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 40),
-                    child: Column (
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(top: 10),
-                          child: Text(
-                            widget.title,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 40,
-                          child: ListView(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            children: widget.tags,
-                          ),
-                        ),
-                        Expanded (
-                            child:Align(
-                                alignment: AlignmentDirectional.centerStart,
-                                child: Row (
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: SingleChildScrollView (
-                                        scrollDirection: Axis.horizontal,
-                                        child: Text(
-                                          widget.location,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: mainColor),
-                                        ),
-                                      ),
-                                    ),
-                                    /*Text(
+                )));
+      },
+      child: Container(
+        width: double.maxFinite,
+        height: 130,
+        margin:
+            const EdgeInsetsDirectional.only(bottom: 30, start: 20, end: 20),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(80),
+            color: grey,
+            border: Border.all(style: BorderStyle.solid, color: grey)),
+        child: Row(
+          children: [
+            (widget.imageURL != "null") ?
+            photo ?? LoadingPhoto() : SizedBox(width: 40),
+            Expanded(
+                child: Padding(
+              padding: EdgeInsets.only(right: 40),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Text(
+                      widget.title,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 40,
+                    child: ListView(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      children: widget.tags,
+                    ),
+                  ),
+                  Expanded(
+                      child: Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Text(
+                                    widget.location,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: mainColor),
+                                  ),
+                                ),
+                              ),
+                              /*Text(
                                   "Mariana",
                                   style: TextStyle(
                                       fontWeight: FontWeight.w400,
                                       color: mainColor),
                                 )*/
-                                  ],
-                                )
-                            )
-                        )
-                      ],
-                    ),
-                  )
-              )
-            ],
-          ),
+                            ],
+                          )))
+                ],
+              ),
+            ))
+          ],
         ),
-      );
+      ),
+    );
+  }
+}
+
+class LoadingPhoto extends StatelessWidget {
+  const LoadingPhoto({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 100.0,
+      width: 100.0,
+      margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
+      child: CircularProgressIndicator(color: mainColor,)
+    );
+  }
 }
 
 class FoundTimeline extends StatefulWidget {
@@ -328,39 +331,26 @@ class FoundTimeline extends StatefulWidget {
 
 class _FoundTimelineState extends State<FoundTimeline> {
 
-  Future<void> refresh() async {
-    setState(() {});
+  Widget? posts;
+
+  @override
+  void initState() {
+    refresh();
+    super.initState();
   }
+
+  Future<void> refresh() async {
+
+    var snapshots = await FoundBackend().getCollection().get();
+    var docs = snapshots.docs;
+    setState(() {
+      posts = getPosts(docs, refresh);
+    });
+  }
+
   @override
   Widget build(BuildContext context) =>
-      Expanded(
-          child: RefreshIndicator(
-            onRefresh: refresh,
-            child: Scrollbar(
-              thickness: 7,
-              thumbVisibility: true,
-              radius: Radius.circular(10),
-              child: ListView.builder(
-                  itemBuilder: (BuildContext context, int index) {
-
-                    Map<String, Object>? document = FakeFoundBackend.getDocument(
-                        index);
-                    if (document == null) {
-                      return null;
-                    }
-
-                    String title = document['title'].toString();
-                    String tags = document['tags'].toString();
-                    String location = document['location'].toString();
-                    String description = document['description'].toString();
-
-                    return PostPreview(title: title, tags: tags,
-                        location: location, description: description,);
-                  }
-              ),
-            ),
-          )
-      );
+    posts ?? CircularProgressIndicator(color: mainColor);
 }
 
 class LostTimeline extends StatefulWidget {
@@ -371,39 +361,77 @@ class LostTimeline extends StatefulWidget {
 
 class _LostTimeline extends State<LostTimeline> {
 
-  Future<void> refresh() async {
-    setState(() {});
-  }
+  Widget? posts;
+
   @override
-  Widget build(BuildContext context) =>
-      Expanded(
-          child: RefreshIndicator(
-            onRefresh: refresh,
-            child: Scrollbar(
-                thickness: 7,
-                thumbVisibility: true,
-                radius: Radius.circular(10),
-                child: ListView.builder(
-                  itemBuilder: (BuildContext context, int index) {
+  void initState() {
+    refresh();
+    super.initState();
+  }
 
-                    Map<String, Object>? document = FakeLostBackend.getDocument(
-                        index);
-                    if (document == null) {
-                      return null;
-                    }
+  Future<void> refresh() async {
+    var snapshots = await LostBackend().getCollection().get();
+    var docs = snapshots.docs;
+    setState(() {
+      posts = getPosts(docs, refresh);
+    });
+  }
 
-                    String title = document['title'].toString();
-                    String tags = document['tags'].toString();
-                    String location = document['location'].toString();
-                    String description = document['description'].toString();
+  @override
+  Widget build(BuildContext context) {
+    return posts ?? const CircularProgressIndicator(color: mainColor);
+  }
+}
 
-                    return PostPreview(title: title, tags: tags,
-                        location: location, description: description,);
-                  }
-              ),
-            ),
+Widget getPosts(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
+    Future<void> Function() refresh) {
+
+  if(docs.isEmpty) {
+    return Expanded(
+      child:LayoutBuilder(
+        builder: (context, constraints) => RefreshIndicator(
+          onRefresh: refresh,
+          child: SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            child: SizedBox(
+              height: constraints.maxHeight / 2,
+              child: Center(
+                  child:Text("Currently, there are no items to show")
+              )
+            )
           )
-      );
+        )
+      )
+    );
+  }
+  else {
+    return Expanded(
+      child: Scrollbar(
+        thickness: 7,
+        thumbVisibility: true,
+        radius: const Radius.circular(10),
+        child: RefreshIndicator(
+          onRefresh: refresh,
+          child:ListView.builder(
+            shrinkWrap: true,
+            itemCount: docs.length,
+            itemBuilder: (context, index) {
+              var snapshot = docs.elementAt(index);
+              Map<String, dynamic> doc = snapshot.data();
+              String title = doc['title'].toString();
+              String tags = doc['tags'].toString();
+              String location = doc['location'].toString();
+              String description = doc['description'].toString();
+              String imageURL = doc['image_url'].toString();
+
+              return PostPreview(title: title, tags: tags,
+                location: location, description: description, imageURL: imageURL);
+            }
+          ),
+
+  ))
+    );
+  }
 }
 
 class SideMenu extends StatelessWidget {

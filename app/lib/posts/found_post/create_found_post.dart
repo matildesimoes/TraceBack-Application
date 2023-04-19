@@ -22,7 +22,6 @@ class CreateFoundPost extends StatefulWidget {
 class _CreateFoundPostState extends State<CreateFoundPost> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _imageSelected = false;
   bool _clicked = false;
 
   List<String> tags = [];
@@ -32,15 +31,14 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
   getImage(){
     return _image;
   }
-  setImage(File? _image){
+  setImage(File? image){
     setState(() {
-      this._image = _image;
-      _imageSelected = true;
+      _image = image;
     });
   }
 
   imageValidates(){
-    if (!_imageSelected && _clicked) {
+    if (!(_image != null) && _clicked) {
       return false;
     }
     return true;
@@ -139,7 +137,7 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                 Spacer(),
                 SubmitFoundButton(
                   clicked: setClicked,
-                  imageSelected: _imageSelected,
+                  image: _image,
                   formKey: _formKey,
                   tagsController: tagsController,
                   titleController: titleController,

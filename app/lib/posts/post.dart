@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../util/camera.dart';
 import 'timeline.dart';
 
 class Post extends StatefulWidget {
@@ -9,14 +10,14 @@ class Post extends StatefulWidget {
   late String title;
   List<Tag> tags = [];
   late String location;
-  String? imageURL;
+  String imageURL;
   late String description;
 
   Post({Key? key,
     required this.tags,
     required this.title,
     required this.location,
-    this.imageURL,
+    required this.imageURL,
     required this.description}
       ) : super(key: key);
 
@@ -28,41 +29,71 @@ class _PostState extends State<Post> {
 
   Widget? map;
 
+  Widget? photo;
+
   @override
   void initState(){
+    loadPhoto();
     loadMap();
     super.initState();
   }
+
+  void loadPhoto() async {
+    photo = await ImageHandler().getPictureFrame(widget.imageURL);
+    setState(() {});
+  }
+
   loadMap() async {
-    List<Location> locations = await locationFromAddress(widget.location);
+    List<Location> locations;
+    try {
+      locations = await locationFromAddress(widget.location);
+    }on Exception{
+      setState(() {
+        map = Container(
+          height: 30,
+          margin: EdgeInsets.only(bottom: 30),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: grey
+          ),
+          child: Center(child: Text("Could not find location named \"${widget.location}\""),
+          ),
+        );
+      });
+
+      return;
+    }
     double lat = locations.first.latitude;
     double long = locations.first.longitude;
     LatLng mapLocation = LatLng(lat, long);
 
     setState(() {
-      map = ClipRRect(
-        borderRadius: BorderRadius.circular(30),
-        child: AbsorbPointer(
-        absorbing: true,
-        child: GoogleMap(
-          zoomControlsEnabled: false,
-          mapType: MapType.hybrid,
+      map = SizedBox(
+        height: 250,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(30),
+          child: AbsorbPointer(
+          absorbing: true,
+          child: GoogleMap(
+            zoomControlsEnabled: false,
+            mapType: MapType.hybrid,
 
-          initialCameraPosition: CameraPosition(
-              target: mapLocation,
-              zoom: 17.5
-          ),
-          markers: {
-            Marker(
-                markerId: const MarkerId("local"),
-                infoWindow: InfoWindow(
-                    title: widget.location
-                ),
-                icon: BitmapDescriptor.defaultMarker,
-                position: mapLocation
-            )}
-          ),
-        )
+            initialCameraPosition: CameraPosition(
+                target: mapLocation,
+                zoom: 17.5
+            ),
+            markers: {
+              Marker(
+                  markerId: const MarkerId("local"),
+                  infoWindow: InfoWindow(
+                      title: widget.location
+                  ),
+                  icon: BitmapDescriptor.defaultMarker,
+                  position: mapLocation
+              )}
+            ),
+          )
+        ),
       );
     });
   }
@@ -105,24 +136,12 @@ class _PostState extends State<Post> {
                                 ),
                               ),
                             ),
-                            Container(
-                              height: 100.0,
-                              width: 100.0,
-                              child: ClipOval(
-                                  child: widget.imageURL == null ?
-                                  Container(
-                                      color: Colors.black12,
-                                      child: Icon(Icons.photo)
-                                  )
-                                      :
-                                  ImageFiltered(
-                                    child: Image(
-                                      image: AssetImage("assets/SamsungS10.jpg"),
-                                    ),
-                                    imageFilter: ImageFilter.blur(sigmaX: 1.2, sigmaY: 1.2),
-                                  )
-                              ),
-                            )
+                            photo ?? Container(
+                                height: 100.0,
+                                width: 100.0,
+                                margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
+                                child: CircularProgressIndicator(color: mainColor,)
+                            ),
                           ],
                         ),
                         Wrap(
@@ -150,12 +169,11 @@ class _PostState extends State<Post> {
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 15),),
                         ),
-                        SizedBox(
+                        map ?? SizedBox(
                           height: 250,
-                          child: map ??
-                              Center(
-                                  child: CircularProgressIndicator(color: mainColor)
-                              ),
+                          child: Center(
+                            child: CircularProgressIndicator(color: mainColor)
+                          ),
                         ),
                         SizedBox(height: 10,),
                         Align(

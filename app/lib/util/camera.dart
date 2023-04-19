@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'dart:ui';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -15,6 +17,30 @@ class ImageHandler {
     );
 
     return image;
+  }
+
+  Future<Widget> getPictureFrame(String imageURL) async{
+
+    if (imageURL == "null") {
+      return SizedBox(width: 50);
+    }
+    else {
+      String url = await FirebaseStorage.instance.refFromURL(imageURL).getDownloadURL();
+      return Container(
+        height: 100.0,
+        width: 100.0,
+        margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
+        child: ClipOval(
+          child: ImageFiltered(
+            imageFilter: ImageFilter.blur(sigmaX: 1.2, sigmaY: 1.2),
+            child: FittedBox(
+              fit: BoxFit.fill,
+              child: Image.network(url),
+            ),
+          )
+        )
+      );
+    }
   }
 }
 

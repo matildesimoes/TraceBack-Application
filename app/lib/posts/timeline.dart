@@ -16,7 +16,7 @@ import 'lost_post/lost_backend.dart';
 
 const Color mainColor = Color(0xFF008bde);
 const Color secondaryColor = Color(0xFFffba4e);
-const Color accent = Color(0xFFe1f5ff);
+const Color accent = Color(0xFFe4f4fb);
 
 class SearchPage extends StatefulWidget {
   const SearchPage({

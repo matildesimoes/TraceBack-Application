@@ -122,6 +122,7 @@ class _signUpPageState extends State<SignUpPage>{
                       width: constraints.maxWidth * 0.75,
                       child: ElevatedButton(
                         onPressed: () {
+                          Navigator.of(context).popUntil(ModalRoute.withName('/'));
                           Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginPage()));
                         },
                         style: ButtonStyle(

@@ -45,7 +45,7 @@ class _ImageSelectorState extends State<ImageSelector> {
                 height: 150,
                 width: 150,
                 decoration: BoxDecoration(
-                    color: grey,
+                    color: accent,
                     shape: BoxShape.circle,
                     border: Border.all(color: mainColor)
                 ),
@@ -79,7 +79,7 @@ class _ImageSelectorState extends State<ImageSelector> {
         Container(
           width: 60,
           decoration: BoxDecoration(
-              color: grey,
+              color: accent,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: mainColor)
           ),

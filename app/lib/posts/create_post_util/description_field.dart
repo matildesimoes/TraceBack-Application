@@ -26,7 +26,7 @@ class _DescriptionFieldState extends State<DescriptionField> {
           focusedBorder: border(mainColor),
           enabledBorder: border(mainColor),
           label: Text("Description"),
-          fillColor: grey,
+          fillColor: accent,
           filled: true
       ),
       onTap: (){

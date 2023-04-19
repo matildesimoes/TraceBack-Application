@@ -176,7 +176,7 @@ class TitleField extends StatelessWidget {
     decoration: InputDecoration(
         label: Text("Title"),
       filled: true,
-      fillColor: grey,
+      fillColor: accent,
       enabledBorder: border(mainColor),
       focusedBorder: border(mainColor),
       errorBorder:border(Colors.red),
@@ -207,7 +207,7 @@ class CategoryDropdown extends StatelessWidget {
       textFieldDecoration: InputDecoration(
           label: Text("Category"),
           filled: true,
-          fillColor: grey,
+          fillColor: accent,
           enabledBorder: border(mainColor),
           focusedBorder: border(mainColor),
           errorBorder:border(Colors.red),
@@ -259,7 +259,7 @@ class LocationField extends StatelessWidget {
             icon: Icon(Icons.location_on, color: mainColor)
         ),
         filled: true,
-        fillColor: grey,
+        fillColor: accent,
         enabledBorder: border(mainColor),
         focusedBorder: border(mainColor),
         errorBorder:border(Colors.red),

@@ -54,7 +54,7 @@ class _PostState extends State<Post> {
           margin: EdgeInsets.only(bottom: 30),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              color: grey
+              color: accent
           ),
           child: Center(child: Text("Could not find location named \"${widget.location}\""),
           ),
@@ -156,7 +156,7 @@ class _PostState extends State<Post> {
                           child: Text(widget.description),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
-                              color: grey
+                              color: accent
                           ),
                         ) : SizedBox.shrink()
                         ,

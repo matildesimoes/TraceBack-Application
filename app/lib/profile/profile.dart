@@ -32,7 +32,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: <Widget>[
                   CircleAvatar(
                     radius: 70,
-                    backgroundColor: grey,
+                    backgroundColor: accent,
                   ),
                   SizedBox(width: 16),
                   Expanded(

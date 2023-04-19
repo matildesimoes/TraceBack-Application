@@ -15,6 +15,12 @@ class _GuidelinesPageState extends State<GuidelinesPage> {
         toolbarHeight: 80,
         title: Text('Guidelines'),
         centerTitle: true,
+        leading: BackButton(
+          color: Colors.white,
+          onPressed: (){
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),

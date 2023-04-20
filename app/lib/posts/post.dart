@@ -101,145 +101,143 @@ class _PostState extends State<Post> {
   @override
   Widget build(BuildContext context) {
 
-    return MaterialApp(
-      home: Scaffold(
-          drawer: SideMenu(),
-          appBar: AppBar(
-            backgroundColor: mainColor,
-            toolbarHeight: 80,
-          ),
-          body: Padding(
-            padding: const EdgeInsets.all(15),
-            child: Column(
-              children: [
-                Expanded(
-                  flex: 20,
-                  child: Scrollbar(
-                    thickness: 7,
-                    thumbVisibility: true,
-                    radius: Radius.circular(10),
-                    child: ListView(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Flexible(
-                              child: Title(
-                                color: mainColor,
-                                child: Text(
-                                  widget.title,
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: mainColor
-                                  ),
-                                ),
+    return Scaffold(
+      drawer: SideMenu(),
+      appBar: AppBar(
+        backgroundColor: mainColor,
+        toolbarHeight: 80,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Column(
+          children: [
+            Expanded(
+              flex: 20,
+              child: Scrollbar(
+                thickness: 7,
+                thumbVisibility: true,
+                radius: Radius.circular(10),
+                child: ListView(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Flexible(
+                          child: Title(
+                            color: mainColor,
+                            child: Text(
+                              widget.title,
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: mainColor
                               ),
                             ),
-                            photo ?? Container(
-                                height: 100.0,
-                                width: 100.0,
-                                margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
-                                child: CircularProgressIndicator(color: mainColor,)
-                            ),
-                          ],
-                        ),
-                        Wrap(
-                          direction: Axis.horizontal,
-                          children: widget.tags,
-                        ),
-                        SizedBox(height: 20,),
-                        widget.description.isNotEmpty
-                            && widget.description != "null" ?
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          child: Text(widget.description),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: accent
-                          ),
-                        ) : SizedBox.shrink()
-                        ,
-                        SizedBox(height: 15,),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          margin: EdgeInsets.symmetric(vertical: 10),
-                          child: Text(
-                            widget.location,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 15),),
-                        ),
-                        map ?? SizedBox(
-                          height: 250,
-                          child: Center(
-                            child: CircularProgressIndicator(color: mainColor)
                           ),
                         ),
-                        SizedBox(height: 10,),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Container(
-                              height: 40,
-                              width: 110,
-                              margin: EdgeInsets.only(bottom: 20),
-                              child: Padding(
-                                  padding: EdgeInsets.only(right: 10),
-                                  child: TextButton(
-                                    style: ButtonStyle(
-                                        backgroundColor: MaterialStateProperty.all<
-                                            Color>(mainColor),
-                                        shape: MaterialStateProperty.all<
-                                            RoundedRectangleBorder>(
-                                            RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(50),
-                                            )
-                                        )
-                                    ),
-                                    onPressed: () {},
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(30),
-                                          child: Image.asset("assets/profile.jpg"),
-                                        ),
-                                        Text("Mariana",
-                                          style: TextStyle(color: Colors.white),)
-                                      ],
-                                    ),
-                                  )
-                              )
-                          ),
+                        photo ?? Container(
+                            height: 100.0,
+                            width: 100.0,
+                            margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
+                            child: CircularProgressIndicator(color: mainColor,)
                         ),
                       ],
                     ),
-                  ),
-                ),
-                Spacer(),
-                Container(
-                  height: 60,
-                  width: 200,
-                  child: TextButton.icon(
-                    onPressed: () {},
-                    icon: Icon(Icons.message, color: Colors.white, size: 23,),
-                    label: Text("Contact",
-                      style: TextStyle(color: Colors.white, fontSize: 17),),
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            mainColor),
-                        shape: MaterialStateProperty.all<
-                            RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50),
-                            )
-                        )
+                    Wrap(
+                      direction: Axis.horizontal,
+                      children: widget.tags,
                     ),
-                  ),
-                )
-              ],
+                    SizedBox(height: 20,),
+                    widget.description.isNotEmpty
+                        && widget.description != "null" ?
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      child: Text(widget.description),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: accent
+                      ),
+                    ) : SizedBox.shrink()
+                    ,
+                    SizedBox(height: 15,),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.symmetric(vertical: 10),
+                      child: Text(
+                        widget.location,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 15),),
+                    ),
+                    map ?? SizedBox(
+                      height: 250,
+                      child: Center(
+                        child: CircularProgressIndicator(color: mainColor)
+                      ),
+                    ),
+                    SizedBox(height: 10,),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                          height: 40,
+                          width: 110,
+                          margin: EdgeInsets.only(bottom: 20),
+                          child: Padding(
+                              padding: EdgeInsets.only(right: 10),
+                              child: TextButton(
+                                style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all<
+                                        Color>(mainColor),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(50),
+                                        )
+                                    )
+                                ),
+                                onPressed: () {},
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(30),
+                                      child: Image.asset("assets/profile.jpg"),
+                                    ),
+                                    Text("Mariana",
+                                      style: TextStyle(color: Colors.white),)
+                                  ],
+                                ),
+                              )
+                          )
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          )
-      ),
+            Spacer(),
+            Container(
+              height: 60,
+              width: 200,
+              child: TextButton.icon(
+                onPressed: () {},
+                icon: Icon(Icons.message, color: Colors.white, size: 23,),
+                label: Text("Contact",
+                  style: TextStyle(color: Colors.white, fontSize: 17),),
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        mainColor),
+                    shape: MaterialStateProperty.all<
+                        RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        )
+                    )
+                ),
+              ),
+            )
+          ],
+        ),
+      )
     );
   }
 }

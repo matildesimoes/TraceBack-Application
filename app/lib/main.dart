@@ -29,6 +29,7 @@ class _TraceBackState extends State<TraceBack> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      builder: (context, child) => SafeArea(child: child!),
       initialRoute: "/",
       routes: {
         '/' : (context) => InitialPage(),

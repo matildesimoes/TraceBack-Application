@@ -2,11 +2,7 @@ import 'dart:ui';
 import 'package:TraceBack/authentication/initial.dart';
 import 'package:TraceBack/posts/post.dart';
 import 'package:TraceBack/posts/found_post/found_fake_backend.dart';
-import 'package:TraceBack/profile/profile.dart';
-import 'package:TraceBack/terms&guidelines/guidelines.dart';
-import 'package:TraceBack/terms&guidelines/privacyInformation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import '../util/camera.dart';
@@ -14,9 +10,9 @@ import 'found_post/create_found_post.dart';
 import 'lost_post/create_lost_post.dart';
 import 'lost_post/lost_backend.dart';
 
-const Color mainColor = Color(0xFF008bde);
-const Color secondaryColor = Color(0xFFffba4e);
-const Color accent = Color(0xFFe4f4fb);
+const Color mainColor = Color(0xFF1a425b);
+const Color secondaryColor = Color(0xFFd5a820);
+const Color accent = Color(0xFFebebeb);
 
 class SearchPage extends StatefulWidget {
   const SearchPage({
@@ -62,9 +58,9 @@ class _SearchPageState extends State<SearchPage> {
           backgroundColor: mainColor,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           color: Colors.white,
-          rippleColor: Colors.white,
-          activeColor: secondaryColor,
-          tabBackgroundColor: Colors.white,
+          rippleColor: secondaryColor,
+          activeColor: Colors.white,
+          tabBackgroundColor: secondaryColor,
           tabs: [
             GButton(
               icon: Icons.check_box_rounded,
@@ -351,7 +347,12 @@ class _FoundTimelineState extends State<FoundTimeline> {
 
   @override
   Widget build(BuildContext context) =>
-    posts ?? CircularProgressIndicator(color: mainColor);
+    posts ?? const Expanded(child:Center(child:
+    CircularProgressIndicator(
+        backgroundColor: secondaryColor,
+        color: Colors.white
+    )
+    ));
 }
 
 class LostTimeline extends StatefulWidget {
@@ -380,7 +381,12 @@ class _LostTimeline extends State<LostTimeline> {
 
   @override
   Widget build(BuildContext context) {
-    return posts ?? const CircularProgressIndicator(color: mainColor);
+    return posts ?? const Expanded(child:Center(child:
+      CircularProgressIndicator(
+          backgroundColor: secondaryColor,
+          color: Colors.white
+      )
+    ));
   }
 }
 
@@ -391,6 +397,7 @@ Widget getPosts(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
     return Expanded(
       child:LayoutBuilder(
         builder: (context, constraints) => RefreshIndicator(
+          strokeWidth: 30,
           onRefresh: refresh,
           child: SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
@@ -412,9 +419,11 @@ Widget getPosts(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
         thumbVisibility: true,
         radius: const Radius.circular(10),
         child: RefreshIndicator(
+          color: Colors.white,
+          backgroundColor: secondaryColor,
           onRefresh: refresh,
           child:ListView.builder(
-            shrinkWrap: true,
+            physics: BouncingScrollPhysics(),
             itemCount: docs.length,
             itemBuilder: (context, index) {
               var snapshot = docs.elementAt(index);

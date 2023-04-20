@@ -1,19 +1,25 @@
+import 'package:TraceBack/authentication/authentication_backend.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'initial.dart';
 import '../posts/timeline.dart';
 import 'dart:ui';
-import 'dart:io';
 import 'signUp.dart';
 
 
 class LoginPage extends StatefulWidget {
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  AuthBackend authBackend = AuthBackend();
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                       width: constraints.maxWidth * 0.75,
                       child: ElevatedButton(
                         onPressed: () {
+                          authBackend.login(widget.emailController, widget.passwordController, context);
                           Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignUpPage()));
                         },
                         style: ButtonStyle(
@@ -153,50 +160,76 @@ class _EditBoxState extends State<EditBox> {
 
   @override
   Widget build(BuildContext context) {
-    bool isPassword = widget.text == 'Password';
     return Container(
       margin: EdgeInsets.only(top: 8),
       padding: EdgeInsets.all(2),
       width: 370,
-      child: TextFormField(
-        keyboardType: widget.text == 'Email'
-            ? TextInputType.emailAddress
-            : TextInputType.text,
-        obscureText: isPassword ? obscureText : false,
-        decoration: InputDecoration(
-          label: Text(widget.text),
-          hintText: widget.hintText,
-          filled: true,
-          fillColor: Colors.grey[300],
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(25),
-            borderSide: BorderSide(
-              color: Colors.grey,
-              width: 2,
-              style: BorderStyle.solid,
+      child: Column(
+        children: [
+          TextFormField(
+            controller: emailController,
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecoration(
+              label: Text('Email'),
+              hintText: 'Enter your email',
+              filled: true,
+              fillColor: Colors.grey[300],
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25),
+                borderSide: BorderSide(
+                  color: Colors.grey,
+                  width: 2,
+                  style: BorderStyle.solid,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25),
+                borderSide: BorderSide(
+                  color: Colors.blue,
+                  width: 1,
+                  style: BorderStyle.solid,
+                ),
+              ),
             ),
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(25),
-            borderSide: BorderSide(
-              color: Colors.blue,
-              width: 1,
-              style: BorderStyle.solid,
+          SizedBox(height: 16),
+          TextFormField(
+            controller: passwordController,
+            obscureText: obscureText,
+            decoration: InputDecoration(
+              label: Text('Password'),
+              hintText: 'Enter your password',
+              filled: true,
+              fillColor: Colors.grey[300],
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25),
+                borderSide: BorderSide(
+                  color: Colors.grey,
+                  width: 2,
+                  style: BorderStyle.solid,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25),
+                borderSide: BorderSide(
+                  color: Colors.blue,
+                  width: 1,
+                  style: BorderStyle.solid,
+                ),
+              ),
+              suffixIcon: IconButton(
+                icon: Icon(obscureText
+                    ? Icons.visibility_off
+                    : Icons.visibility),
+                onPressed: () {
+                  setState(() {
+                    obscureText = !obscureText;
+                  });
+                },
+              ),
             ),
           ),
-          suffixIcon: isPassword
-              ? IconButton(
-            icon: Icon(obscureText
-                ? Icons.visibility_off
-                : Icons.visibility),
-            onPressed: () {
-              setState(() {
-                obscureText = !obscureText;
-              });
-            },
-          )
-              : null,
-        ),
+        ],
       ),
     );
   }

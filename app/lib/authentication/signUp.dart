@@ -176,6 +176,7 @@ class _EditBoxState extends State<EditBox> {
   String? password;
   String? confirmPassword;
 
+
   @override
   Widget build(BuildContext context) {
     return Container(

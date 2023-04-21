@@ -9,9 +9,6 @@ import 'signUp.dart';
 
 class LoginPage extends StatefulWidget {
 
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -21,6 +18,11 @@ class _LoginPageState extends State<LoginPage> {
 
   AuthBackend authBackend = AuthBackend();
 
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  String errorMessage = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).popUntil(ModalRoute.withName("/")),
         ),
         backgroundColor: mainColor,
         toolbarHeight: 80,
@@ -66,24 +68,30 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(height: constraints.maxHeight * 0.09),
                     Container(
                       width: fieldWidth,
-                      child: EditBox(text: "Email",hintText: "upXXXXXXXXX@up.pt"),
-                    ),
-                    SizedBox(height: constraints.maxHeight * 0.0025),
-                    Container(
-                      width: fieldWidth,
                       child: EditBox(
-                        text: "Password",
-                        hintText: "Password",
+                          text: "Email",
+                          hintText: "upXXXXXXXXX@up.pt",
+                        emailController: emailController,
+                        passwordController: passwordController,
                       ),
                     ),
+                    Text(errorMessage),
                     SizedBox(height: constraints.maxHeight * 0.05),
                     Container(
                       height: constraints.maxHeight * 0.08,
                       margin: EdgeInsets.only(top: constraints.maxHeight * 0.025, bottom: constraints.maxHeight * 0.0125),
                       width: constraints.maxWidth * 0.5,
                       child: ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
+                        onPressed: () async {
+                          String? error = await authBackend.login(
+                              emailController.text,
+                              passwordController.text
+                          );
+                          if (error != null) {
+                            setState(() {
+                              errorMessage = error;
+                            });
+                          } else {
                             Navigator.of(context).pushNamed("/Home");
                           }
                         },
@@ -111,8 +119,8 @@ class _LoginPageState extends State<LoginPage> {
                       width: constraints.maxWidth * 0.75,
                       child: ElevatedButton(
                         onPressed: () {
-                          authBackend.login(widget.emailController, widget.passwordController, context);
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignUpPage()));
+                          Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => SignUpPage()));
                         },
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
@@ -149,7 +157,15 @@ class EditBox extends StatefulWidget {
   final String text;
   final String hintText;
 
-  EditBox({required this.text, required this.hintText});
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
+
+  EditBox({
+    required this.text,
+    required this.hintText,
+    required this.emailController,
+    required this.passwordController
+  });
 
   @override
   _EditBoxState createState() => _EditBoxState();
@@ -167,7 +183,7 @@ class _EditBoxState extends State<EditBox> {
       child: Column(
         children: [
           TextFormField(
-            controller: emailController,
+            controller: widget.emailController,
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
               label: Text('Email'),
@@ -194,7 +210,7 @@ class _EditBoxState extends State<EditBox> {
           ),
           SizedBox(height: 16),
           TextFormField(
-            controller: passwordController,
+            controller: widget.passwordController,
             obscureText: obscureText,
             decoration: InputDecoration(
               label: Text('Password'),

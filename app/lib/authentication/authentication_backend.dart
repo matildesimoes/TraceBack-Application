@@ -8,21 +8,32 @@ class AuthBackend{
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   String collection = "Users";
 
-  Future<void> login(TextEditingController emailController, TextEditingController passwordController, BuildContext context) async {
+  Future<String?> login(String email, String password) async {
+
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,);
-      Navigator.pop(context);
+        email: email,
+        password: password,);
     } on FirebaseAuthException catch(e){
-      Navigator.pop(context);
-      if(e.code == 'user-not-found'){
+      return betterErrorMsg(e.message);
+    }
 
-      }
-      else if(e.code == 'wrong-password'){
+    return "";
+  }
 
+  betterErrorMsg(String? message){
+    if (message != null){
+
+      switch (message){
+        case "Given String is empty or null":
+          return "Please fill both fields";
+
+        case "":
+          return "something";
       }
     }
+
+    return message;
   }
 
   /*Future<void> register() async {

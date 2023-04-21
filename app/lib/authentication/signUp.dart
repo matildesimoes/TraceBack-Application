@@ -23,7 +23,7 @@ class _signUpPageState extends State<SignUpPage>{
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).popUntil(ModalRoute.withName("/")),
         ),
         backgroundColor: mainColor,
         toolbarHeight: 80,

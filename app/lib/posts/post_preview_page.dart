@@ -83,7 +83,7 @@ class PostPreview extends StatelessWidget {
           children: [
             Post(tags: tagWidgets, title: title, location: location,
               description: description, imageRetriever: imageRetriever,
-              date: "",),
+              date: date,),
           ]
       ),
       floatingActionButton: BottomButton(

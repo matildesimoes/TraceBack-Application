@@ -10,8 +10,10 @@ import '../../util/bottom_button.dart';
 import '../create_post_util/description_field.dart';
 import '../create_post_util/date_picker.dart';
 import '../create_post_util/image_selector.dart';
+import '../found_post/found_fake_backend.dart';
 import '../timeline.dart';
 import '../../util/map.dart';
+import 'lost_backend.dart';
 
 class CreateLostPost extends StatefulWidget {
   const CreateLostPost({Key? key}) : super(key: key);
@@ -73,11 +75,36 @@ class _CreateLostPostState extends State<CreateLostPost> {
               location: locationController.text,
               date: dateController.text,
               image: _image,
-              description: descriptionController.text
+              description: descriptionController.text,
+              submit: submit
             )
         )
       );
     }
+  }
+
+  submit () async {
+    LostBackend backend = LostBackend();
+
+    String tagsString  = tagsController.hasTags ?
+
+    tagsController.getTags.toString().substring(
+        1,
+        tagsController.getTags.toString().length - 1
+    ) : "";
+
+    String id = await backend.addToCollection(
+        {
+          'title': titleController.text,
+          'category': categoryController.dropDownValue!
+              .value,
+          'tags': tagsString,
+          'location': locationController.text,
+          'date': dateController.text,
+          'description': descriptionController.text
+        });
+    String url = await backend.upload(_image!, id);
+    backend.addURL(id, url);
   }
 
   @override

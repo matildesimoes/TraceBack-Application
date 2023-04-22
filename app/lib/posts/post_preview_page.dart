@@ -20,6 +20,8 @@ class PostPreview extends StatelessWidget {
   late String description;
   late String date;
 
+  Function() submit;
+
   PostPreview({Key? key,
     required this.tags,
     required this.title,
@@ -27,7 +29,8 @@ class PostPreview extends StatelessWidget {
     required this.image,
     required this.category,
     required this.date,
-    required this.description}
+    required this.description,
+    required this.submit}
       ) : super(key: key) {
     if (tags.isNotEmpty) {
       for (String tag in tags.split(',')) {
@@ -36,18 +39,7 @@ class PostPreview extends StatelessWidget {
     }
   }
 
-  submit() {
-    LostBackend().addToCollection(
-        {
-          'title': title,
-          'category': category,
-          'tags': tags,
-          'location': location,
-          'date': date,
-          'description': description
-        }
-    );
-  }
+
 
   Future<Widget> imageRetriever() async {
     if (image != null) {

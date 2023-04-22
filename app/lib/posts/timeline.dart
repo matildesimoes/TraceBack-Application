@@ -392,7 +392,7 @@ Widget getPosts(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
           backgroundColor: secondaryColor,
           onRefresh: refresh,
           child:ListView.builder(
-            physics: BouncingScrollPhysics(),
+            physics: AlwaysScrollableScrollPhysics(),
             itemCount: docs.length,
             itemBuilder: (context, index) {
               var snapshot = docs.elementAt(index);

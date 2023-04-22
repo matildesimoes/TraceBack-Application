@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:TraceBack/posts/create_post_util/tag_field.dart';
+import 'package:TraceBack/posts/post_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:textfield_tags/textfield_tags.dart';
@@ -130,7 +131,48 @@ class _CreateLostPostState extends State<CreateLostPost> {
               SizedBox(
                 height: 20,
               ),
-              SubmitLostButton(
+
+              Container(
+                height: 60,
+                width: 200,
+                child: TextButton.icon(
+                  onPressed: (){
+                    if (_formKey.currentState!.validate()){
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                            PostPreview(
+                              tags: tagsController.hasTags ?
+                              tagsController.getTags.toString().substring(
+                                1,
+                                tagsController.getTags.toString().length - 1
+                              ) : "",
+                              category: categoryController.dropDownValue!.value,
+                              title: titleController.text,
+                              location: locationController.text,
+                              image: _image,
+                              description: descriptionController.text
+                            )
+                        )
+                      );
+                    }
+                  },
+                  icon: Icon(Icons.post_add, color: Colors.white, size: 23,),
+                  label: Text("Preview",
+                    style: TextStyle(color: Colors.white, fontSize: 17),),
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          mainColor),
+                      shape: MaterialStateProperty.all<
+                          RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          )
+                      )
+                  ),
+                ),
+              )
+              /*SubmitLostButton(
                 formKey: _formKey,
                 tagsController: tagsController,
                 titleController: titleController,
@@ -138,7 +180,7 @@ class _CreateLostPostState extends State<CreateLostPost> {
                 locationController: locationController,
                 dateController: dateController,
                 descriptionController: descriptionController
-              ),
+              )*/,
               SizedBox(
                 height: 10,
               )

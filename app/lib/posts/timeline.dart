@@ -183,7 +183,7 @@ class Tag extends StatelessWidget {
   );
 }
 
-class PostPreview extends StatefulWidget {
+class ShortPost extends StatefulWidget {
 
   late String title;
   List<Tag> tags = [];
@@ -191,7 +191,7 @@ class PostPreview extends StatefulWidget {
   late String imageURL;
   late String description;
 
-  PostPreview({super.key, required String tags, required this.title,
+  ShortPost({super.key, required String tags, required this.title,
     required this.location, required this.imageURL, required this.description}){
 
     if (tags.isNotEmpty)
@@ -201,10 +201,10 @@ class PostPreview extends StatefulWidget {
   }
 
   @override
-  State<PostPreview> createState() => _PostPreviewState();
+  State<ShortPost> createState() => _ShortPostState();
 }
 
-class _PostPreviewState extends State<PostPreview> {
+class _ShortPostState extends State<ShortPost> {
 
   Widget? photo;
 
@@ -434,7 +434,7 @@ Widget getPosts(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
               String description = doc['description'].toString();
               String imageURL = doc['image_url'].toString();
 
-              return PostPreview(title: title, tags: tags,
+              return ShortPost(title: title, tags: tags,
                 location: location, description: description, imageURL: imageURL);
             }
           ),

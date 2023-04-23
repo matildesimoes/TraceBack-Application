@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 
 class AuthBackend{
 
@@ -9,7 +8,6 @@ class AuthBackend{
   String collection = "Users";
 
   Future<String?> login(String email, String password) async {
-
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
@@ -17,7 +15,6 @@ class AuthBackend{
     } on FirebaseAuthException catch(e){
       return betterErrorMsg(e.message);
     }
-
     return "";
   }
 
@@ -36,32 +33,36 @@ class AuthBackend{
     return message;
   }
 
-  /*Future<void> register() async {
+  Future<String> registerUser(String email, String password) async {
+    try {
+      final UserCredential userCredential = await firebaseAuth
+          .createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-     await firebaseAuth.createUserWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController
-    );
+      final user = userCredential.user;
+      if (user != null) {
+        await user!.sendEmailVerification();
 
-    firebaseAuth.currentUser!.sendEmailVerification();
-
-    Map<String, dynamic> doc = {
-      'name': ,
-      'email': ,
-      'phone number': ,
-      'password':
-    };
-
-    await firestore.collection(collection).add(doc);
+        await saveUserData(, email, );
+      }
+    }
+    on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        return "The account already exists for that email.";
+      }
+    }
+    return " ";
   }
 
-  String signIn() {
+  Future<void> saveUserData(String name, String email, String phone) async {
+    Map<String, dynamic> doc = {
+      'name': name,
+      'email': email,
+      'phone number': phone,
+    };
 
-    try {
-
-    } catch (e){
-      return e.toString();
-    }
-    firebaseAuth.signInWithEmailAndPassword(email: email, password: password)
-}*/
+    await firestore.collection('Users').doc(FirebaseAuth.instance.currentUser?.uid).set(doc);
+  }
 }

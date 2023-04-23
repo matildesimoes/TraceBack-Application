@@ -1,5 +1,4 @@
 import 'package:TraceBack/authentication/authentication_backend.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../posts/timeline.dart';
@@ -104,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         child: Text(
-                          "Enter",
+                          "LogIn",
                           style: TextStyle(
                             fontSize: constraints.maxWidth * 0.045,
                             fontWeight: FontWeight.bold,

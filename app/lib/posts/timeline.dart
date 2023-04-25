@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:TraceBack/authentication/initial.dart';
 import 'package:TraceBack/posts/post.dart';
 import 'package:TraceBack/posts/found_post/found_fake_backend.dart';
+import 'package:TraceBack/posts/post_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -77,14 +78,7 @@ class _SearchPageState extends State<SearchPage> {
             });
           },
         ),
-      )/*Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
-        children: [
-          BottomButton(text: "Found"),
-          BottomButton(text: "Lost")
-        ],
-      )*/,
+      ),
       drawer: SideMenu(),
     );
   }
@@ -115,36 +109,6 @@ class CreatePostButton extends StatelessWidget {
       ),
     );
   }
-}
-
-class BottomButton extends StatelessWidget {
-
-  final String text;
-
-  BottomButton({required this.text});
-
-  @override
-  Widget build(BuildContext context) => Expanded(
-    child: Container (
-      height: 70,
-      child: TextButton(
-        onPressed: () {},
-        style: ButtonStyle(
-            shape: MaterialStatePropertyAll<ContinuousRectangleBorder>(
-                ContinuousRectangleBorder()
-            ),
-            backgroundColor: MaterialStateProperty.all<Color>(mainColor)
-        ),
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 20,
-            color: Colors.white,
-          ),
-        )
-      ),
-    ),
-  );
 }
 
 class Tag extends StatelessWidget {
@@ -183,17 +147,19 @@ class Tag extends StatelessWidget {
   );
 }
 
-class PostPreview extends StatefulWidget {
+class ShortPost extends StatefulWidget {
 
   late String title;
   List<Tag> tags = [];
   late String location;
   late String imageURL;
   late String description;
+  late String date;
 
-  PostPreview({super.key, required String tags, required this.title,
-    required this.location, required this.imageURL, required this.description}){
-
+  ShortPost({super.key, required String tags, required this.title,
+    required this.location, required this.imageURL, required this.description,
+    required this.date
+  }){
     if (tags.isNotEmpty)
       for (String tag in tags.split(',')) {
         this.tags.add(Tag(tag));
@@ -201,10 +167,10 @@ class PostPreview extends StatefulWidget {
   }
 
   @override
-  State<PostPreview> createState() => _PostPreviewState();
+  State<ShortPost> createState() => _ShortPostState();
 }
 
-class _PostPreviewState extends State<PostPreview> {
+class _ShortPostState extends State<ShortPost> {
 
   Widget? photo;
 
@@ -224,12 +190,13 @@ class _PostPreviewState extends State<PostPreview> {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => Post(
+            builder: (context) => PostPage(
                   title: widget.title,
                   tags: widget.tags,
                   location: widget.location,
                   imageURL: widget.imageURL,
                   description: widget.description,
+                  date: widget.date,
                 )));
       },
       child: Container(
@@ -240,7 +207,8 @@ class _PostPreviewState extends State<PostPreview> {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(80),
             color: accent,
-            border: Border.all(style: BorderStyle.solid, color: accent)),
+            border: Border.all(style: BorderStyle.solid, color: accent),
+        ),
         child: Row(
           children: [
             (widget.imageURL != "null") ?
@@ -397,7 +365,8 @@ Widget getPosts(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
     return Expanded(
       child:LayoutBuilder(
         builder: (context, constraints) => RefreshIndicator(
-          strokeWidth: 30,
+          color: Colors.white,
+          backgroundColor: secondaryColor,
           onRefresh: refresh,
           child: SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
@@ -423,7 +392,7 @@ Widget getPosts(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
           backgroundColor: secondaryColor,
           onRefresh: refresh,
           child:ListView.builder(
-            physics: BouncingScrollPhysics(),
+            physics: AlwaysScrollableScrollPhysics(),
             itemCount: docs.length,
             itemBuilder: (context, index) {
               var snapshot = docs.elementAt(index);
@@ -433,9 +402,11 @@ Widget getPosts(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
               String location = doc['location'].toString();
               String description = doc['description'].toString();
               String imageURL = doc['image_url'].toString();
+              String date = doc['date'].toString();
 
-              return PostPreview(title: title, tags: tags,
-                location: location, description: description, imageURL: imageURL);
+              return ShortPost(title: title, tags: tags,
+                location: location, description: description,
+                  imageURL: imageURL, date: date,);
             }
           ),
 
@@ -463,7 +434,6 @@ class SideMenu extends StatelessWidget {
           ),
         ),
         SideMenuButton("Home", Icon(Icons.home, color: mainColor)),
-        //SideMenuButton("Chat", Icon(Icons.chat, color: mainColor), SearchPage()),
         SideMenuButton("Profile", Icon(Icons.account_circle, color: mainColor)),
         SideMenuButton("Terms", Icon(Icons.privacy_tip, color: mainColor)),
         SideMenuButton("Guidelines", Icon(Icons.explicit, color: mainColor)),
@@ -641,3 +611,5 @@ class GoBackButton extends StatelessWidget {
     );
   }
 }
+
+

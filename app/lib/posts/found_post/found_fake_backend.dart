@@ -21,7 +21,7 @@ class FoundBackend{
 
     Reference ref = FirebaseStorage.instance
         .ref()
-        .child('found_items')
+        .child(collection)
         .child('/$id.jpg');
 
     final metadata = SettableMetadata(

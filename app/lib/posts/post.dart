@@ -8,16 +8,18 @@ import 'timeline.dart';
 class Post extends StatefulWidget {
 
   late String title;
+  late String date;
   List<Tag> tags = [];
   late String location;
-  String imageURL;
+  Future<Widget> Function() imageRetriever;
   late String description;
 
   Post({Key? key,
     required this.tags,
     required this.title,
     required this.location,
-    required this.imageURL,
+    required this.imageRetriever,
+    required this.date,
     required this.description}
       ) : super(key: key);
 
@@ -39,7 +41,7 @@ class _PostState extends State<Post> {
   }
 
   void loadPhoto() async {
-    photo = await ImageHandler().getPictureFrame(widget.imageURL);
+    photo = await widget.imageRetriever();
     setState(() {});
   }
 
@@ -77,7 +79,6 @@ class _PostState extends State<Post> {
           child: GoogleMap(
             zoomControlsEnabled: false,
             mapType: MapType.hybrid,
-
             initialCameraPosition: CameraPosition(
                 target: mapLocation,
                 zoom: 17.5
@@ -101,131 +102,140 @@ class _PostState extends State<Post> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-      drawer: SideMenu(),
-      appBar: AppBar(
-        backgroundColor: mainColor,
-        toolbarHeight: 80,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Column(
+    return Expanded(
+      flex: 20,
+      child: Scrollbar(
+        thickness: 7,
+        thumbVisibility: true,
+        radius: Radius.circular(10),
+        child: ListView(
+          padding: const EdgeInsets.all(15),
           children: [
-            Expanded(
-              flex: 20,
-              child: Scrollbar(
-                thickness: 7,
-                thumbVisibility: true,
-                radius: Radius.circular(10),
-                child: ListView(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Flexible(
-                          child: Title(
-                            color: mainColor,
-                            child: Text(
-                              widget.title,
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: mainColor
-                              ),
-                            ),
-                          ),
-                        ),
-                        photo ?? Container(
-                            height: 100.0,
-                            width: 100.0,
-                            margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
-                            child: CircularProgressIndicator(color: mainColor,)
-                        ),
-                      ],
-                    ),
-                    Wrap(
-                      direction: Axis.horizontal,
-                      children: widget.tags,
-                    ),
-                    SizedBox(height: 20,),
-                    widget.description.isNotEmpty
-                        && widget.description != "null" ?
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      child: Text(widget.description),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: accent
-                      ),
-                    ) : SizedBox.shrink()
-                    ,
-                    SizedBox(height: 15,),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.symmetric(vertical: 10),
-                      child: Text(
-                        widget.location,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),),
-                    ),
-                    map ?? SizedBox(
-                      height: 250,
-                      child: Center(
-                        child: CircularProgressIndicator(color: mainColor)
-                      ),
-                    ),
-                    SizedBox(height: 10,),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Container(
-                          height: 40,
-                          width: 110,
-                          margin: EdgeInsets.only(bottom: 20),
-                          child: Padding(
-                              padding: EdgeInsets.only(right: 10),
-                              child: TextButton(
-                                style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all<
-                                        Color>(mainColor),
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(50),
-                                        )
-                                    )
-                                ),
-                                onPressed: () {},
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(30),
-                                      child: Image.asset("assets/profile.jpg"),
-                                    ),
-                                    Text("Mariana",
-                                      style: TextStyle(color: Colors.white),)
-                                  ],
-                                ),
-                              )
-                          )
-                      ),
-                    ),
-                  ],
-                ),
+            Header(widget: widget, photo: photo),
+            Wrap(
+              direction: Axis.horizontal,
+              children: widget.tags,
+            ),
+            SizedBox(height: 20,),
+            DescriptionBox(description: widget.description),
+            SizedBox(height: 15,),
+            LocationDate(location: widget.location, date: widget.date),
+            map ?? SizedBox(
+              height: 250,
+              child: Center(
+                child: CircularProgressIndicator(color: mainColor)
               ),
             ),
-            Spacer(),
-            Container(
-              height: 60,
-              width: 200,
-              child: TextButton.icon(
-                onPressed: () {},
-                icon: Icon(Icons.message, color: Colors.white, size: 23,),
-                label: Text("Contact",
-                  style: TextStyle(color: Colors.white, fontSize: 17),),
+            SizedBox(height: 10,),
+            AuthorBox(),
+            SizedBox(height: 100,)
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Header extends StatelessWidget {
+  const Header({
+    super.key,
+    required this.widget,
+    required this.photo,
+  });
+
+  final Post widget;
+  final Widget? photo;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Flexible(
+          child: Title(
+            color: mainColor,
+            child: Text(
+              widget.title,
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: mainColor
+              ),
+            ),
+          ),
+        ),
+        photo ?? Container(
+            height: 100.0,
+            width: 100.0,
+            margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
+            child: CircularProgressIndicator(color: mainColor,)
+        ),
+      ],
+    );
+  }
+}
+
+class LocationDate extends StatelessWidget {
+  const LocationDate({
+    super.key,
+    required this.location,
+    required this.date
+  });
+
+  final String location;
+  final String date;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      direction: Axis.horizontal,
+      alignment: WrapAlignment.spaceBetween,
+      children: [
+        Text(
+          location,
+          style: TextStyle(
+            fontWeight: FontWeight.bold, fontSize: 15
+          ),
+        ),
+        Text(
+          date,
+          style: TextStyle(
+          fontWeight: FontWeight.bold, fontSize: 15
+          ),
+        ),
+      ],
+    );
+
+    /*Container(
+      alignment: Alignment.centerLeft,
+      margin: EdgeInsets.symmetric(vertical: 10),
+      child: Text(
+        widget.location,
+        style: TextStyle(
+            fontWeight: FontWeight.bold, fontSize: 15),),
+    );*/
+  }
+}
+
+class AuthorBox extends StatelessWidget {
+  const AuthorBox({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Container(
+          height: 40,
+          width: 110,
+          margin: EdgeInsets.only(bottom: 20),
+          child: Padding(
+              padding: EdgeInsets.only(right: 10),
+              child: TextButton(
                 style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        mainColor),
+                    backgroundColor: MaterialStateProperty.all<
+                        Color>(mainColor),
                     shape: MaterialStateProperty.all<
                         RoundedRectangleBorder>(
                         RoundedRectangleBorder(
@@ -233,11 +243,43 @@ class _PostState extends State<Post> {
                         )
                     )
                 ),
-              ),
-            )
-          ],
-        ),
-      )
+                onPressed: () {},
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: Image.asset("assets/profile.jpg"),
+                    ),
+                    Text("Mariana",
+                      style: TextStyle(color: Colors.white),)
+                  ],
+                ),
+              )
+          )
+      ),
     );
   }
 }
+
+class DescriptionBox extends StatelessWidget {
+
+  final String description;
+
+  const DescriptionBox({Key? key, required this.description}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) =>
+    description.isNotEmpty && description != "null" ?
+    Container(
+      padding: EdgeInsets.all(10),
+      child: Text(description),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: accent
+      ),
+    )
+      :
+    SizedBox.shrink();
+}
+

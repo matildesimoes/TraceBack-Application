@@ -27,6 +27,30 @@ class _signUpPageState extends State<SignUpPage>{
 
   String errorMessage = "";
 
+  register() async {
+    if (_formKey.currentState!.validate()){
+      Map<String, dynamic> userDoc = {
+        'name': nameController.text,
+        'email': emailController.text,
+        'phone': phoneNumberController.text,
+        'password': passwordController.text,
+      };
+      String? error = await authBackend.registerUser(userDoc);
+      if (error != null) {
+        setState(() {
+          errorMessage = error;
+        });
+      }
+      else {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => PrivacyAcceptancePage(),
+          ),
+        );
+      }
+    }
+}
+
   Widget build(BuildContext context) {
     return Scaffold(
       key: Key("Sign Page"),
@@ -101,23 +125,7 @@ class _signUpPageState extends State<SignUpPage>{
                       margin: EdgeInsets.only(top: constraints.maxHeight * 0.025, bottom: constraints.maxHeight * 0.0125),
                       width: constraints.maxWidth * 0.5,
                       child: ElevatedButton(
-                        onPressed: () async {
-                          String? error = await authBackend.registerUser(
-                              emailController.text,
-                              passwordController.text);
-                          if (error != null) {
-                            setState(() {
-                              errorMessage = error;
-                            });
-                          }
-                          else {
-                            Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => PrivacyAcceptancePage(),
-                                ),
-                            );
-                          }
-                        },
+                        onPressed: register,
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(mainColor),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(

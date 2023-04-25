@@ -33,19 +33,19 @@ class AuthBackend{
     return message;
   }
 
-  Future<String> registerUser(String email, String password) async {
+  Future<String> registerUser(Map<String, dynamic> userDoc) async {
     try {
       final UserCredential userCredential = await firebaseAuth
           .createUserWithEmailAndPassword(
-        email: email,
-        password: password,
+        email: userDoc['email'],
+        password: userDoc['password'],
       );
 
       final user = userCredential.user;
       if (user != null) {
-        await user!.sendEmailVerification();
+        await user.sendEmailVerification();
 
-        await saveUserData(, email, );
+        await saveUserData(userDoc, user.uid);
       }
     }
     on FirebaseAuthException catch (e) {
@@ -56,13 +56,8 @@ class AuthBackend{
     return " ";
   }
 
-  Future<void> saveUserData(String name, String email, String phone) async {
-    Map<String, dynamic> doc = {
-      'name': name,
-      'email': email,
-      'phone number': phone,
-    };
+  Future<void> saveUserData(Map<String, dynamic> userDoc, String userID) async {
 
-    await firestore.collection('Users').doc(FirebaseAuth.instance.currentUser?.uid).set(doc);
+    await firestore.collection('Users').doc(userID).set(userDoc);
   }
 }

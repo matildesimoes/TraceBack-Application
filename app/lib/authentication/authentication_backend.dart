@@ -7,14 +7,22 @@ class AuthBackend{
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   String collection = "Users";
 
-  Future<String?> login(String email, String password) async {
+  Future<String> login(String email, String password) async {
+
+    UserCredential user;
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      user = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,);
+
+      if (!user.user!.emailVerified){
+        return "Email not verified";
+      }
+
     } on FirebaseAuthException catch(e){
-      return betterErrorMsg(e.message);
+      return betterErrorMsg(e.code);
     }
+
     return "";
   }
 
@@ -22,11 +30,14 @@ class AuthBackend{
     if (message != null){
 
       switch (message){
-        case "Given String is empty or null":
+        case "unknown":
           return "Please fill both fields";
 
-        case "":
-          return "something";
+        case "user-not-found":
+          return "Email not found";
+
+        case "wrong-password":
+          return "Incorrect password";
       }
     }
 
@@ -53,7 +64,7 @@ class AuthBackend{
         return "The account already exists for that email.";
       }
     }
-    return " ";
+    return "";
   }
 
   Future<void> saveUserData(Map<String, dynamic> userDoc, String userID) async {

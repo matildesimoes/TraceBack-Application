@@ -82,11 +82,11 @@ class _LoginPageState extends State<LoginPage> {
                       width: constraints.maxWidth * 0.5,
                       child: ElevatedButton(
                         onPressed: () async {
-                          String? error = await authBackend.login(
+                          String error = await authBackend.login(
                               emailController.text,
                               passwordController.text
                           );
-                          if (error != null) {
+                          if (error != "") {
                             setState(() {
                               errorMessage = error;
                             });

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../posts/timeline.dart';
 import 'dart:ui';
 import '../terms&guidelines/privacyAcceptance.dart';
+import 'authentication_backend.dart';
 import 'login.dart';
 
 
@@ -16,13 +17,47 @@ class _signUpPageState extends State<SignUpPage>{
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _passwordVisible = false;
 
+  AuthBackend authBackend = AuthBackend();
+
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneNumberController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
+
+  String errorMessage = "";
+
+  register() async {
+    if (_formKey.currentState!.validate()){
+      Map<String, dynamic> userDoc = {
+        'name': nameController.text,
+        'email': emailController.text,
+        'phone': phoneNumberController.text,
+        'password': passwordController.text,
+      };
+      String? error = await authBackend.registerUser(userDoc);
+      if (error != null) {
+        setState(() {
+          errorMessage = error;
+        });
+      }
+      else {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => PrivacyAcceptancePage(),
+          ),
+        );
+      }
+    }
+}
+
   Widget build(BuildContext context) {
     return Scaffold(
       key: Key("Sign Page"),
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).popUntil(ModalRoute.withName("/")),
         ),
         backgroundColor: mainColor,
         toolbarHeight: 80,
@@ -60,27 +95,27 @@ class _signUpPageState extends State<SignUpPage>{
                     SizedBox(height: constraints.maxHeight * 0.0025),
                     Container(
                         width: fieldWidth,
-                        child: EditBox(key: Key("Name"),text: "Name", hintText: "Name", isPassword: false)
+                        child: EditBox(key: Key("Name"),text: "Name", hintText: "Name", isPassword: false, controller: nameController)
                     ),
                     SizedBox(height: constraints.maxHeight * 0.0025),
                     Container(
                         width: fieldWidth,
-                        child: EditBox(key: Key("Email"),text: "Email", hintText: "upXXXXXXXXX@up.pt", isPassword: false)
+                        child: EditBox(key: Key("Email"),text: "Email", hintText: "upXXXXXXXXX@up.pt", isPassword: false, controller: emailController)
                     ),
                     SizedBox(height: constraints.maxHeight * 0.0025),
                     Container(
                         width: fieldWidth,
-                        child: EditBox(key: Key("Phone Number"),text: "Phone Number", hintText: "Phone Number", isPassword: false)
+                        child: EditBox(key: Key("Phone Number"),text: "Phone Number", hintText: "Phone Number", isPassword: false, controller: phoneNumberController)
                     ),
                     SizedBox(height: constraints.maxHeight * 0.0025),
                     Container(
                         width: fieldWidth,
-                        child: EditBox(key: Key("Password"),text: "Password", hintText: "Enter password", isPassword: true)
+                        child: EditBox(key: Key("Password"),text: "Password", hintText: "Enter password", isPassword: true, controller: passwordController)
                     ),
                     SizedBox(height: constraints.maxHeight * 0.0025),
                     Container(
                         width: fieldWidth,
-                        child: EditBox(key: Key("Password Confirm"),text: "Confirm Password", hintText: "Confirm password", isPassword: true)
+                        child: EditBox(key: Key("Password Confirm"),text: "Confirm Password", hintText: "Confirm password", isPassword: true, controller: confirmPasswordController)
                     ),
 
                     SizedBox(height: constraints.maxHeight * 0.05),
@@ -90,14 +125,7 @@ class _signUpPageState extends State<SignUpPage>{
                       margin: EdgeInsets.only(top: constraints.maxHeight * 0.025, bottom: constraints.maxHeight * 0.0125),
                       width: constraints.maxWidth * 0.5,
                       child: ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => PrivacyAcceptancePage()
-                            )
-                            );
-                          }
-                        },
+                        onPressed: register,
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(mainColor),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -162,9 +190,14 @@ class EditBox extends StatefulWidget {
   final String text;
   final String hintText;
   final bool isPassword;
-  final TextEditingController? controller;
+  final TextEditingController controller;
 
-  EditBox({required this.text, required this.hintText, this.isPassword = false, this.controller, required this.key});
+  EditBox({
+    required this.key,
+    required this.text,
+    required this.hintText,
+    this.isPassword = false,
+    required this.controller});
 
   @override
   _EditBoxState createState() => _EditBoxState();
@@ -182,6 +215,7 @@ class _EditBoxState extends State<EditBox> {
       padding: EdgeInsets.all(2),
       width: 370,
       child: TextFormField(
+        controller: widget.controller,
         keyboardType: widget.text == 'Email'
             ? TextInputType.emailAddress
             : TextInputType.text,

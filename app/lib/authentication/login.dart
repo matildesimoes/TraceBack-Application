@@ -1,19 +1,26 @@
+import 'package:TraceBack/authentication/authentication_backend.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'initial.dart';
 import '../posts/timeline.dart';
 import 'dart:ui';
-import 'dart:io';
 import 'signUp.dart';
 
 
 class LoginPage extends StatefulWidget {
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  AuthBackend authBackend = AuthBackend();
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  String errorMessage = "";
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).popUntil(ModalRoute.withName("/")),
         ),
         backgroundColor: mainColor,
         toolbarHeight: 80,
@@ -60,24 +67,30 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(height: constraints.maxHeight * 0.09),
                     Container(
                       width: fieldWidth,
-                      child: EditBox(text: "Email",hintText: "upXXXXXXXXX@up.pt"),
-                    ),
-                    SizedBox(height: constraints.maxHeight * 0.0025),
-                    Container(
-                      width: fieldWidth,
                       child: EditBox(
-                        text: "Password",
-                        hintText: "Password",
+                          text: "Email",
+                          hintText: "upXXXXXXXXX@up.pt",
+                        emailController: emailController,
+                        passwordController: passwordController,
                       ),
                     ),
+                    Text(errorMessage),
                     SizedBox(height: constraints.maxHeight * 0.05),
                     Container(
                       height: constraints.maxHeight * 0.08,
                       margin: EdgeInsets.only(top: constraints.maxHeight * 0.025, bottom: constraints.maxHeight * 0.0125),
                       width: constraints.maxWidth * 0.5,
                       child: ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
+                        onPressed: () async {
+                          String error = await authBackend.login(
+                              emailController.text,
+                              passwordController.text
+                          );
+                          if (error != "") {
+                            setState(() {
+                              errorMessage = error;
+                            });
+                          } else {
                             Navigator.of(context).pushNamed("/Home");
                           }
                         },
@@ -90,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         child: Text(
-                          "Enter",
+                          "LogIn",
                           style: TextStyle(
                             fontSize: constraints.maxWidth * 0.045,
                             fontWeight: FontWeight.bold,
@@ -105,7 +118,8 @@ class _LoginPageState extends State<LoginPage> {
                       width: constraints.maxWidth * 0.75,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignUpPage()));
+                          Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => SignUpPage()));
                         },
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
@@ -142,7 +156,15 @@ class EditBox extends StatefulWidget {
   final String text;
   final String hintText;
 
-  EditBox({required this.text, required this.hintText});
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
+
+  EditBox({
+    required this.text,
+    required this.hintText,
+    required this.emailController,
+    required this.passwordController
+  });
 
   @override
   _EditBoxState createState() => _EditBoxState();
@@ -153,50 +175,76 @@ class _EditBoxState extends State<EditBox> {
 
   @override
   Widget build(BuildContext context) {
-    bool isPassword = widget.text == 'Password';
     return Container(
       margin: EdgeInsets.only(top: 8),
       padding: EdgeInsets.all(2),
       width: 370,
-      child: TextFormField(
-        keyboardType: widget.text == 'Email'
-            ? TextInputType.emailAddress
-            : TextInputType.text,
-        obscureText: isPassword ? obscureText : false,
-        decoration: InputDecoration(
-          label: Text(widget.text),
-          hintText: widget.hintText,
-          filled: true,
-          fillColor: Colors.grey[300],
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(25),
-            borderSide: BorderSide(
-              color: Colors.grey,
-              width: 2,
-              style: BorderStyle.solid,
+      child: Column(
+        children: [
+          TextFormField(
+            controller: widget.emailController,
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecoration(
+              label: Text('Email'),
+              hintText: 'Enter your email',
+              filled: true,
+              fillColor: Colors.grey[300],
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25),
+                borderSide: BorderSide(
+                  color: Colors.grey,
+                  width: 2,
+                  style: BorderStyle.solid,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25),
+                borderSide: BorderSide(
+                  color: Colors.blue,
+                  width: 1,
+                  style: BorderStyle.solid,
+                ),
+              ),
             ),
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(25),
-            borderSide: BorderSide(
-              color: Colors.blue,
-              width: 1,
-              style: BorderStyle.solid,
+          SizedBox(height: 16),
+          TextFormField(
+            controller: widget.passwordController,
+            obscureText: obscureText,
+            decoration: InputDecoration(
+              label: Text('Password'),
+              hintText: 'Enter your password',
+              filled: true,
+              fillColor: Colors.grey[300],
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25),
+                borderSide: BorderSide(
+                  color: Colors.grey,
+                  width: 2,
+                  style: BorderStyle.solid,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25),
+                borderSide: BorderSide(
+                  color: Colors.blue,
+                  width: 1,
+                  style: BorderStyle.solid,
+                ),
+              ),
+              suffixIcon: IconButton(
+                icon: Icon(obscureText
+                    ? Icons.visibility_off
+                    : Icons.visibility),
+                onPressed: () {
+                  setState(() {
+                    obscureText = !obscureText;
+                  });
+                },
+              ),
             ),
           ),
-          suffixIcon: isPassword
-              ? IconButton(
-            icon: Icon(obscureText
-                ? Icons.visibility_off
-                : Icons.visibility),
-            onPressed: () {
-              setState(() {
-                obscureText = !obscureText;
-              });
-            },
-          )
-              : null,
-        ),
+        ],
       ),
     );
   }

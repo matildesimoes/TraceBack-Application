@@ -33,7 +33,6 @@ class _signUpPageState extends State<SignUpPage>{
         'name': nameController.text,
         'email': emailController.text,
         'phone': phoneNumberController.text,
-        'password': passwordController.text,
       };
       String? error = await authBackend.registerUser(userDoc);
       if (error != null) {
@@ -45,11 +44,11 @@ class _signUpPageState extends State<SignUpPage>{
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => PrivacyAcceptancePage(),
-          ),
+          )
         );
       }
     }
-}
+  }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,7 +67,6 @@ class _signUpPageState extends State<SignUpPage>{
           final double fieldWidth = maxWidth * 1;
           final double buttonWidth = maxWidth * 0.6;
           final double minHeight = 50;
-
           return SingleChildScrollView(
             child: Form(
               key: _formKey,
@@ -95,29 +93,29 @@ class _signUpPageState extends State<SignUpPage>{
                     SizedBox(height: constraints.maxHeight * 0.0025),
                     Container(
                         width: fieldWidth,
-                        child: EditBox(key: Key("Name"),text: "Name", hintText: "Name", isPassword: false, controller: nameController)
+                        child: EditBox(key: Key("Name"),text: "Name", hintText: "Name", isPassword: false, controller: nameController, validator: (value) => nameValidator.validate(value))
                     ),
                     SizedBox(height: constraints.maxHeight * 0.0025),
                     Container(
                         width: fieldWidth,
-                        child: EditBox(key: Key("Email"),text: "Email", hintText: "upXXXXXXXXX@up.pt", isPassword: false, controller: emailController)
+                        child: EditBox(key: Key("Email"),text: "Email", hintText: "upXXXXXXXXX@up.pt", isPassword: false, controller: emailController, validator: (value) => emailValidator.validate(value))
                     ),
                     SizedBox(height: constraints.maxHeight * 0.0025),
                     Container(
                         width: fieldWidth,
-                        child: EditBox(key: Key("Phone Number"),text: "Phone Number", hintText: "Phone Number", isPassword: false, controller: phoneNumberController)
+                        child: EditBox(key: Key("Phone Number"),text: "Phone Number", hintText: "Phone Number", isPassword: false, controller: phoneNumberController, validator: (value) => phoneValidator.validate(value))
                     ),
                     SizedBox(height: constraints.maxHeight * 0.0025),
                     Container(
                         width: fieldWidth,
-                        child: EditBox(key: Key("Password"),text: "Password", hintText: "Enter password", isPassword: true, controller: passwordController)
+                        child: EditBox(key: Key("Password"),text: "Password", hintText: "Enter password", isPassword: true, controller: passwordController, validator: (value) => passwordValidator.validate(value))
                     ),
                     SizedBox(height: constraints.maxHeight * 0.0025),
                     Container(
                         width: fieldWidth,
-                        child: EditBox(key: Key("Password Confirm"),text: "Confirm Password", hintText: "Confirm password", isPassword: true, controller: confirmPasswordController)
+                        child: EditBox(key: Key("Password Confirm"),text: "Confirm Password", hintText: "Confirm password", isPassword: true, controller: confirmPasswordController, validator: (value) => passwordValidator.validate(value))
                     ),
-
+                    Text(errorMessage),
                     SizedBox(height: constraints.maxHeight * 0.05),
                     Container(
                       key: Key("Register"),
@@ -176,7 +174,6 @@ class _signUpPageState extends State<SignUpPage>{
                 ),
               ),
             ),
-
           );
         },
       ),
@@ -191,13 +188,15 @@ class EditBox extends StatefulWidget {
   final String hintText;
   final bool isPassword;
   final TextEditingController controller;
+  final FormFieldValidator<String> validator;
 
   EditBox({
     required this.key,
     required this.text,
     required this.hintText,
     this.isPassword = false,
-    required this.controller});
+    required this.controller,
+    required this.validator});
 
   @override
   _EditBoxState createState() => _EditBoxState();
@@ -231,8 +230,8 @@ class _EditBoxState extends State<EditBox> {
               });
             },
             child: Icon(obscureText
-                ? Icons.visibility_off
-                : Icons.visibility),
+                ? Icons.visibility
+                : Icons.visibility_off),
           )
               : null,
           filled: true,
@@ -254,28 +253,8 @@ class _EditBoxState extends State<EditBox> {
             ),
           ),
         ),
-        onChanged: (value) {
-          if (widget.text == "Password") {
-            setState(() {
-              password = value;
-            });
-            if (confirmPassword != null && confirmPassword != value) {
-              setState(() {
-                confirmPassword = null;
-              });
-            }
-            password = value;
-          }
-        },
-        validator: widget.text == "Name"
-            ? (value) => nameValidator.validate(value)
-            : widget.text == "Email"
-            ? (value) => emailValidator.validate(value)
-            : widget.text == "Phone Number"
-            ? (value) => phoneValidator.validate(value)
-            : widget.text == "Password"
-            ? (value) => passwordValidator.validate(value)
-            : null,
+        onChanged: (value) {},
+        validator: (value) => widget.validator(value),
       ),
     );
   }

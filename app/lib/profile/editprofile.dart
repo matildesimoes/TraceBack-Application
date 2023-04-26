@@ -34,7 +34,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 children: [
                   CircleAvatar(
                     radius: 70,
-                    backgroundColor: grey,
+                    backgroundColor: accent,
                     backgroundImage: _image != null ? FileImage(_image!) : null,
                   ),
                   Positioned(
@@ -153,7 +153,7 @@ class EditBox extends StatelessWidget {
             icon: Icon(Icons.edit, color: mainColor),
           ),
           filled: true,
-          fillColor: grey,
+          fillColor: accent,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(25),
             borderSide: BorderSide(

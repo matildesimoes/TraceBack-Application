@@ -2,17 +2,18 @@ import 'dart:ui';
 import 'package:TraceBack/authentication/initial.dart';
 import 'package:TraceBack/posts/post.dart';
 import 'package:TraceBack/posts/found_post/found_fake_backend.dart';
-import 'package:TraceBack/profile/profile.dart';
-import 'package:TraceBack/terms&guidelines/guidelines.dart';
-import 'package:TraceBack/terms&guidelines/privacyInformation.dart';
+import 'package:TraceBack/posts/post_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import '../util/camera.dart';
 import 'found_post/create_found_post.dart';
 import 'lost_post/create_lost_post.dart';
-import 'lost_post/lost_fake_backend.dart';
+import 'lost_post/lost_backend.dart';
 
-const Color mainColor = Color(0xFF1D3D5C);
-const Color grey = Color(0xFFEBEAEA);
+const Color mainColor = Color(0xFF1a425b);
+const Color secondaryColor = Color(0xFFd5a820);
+const Color accent = Color(0xFFebebeb);
 
 class SearchPage extends StatefulWidget {
   const SearchPage({
@@ -42,7 +43,6 @@ class _SearchPageState extends State<SearchPage> {
       floatingActionButton: CreatePostButton(_navBarIndex),
       body: Container(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             CategoryBar(),
             SearchBar(),
@@ -59,9 +59,9 @@ class _SearchPageState extends State<SearchPage> {
           backgroundColor: mainColor,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           color: Colors.white,
-          rippleColor: Colors.white,
-          activeColor: mainColor,
-          tabBackgroundColor: Colors.white,
+          rippleColor: secondaryColor,
+          activeColor: Colors.white,
+          tabBackgroundColor: secondaryColor,
           tabs: [
             GButton(
               icon: Icons.check_box_rounded,
@@ -78,14 +78,7 @@ class _SearchPageState extends State<SearchPage> {
             });
           },
         ),
-      )/*Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
-        children: [
-          BottomButton(text: "Found"),
-          BottomButton(text: "Lost")
-        ],
-      )*/,
+      ),
       drawer: SideMenu(),
     );
   }
@@ -105,7 +98,7 @@ class CreatePostButton extends StatelessWidget {
       widthFactor: 0.2,
       child: FittedBox(
         child: FloatingActionButton(
-          backgroundColor: mainColor,
+          backgroundColor: secondaryColor,
           onPressed: (){
             Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => createPost[navBarIndex])
@@ -116,36 +109,6 @@ class CreatePostButton extends StatelessWidget {
       ),
     );
   }
-}
-
-class BottomButton extends StatelessWidget {
-
-  final String text;
-
-  BottomButton({required this.text});
-
-  @override
-  Widget build(BuildContext context) => Expanded(
-    child: Container (
-      height: 70,
-      child: TextButton(
-        onPressed: () {},
-        style: ButtonStyle(
-            shape: MaterialStatePropertyAll<ContinuousRectangleBorder>(
-                ContinuousRectangleBorder()
-            ),
-            backgroundColor: MaterialStateProperty.all<Color>(mainColor)
-        ),
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 20,
-            color: Colors.white,
-          ),
-        )
-      ),
-    ),
-  );
 }
 
 class Tag extends StatelessWidget {
@@ -184,17 +147,19 @@ class Tag extends StatelessWidget {
   );
 }
 
-class PostPreview extends StatefulWidget {
+class ShortPost extends StatefulWidget {
 
   late String title;
   List<Tag> tags = [];
   late String location;
-  String? imageURL;
+  late String imageURL;
   late String description;
+  late String date;
 
-  PostPreview({super.key, required String tags, required this.title,
-    required this.location, this.imageURL, required this.description}){
-
+  ShortPost({super.key, required String tags, required this.title,
+    required this.location, required this.imageURL, required this.description,
+    required this.date
+  }){
     if (tags.isNotEmpty)
       for (String tag in tags.split(',')) {
         this.tags.add(Tag(tag));
@@ -202,122 +167,125 @@ class PostPreview extends StatefulWidget {
   }
 
   @override
-  State<PostPreview> createState() => _PostPreviewState();
+  State<ShortPost> createState() => _ShortPostState();
 }
 
-class _PostPreviewState extends State<PostPreview> {
+class _ShortPostState extends State<ShortPost> {
+
+  Widget? photo;
+
+  void initPhoto() async {
+    photo = await ImageHandler().getPictureFrame(widget.imageURL);
+    setState(() {});
+  }
+
   @override
-  Widget build(BuildContext context) =>
-      GestureDetector(
-        onTap: (){
-          Navigator.of(context)
-              .push(
-              MaterialPageRoute(builder: (context) =>
-                Post(
+  void initState() {
+    initPhoto();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => PostPage(
                   title: widget.title,
                   tags: widget.tags,
                   location: widget.location,
                   imageURL: widget.imageURL,
                   description: widget.description,
-                )
-              )
-          );
-        },
-        child: Container(
-          width:  double.maxFinite,
-          height: 130,
-          margin: const EdgeInsetsDirectional.only(
-              bottom: 30,
-              start: 20,
-              end: 20),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(80),
-              color: grey,
-              border: Border.all(
-                  style: BorderStyle.solid,
-                  color: grey
-              )
-          ),
-          child: Row(
-            children: [
-              Container(
-                height: 100.0,
-                width: 100.0,
-                margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
-                child: ClipOval(
-                    child: widget.imageURL == null ?
-                      Container(
-                        color: Colors.black12,
-                        child: Icon(Icons.photo)
-                      )
-                        :
-                      ImageFiltered(
-                        child: Image(
-                          image: AssetImage("assets/SamsungS10.jpg"),
-                        ),
-                        imageFilter: ImageFilter.blur(sigmaX: 1.2, sigmaY: 1.2),
-                      )
-                ),
-              ),
-              Expanded (
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 40),
-                    child: Column (
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(top: 10),
-                          child: Text(
-                            widget.title,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 40,
-                          child: ListView(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            children: widget.tags,
-                          ),
-                        ),
-                        Expanded (
-                            child:Align(
-                                alignment: AlignmentDirectional.centerStart,
-                                child: Row (
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: SingleChildScrollView (
-                                        scrollDirection: Axis.horizontal,
-                                        child: Text(
-                                          widget.location,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: mainColor),
-                                        ),
-                                      ),
-                                    ),
-                                    /*Text(
+                  date: widget.date,
+                )));
+      },
+      child: Container(
+        width: double.maxFinite,
+        height: 130,
+        margin:
+            const EdgeInsetsDirectional.only(bottom: 30, start: 20, end: 20),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(80),
+            color: accent,
+            border: Border.all(style: BorderStyle.solid, color: accent),
+        ),
+        child: Row(
+          children: [
+            (widget.imageURL != "null") ?
+            photo ?? LoadingPhoto() : SizedBox(width: 40),
+            Expanded(
+                child: Padding(
+              padding: EdgeInsets.only(right: 40),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Text(
+                      widget.title,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 40,
+                    child: ListView(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      children: widget.tags,
+                    ),
+                  ),
+                  Expanded(
+                      child: Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Text(
+                                    widget.location,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: mainColor),
+                                  ),
+                                ),
+                              ),
+                              /*Text(
                                   "Mariana",
                                   style: TextStyle(
                                       fontWeight: FontWeight.w400,
                                       color: mainColor),
                                 )*/
-                                  ],
-                                )
-                            )
-                        )
-                      ],
-                    ),
-                  )
-              )
-            ],
-          ),
+                            ],
+                          )))
+                ],
+              ),
+            ))
+          ],
         ),
-      );
+      ),
+    );
+  }
+}
+
+class LoadingPhoto extends StatelessWidget {
+  const LoadingPhoto({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 100.0,
+      width: 100.0,
+      margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
+      child: CircularProgressIndicator(color: mainColor,)
+    );
+  }
 }
 
 class FoundTimeline extends StatefulWidget {
@@ -328,39 +296,31 @@ class FoundTimeline extends StatefulWidget {
 
 class _FoundTimelineState extends State<FoundTimeline> {
 
-  Future<void> refresh() async {
-    setState(() {});
+  Widget? posts;
+
+  @override
+  void initState() {
+    refresh();
+    super.initState();
   }
+
+  Future<void> refresh() async {
+
+    var snapshots = await FoundBackend().getCollection().get();
+    var docs = snapshots.docs;
+    setState(() {
+      posts = getPosts(docs, refresh);
+    });
+  }
+
   @override
   Widget build(BuildContext context) =>
-      Expanded(
-          child: RefreshIndicator(
-            onRefresh: refresh,
-            child: Scrollbar(
-              thickness: 7,
-              thumbVisibility: true,
-              radius: Radius.circular(10),
-              child: ListView.builder(
-                  itemBuilder: (BuildContext context, int index) {
-
-                    Map<String, Object>? document = FakeFoundBackend.getDocument(
-                        index);
-                    if (document == null) {
-                      return null;
-                    }
-
-                    String title = document['title'].toString();
-                    String tags = document['tags'].toString();
-                    String location = document['location'].toString();
-                    String description = document['description'].toString();
-
-                    return PostPreview(title: title, tags: tags,
-                        location: location, description: description,);
-                  }
-              ),
-            ),
-          )
-      );
+    posts ?? const Expanded(child:Center(child:
+    CircularProgressIndicator(
+        backgroundColor: secondaryColor,
+        color: Colors.white
+    )
+    ));
 }
 
 class LostTimeline extends StatefulWidget {
@@ -371,39 +331,88 @@ class LostTimeline extends StatefulWidget {
 
 class _LostTimeline extends State<LostTimeline> {
 
-  Future<void> refresh() async {
-    setState(() {});
-  }
+  Widget? posts;
+
   @override
-  Widget build(BuildContext context) =>
-      Expanded(
-          child: RefreshIndicator(
-            onRefresh: refresh,
-            child: Scrollbar(
-                thickness: 7,
-                thumbVisibility: true,
-                radius: Radius.circular(10),
-                child: ListView.builder(
-                  itemBuilder: (BuildContext context, int index) {
+  void initState() {
+    refresh();
+    super.initState();
+  }
 
-                    Map<String, Object>? document = FakeLostBackend.getDocument(
-                        index);
-                    if (document == null) {
-                      return null;
-                    }
+  Future<void> refresh() async {
+    var snapshots = await LostBackend().getCollection().get();
+    var docs = snapshots.docs;
+    setState(() {
+      posts = getPosts(docs, refresh);
+    });
+  }
 
-                    String title = document['title'].toString();
-                    String tags = document['tags'].toString();
-                    String location = document['location'].toString();
-                    String description = document['description'].toString();
+  @override
+  Widget build(BuildContext context) {
+    return posts ?? const Expanded(child:Center(child:
+      CircularProgressIndicator(
+          backgroundColor: secondaryColor,
+          color: Colors.white
+      )
+    ));
+  }
+}
 
-                    return PostPreview(title: title, tags: tags,
-                        location: location, description: description,);
-                  }
-              ),
-            ),
+Widget getPosts(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
+    Future<void> Function() refresh) {
+
+  if(docs.isEmpty) {
+    return Expanded(
+      child:LayoutBuilder(
+        builder: (context, constraints) => RefreshIndicator(
+          color: Colors.white,
+          backgroundColor: secondaryColor,
+          onRefresh: refresh,
+          child: SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            child: SizedBox(
+              height: constraints.maxHeight / 2,
+              child: Center(
+                  child:Text("Currently, there are no items to show")
+              )
+            )
           )
-      );
+        )
+      )
+    );
+  }
+  else {
+    return Expanded(
+      child: Scrollbar(
+        thickness: 7,
+        thumbVisibility: true,
+        radius: const Radius.circular(10),
+        child: RefreshIndicator(
+          color: Colors.white,
+          backgroundColor: secondaryColor,
+          onRefresh: refresh,
+          child:ListView.builder(
+            physics: AlwaysScrollableScrollPhysics(),
+            itemCount: docs.length,
+            itemBuilder: (context, index) {
+              var snapshot = docs.elementAt(index);
+              Map<String, dynamic> doc = snapshot.data();
+              String title = doc['title'].toString();
+              String tags = doc['tags'].toString();
+              String location = doc['location'].toString();
+              String description = doc['description'].toString();
+              String imageURL = doc['image_url'].toString();
+              String date = doc['date'].toString();
+
+              return ShortPost(title: title, tags: tags,
+                location: location, description: description,
+                  imageURL: imageURL, date: date,);
+            }
+          ),
+
+  ))
+    );
+  }
 }
 
 class SideMenu extends StatelessWidget {
@@ -424,11 +433,10 @@ class SideMenu extends StatelessWidget {
               )
           ),
         ),
-        SideMenuButton("Home", Icon(Icons.home, color: mainColor), SearchPage()),
-        SideMenuButton("Chat", Icon(Icons.chat, color: mainColor), SearchPage()),
-        SideMenuButton("Profile", Icon(Icons.account_circle, color: mainColor), ProfilePage()),
-        SideMenuButton("Terms", Icon(Icons.privacy_tip, color: mainColor), PrivacyInformationPage()),
-        SideMenuButton("Guidelines", Icon(Icons.explicit, color: mainColor), GuidelinesPage()),
+        SideMenuButton("Home", Icon(Icons.home, color: mainColor)),
+        SideMenuButton("Profile", Icon(Icons.account_circle, color: mainColor)),
+        SideMenuButton("Terms", Icon(Icons.privacy_tip, color: mainColor)),
+        SideMenuButton("Guidelines", Icon(Icons.explicit, color: mainColor)),
         const Spacer(
           flex: 6,
         ),
@@ -439,9 +447,7 @@ class SideMenu extends StatelessWidget {
             child:TextButton(
                 onPressed: (){
                   Navigator.of(context)
-                      .push(
-                      MaterialPageRoute(builder: (context) => InitialPage())
-                      );
+                      .popUntil(ModalRoute.withName("/"));
                 },
                 child: Text(
                   "Logout",
@@ -464,9 +470,30 @@ class SideMenuButton extends StatelessWidget{
 
   final String text;
 
-  final StatefulWidget page;
-
-  SideMenuButton(this.text, this.icon, this.page);
+  SideMenuButton(this.text, this.icon);
+  
+  navigate(BuildContext context){
+    switch (text){
+      case "Home": {
+        Navigator.of(context).popUntil(ModalRoute.withName("/Home"));
+        break;
+      }
+      case "Profile":
+        {
+          Navigator.of(context).popUntil(ModalRoute.withName("/Home"));
+          Navigator.of(context).pushNamed("/$text");
+          break;
+        }
+      case "Chats":
+        {
+          Navigator.of(context).popUntil(ModalRoute.withName("/Home"));
+          Navigator.of(context).pushNamed("/$text");
+          break;
+        }
+      default:
+        Navigator.of(context).pushNamed("/$text");
+    }
+  }
 
   @override
   Widget build(BuildContext context) => SizedBox(
@@ -477,10 +504,7 @@ class SideMenuButton extends StatelessWidget{
         alignment: Alignment.centerLeft
       ),
       onPressed: () {
-        Navigator.of(context)
-            .push(
-            MaterialPageRoute(builder: (context) => page)
-        );
+        navigate(context);
       },
       icon: icon,
       label: Text(text, style: TextStyle(color: mainColor),),
@@ -521,7 +545,7 @@ class SearchBar extends StatelessWidget{
       ),
       decoration: InputDecoration(
         filled: true,
-        fillColor: grey,
+        fillColor: accent,
         labelText: "search",
         enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(25),
@@ -541,7 +565,7 @@ class SearchBar extends StatelessWidget{
         ),
         suffixIconColor: mainColor,
         suffixIcon: IconButton(
-          icon: Icon(Icons.search_rounded),
+          icon: Icon(Icons.search_outlined,),
           onPressed: (){},
         ),
       ),
@@ -587,3 +611,5 @@ class GoBackButton extends StatelessWidget {
     );
   }
 }
+
+

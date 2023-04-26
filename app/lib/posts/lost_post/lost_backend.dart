@@ -1,11 +1,12 @@
 import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-class FoundBackend{
+class LostBackend{
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-  String collection = "Found Items";
+  String collection = "Lost Items";
 
   CollectionReference<Map<String, dynamic>> getCollection(){
 

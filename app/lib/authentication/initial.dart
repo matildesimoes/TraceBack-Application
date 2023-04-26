@@ -31,7 +31,7 @@ class _InitialPageState extends State<InitialPage>{
                 child: Align(
                   alignment: Alignment.center),
                     radius: 70,
-                    backgroundColor: grey,
+                    backgroundColor: accent,
                     backgroundImage: AssetImage("assets/logoApp.jpg"),
                   ),
               ),

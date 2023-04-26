@@ -57,7 +57,7 @@ class _SubmitFoundButtonState extends State<SubmitFoundButton> {
                   }
                   tagsString = tagsString.substring(0, tagsString.length - 1);
                 }
-                FakeFoundBackend.addToCollection(
+                /*FakeFoundBackend.addToCollection(
                     {
                       'title': widget.titleController.text,
                       'category': widget.categoryController.dropDownValue!
@@ -67,7 +67,7 @@ class _SubmitFoundButtonState extends State<SubmitFoundButton> {
                       'date': widget.dateController.text,
                       'description': widget.descriptionController.text
                     }
-                );
+                );*/
                 Navigator.pop(context);
               }
             },

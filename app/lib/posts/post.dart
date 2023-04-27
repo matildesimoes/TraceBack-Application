@@ -112,13 +112,14 @@ class _PostState extends State<Post> {
           padding: const EdgeInsets.all(15),
           children: [
             Header(widget: widget, photo: photo),
+            SizedBox(height: 10,),
             Wrap(
               direction: Axis.horizontal,
               children: widget.tags,
             ),
-            SizedBox(height: 20,),
+            SizedBox(height: 30,),
             DescriptionBox(description: widget.description),
-            SizedBox(height: 15,),
+            SizedBox(height: 30,),
             LocationDate(location: widget.location, date: widget.date),
             map ?? SizedBox(
               height: 250,

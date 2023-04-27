@@ -25,10 +25,12 @@ class _ProfilePageState extends State<ProfilePage> {
   User? user = FirebaseAuth.instance.currentUser;
 
   Future<Map<String, dynamic>> getUserData() async {
-    DocumentSnapshot snapshot = await firestore.collection("Users").doc(user!.uid).get();
+    DocumentSnapshot snapshot = await firestore.collection("Users").doc(
+        user!.uid).get();
     String photoUrl;
     try {
-      photoUrl = await storage.ref('Profile Pics/${user!.uid}/ProfilePic.jpg').getDownloadURL();
+      photoUrl = await storage.ref('Profile Pics/${user!.uid}/ProfilePic.jpg')
+          .getDownloadURL();
     } catch (e) {
       photoUrl = '';
     }
@@ -39,16 +41,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
 
   @override
-  Widget build(BuildContext context){
-    return Scaffold(
-      drawer: SideMenu(),
-      appBar: AppBar(
-        backgroundColor: mainColor,
-        toolbarHeight: 80,
-      ),
-      body: FutureBuilder<Map<String, dynamic>>(
+  Widget build(BuildContext context) {
+    return FutureBuilder<Map<String, dynamic>>(
         future: getUserData(),
-        builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+        builder: (BuildContext context,
+            AsyncSnapshot<Map<String, dynamic>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
@@ -58,97 +55,93 @@ class _ProfilePageState extends State<ProfilePage> {
           } else {
             final userData = snapshot.data!;
             return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-            Center(
-            child: Padding(
-              padding: EdgeInsets.all(30.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  ClipOval(
-                    child: userData['photoUrl'] != ''
-                        ? Image.network(
-                          userData['photoUrl'] as String,
-                          width: 140,
-                          height: 140,
-                          fit: BoxFit.cover,
-                        )
-                        : Container (
-                          width: 140,
-                          height: 140,
-                          color: Colors.white,
-                        ),
-                  ),
-                  SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(30.0),
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(left: 20.0),
-                          child: Text(
-                            userData['name'] as String,
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        ClipOval(
+                          child: userData['photoUrl'] != ''
+                              ? Image.network(
+                            userData['photoUrl'] as String,
+                            width: 140,
+                            height: 140,
+                            fit: BoxFit.cover,
+                          )
+                              : Container(
+                            width: 140,
+                            height: 140,
+                            color: Colors.white,
                           ),
                         ),
-                        SizedBox(height: 8),
-                        Padding(
-                          padding: EdgeInsets.only(left: 20.0),
-                          child: Text(
-                            userData['email'] as String,
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Padding(
-                          padding: EdgeInsets.only(left: 20.0),
-                          child: Text(
-                            userData['phone'] as String,
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 16),
-                        Padding(
-                          padding: EdgeInsets.only(left: 20.0),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: mainColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
-                            child: Text('Edit Profile'),
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => EditProfilePage(),
+                        SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.only(left: 20.0),
+                                child: Text(
+                                  userData['name'] as String,
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              );
-                            },
+                              ),
+                              SizedBox(height: 8),
+                              Padding(
+                                padding: EdgeInsets.only(left: 20.0),
+                                child: Text(
+                                  userData['email'] as String,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              Padding(
+                                padding: EdgeInsets.only(left: 20.0),
+                                child: Text(
+                                  userData['phone'] as String,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 16),
+                              Padding(
+                                padding: EdgeInsets.only(left: 20.0),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: mainColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ),
+                                  child: Text('Edit Profile'),
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => EditProfilePage(),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-        ],
+                ),
+              ],
             );
-        }
-    },
-            ),
-      );
-    }
+          }
+        });
+  }
 }
-
-

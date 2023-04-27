@@ -14,9 +14,9 @@ class MyPlace extends StatefulWidget{
 
 class _MyPlaceState extends State<MyPlace> {
 
-  int _navBarIndex = 0;
+  int _navBarIndex = 1;
 
-  List<Widget> body = [ProfilePage(), MyPosts()];
+  List<Widget> body = [MyPosts(), ProfilePage(), MyPosts()];
 
   @override
   Widget build(BuildContext context){
@@ -31,6 +31,7 @@ class _MyPlaceState extends State<MyPlace> {
         color: mainColor,
         padding: EdgeInsetsDirectional.symmetric(vertical: 10),
         child: GNav(
+          selectedIndex: _navBarIndex,
           iconSize: 30.0,
           gap: 8,
           backgroundColor: mainColor,
@@ -41,12 +42,17 @@ class _MyPlaceState extends State<MyPlace> {
           tabBackgroundColor: secondaryColor,
           tabs: [
             GButton(
-                icon: Icons.person,
-                text: "My Profile"
+                icon: Icons.check_box_rounded,
+
+                text: "My Found Posts"
             ),
             GButton(
-              icon: Icons.text_snippet_rounded,
-              text: "My Posts",
+              icon: Icons.person,
+              text: "My Profile",
+            ),
+            GButton(
+                icon: Icons.indeterminate_check_box_rounded,
+                text:  "My Lost Posts"
             )
           ],
           onTabChange: (index){

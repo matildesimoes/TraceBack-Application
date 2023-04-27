@@ -181,7 +181,6 @@ class _ShortPostState extends State<ShortPost> {
     } catch (e){
       photo = const SizedBox(width: 50,);
     }
-
     setState(() {});
   }
 

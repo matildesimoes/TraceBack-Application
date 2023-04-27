@@ -189,12 +189,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         'phone': phoneNumberController.text,
                       };
                       profileBackend.updateProfile(uid, data);
-                      Navigator.of(context)
-                          .push(
-                          MaterialPageRoute(
-                              builder: (context) => ProfilePage()
-                          )
-                      );
+                      Navigator.of(context).pop();
                     }
                     // função para guardar as informações
                   },

@@ -13,8 +13,6 @@ import 'dart:async';
 
 class ProfilePage extends StatefulWidget{
 
-
-
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
@@ -82,7 +80,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           color: Colors.white,
                         ),
                   ),
-
                   SizedBox(width: 16),
                   Expanded(
                     child: Column(

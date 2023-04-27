@@ -1,4 +1,7 @@
 import 'package:TraceBack/authentication/authentication_backend.dart';
+import 'package:TraceBack/terms&guidelines/termsBackEnd.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../posts/timeline.dart';
@@ -16,6 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   AuthBackend authBackend = AuthBackend();
+  TermsBackend termsBackend = TermsBackend();
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -91,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                               errorMessage = error;
                             });
                           } else {
-                            Navigator.of(context).pushNamed("/Home");
+                            termsBackend.checkAcceptedTerms(context);
                           }
                         },
                         style: ButtonStyle(

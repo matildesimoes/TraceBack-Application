@@ -234,8 +234,8 @@ class _EditBoxState extends State<EditBox> {
               ),
               suffixIcon: IconButton(
                 icon: Icon(obscureText
-                    ? Icons.visibility_off
-                    : Icons.visibility),
+                    ? Icons.visibility
+                    : Icons.visibility_off),
                 onPressed: () {
                   setState(() {
                     obscureText = !obscureText;

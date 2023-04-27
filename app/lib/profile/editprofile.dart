@@ -1,7 +1,10 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:TraceBack/profile/profile.dart';
+import 'package:TraceBack/profile/profileBackend.dart';
 import 'package:TraceBack/util/camera.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../posts/timeline.dart';
 
@@ -13,9 +16,31 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
 
   File? _image;
+  late String uid = FirebaseAuth.instance.currentUser!.uid;
+  late String name;
+  late String email;
+  late String phoneNumber;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final phoneNumberController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    FirebaseFirestore.instance.collection('users').doc(uid).get().then(
+          (doc) {
+        name = doc['name'];
+        email = doc['email'];
+        phoneNumber = doc['phoneNumber'];
+
+        nameController.text = name;
+        emailController.text = email;
+        phoneNumberController.text = phoneNumber;
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
   return Scaffold(
@@ -90,6 +115,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
+                      Map<String, dynamic> data = {
+                        'name': nameController.text,
+                        'email': emailController.text,
+                        'phoneNumber': phoneNumberController.text,
+                      };
+                      profileBackend.updateProfile(uid, data);
                       Navigator.of(context)
                           .push(
                           MaterialPageRoute(

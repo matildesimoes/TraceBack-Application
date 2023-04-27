@@ -1,21 +1,24 @@
 import 'dart:ui';
+import 'package:TraceBack/profile/profileBackend.dart';
 import 'package:TraceBack/terms&guidelines/privacyInformation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'editprofile.dart';
+import 'package:TraceBack/profile/profileBackend.dart';
 import '../posts/timeline.dart';
 import 'dart:async';
 
 
 class ProfilePage extends StatefulWidget{
 
+
+
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   User? user = FirebaseAuth.instance.currentUser;
 
@@ -159,12 +162,36 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
         ],
+            );
+        }
+    },
+            ),
       );
     }
-    },
-    ),
-    );
-  }
 }
 
+class BackEnd {
+
+  BackEnd(){}
+
+  Map<String, Object> doc = {
+    "Name" : "David",
+    "Email" : "up202112345@up.pt",
+    "Phone number" : "912345678",
+  };
+
+  Object? get name {
+    return doc["Name"];
+  }
+
+  Object? get email {
+    return doc["Email"];
+  }
+
+  Object? get contact {
+    return doc["Phone number"];
+  }
+
+
+}
 

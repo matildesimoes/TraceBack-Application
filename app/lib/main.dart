@@ -1,5 +1,6 @@
 import 'package:TraceBack/firebase_initializer.dart';
 import 'package:TraceBack/posts/timeline.dart';
+import 'package:TraceBack/profile/my_place.dart';
 import 'package:TraceBack/profile/profile.dart';
 import 'package:TraceBack/terms&guidelines/guidelines.dart';
 import 'package:TraceBack/terms&guidelines/privacyAcceptance.dart';
@@ -33,7 +34,7 @@ class _TraceBackState extends State<TraceBack> {
       routes: {
         '/' : (context) => InitialPage(),
         '/Home' : (context) => const SearchPage(),
-        '/Profile': (context) => ProfilePage(),
+        '/My Place': (context) => MyPlace(),
         '/Terms': (context) => Terms(),
         '/Guidelines': (context) => GuidelinesPage(),
         '/AcceptedTerms' :(context) => PrivacyAcceptancePage()

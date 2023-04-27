@@ -1,7 +1,12 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:TraceBack/profile/profile.dart';
+import 'package:TraceBack/profile/profileBackend.dart';
 import 'package:TraceBack/util/camera.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../posts/timeline.dart';
 
@@ -13,21 +18,100 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
 
   File? _image;
+  late String uid = FirebaseAuth.instance.currentUser!.uid;
+  late String name;
+  late String email;
+  late String phoneNumber;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final phoneNumberController = TextEditingController();
+
+
+  final ImagePicker _picker = ImagePicker();
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+  late String _imageUrl = '';
+  String collection = "Profile Pics";
+
+  void pickUploadImage() async {
+    final image = await _picker.pickImage(
+      source: ImageSource.gallery,
+      maxHeight: 512,
+      maxWidth: 512,
+      imageQuality: 75,
+    );
+
+    if (image != null) {
+      final String fileName = 'ProfilePic.jpg'; // Generate a unique filename
+      final Reference ref = _storage.ref().child(collection).child('$uid/$fileName');
+
+      UploadTask uploadTask = ref.putFile(File(image.path));
+      TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
+
+      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+      print(downloadUrl);
+
+      setState(() {
+        _image = File(image.path);
+        _imageUrl = downloadUrl;
+      });
+    }
+  }
+
+  void captureImage() async {
+    final image = await _picker.pickImage(
+      source: ImageSource.camera,
+      maxHeight: 512,
+      maxWidth: 512,
+      imageQuality: 75,
+    );
+
+    if (image != null) {
+      final String fileName = 'ProfilePic.jpg'; // Generate a unique filename
+      final Reference ref = _storage.ref().child(collection).child('$uid/$fileName');
+
+      UploadTask uploadTask = ref.putFile(File(image.path));
+      TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
+
+      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+      print(downloadUrl);
+
+      setState(() {
+        _image = File(image.path);
+        _imageUrl = downloadUrl;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseFirestore.instance.collection('Users').doc(uid).get().then(
+          (doc) {
+        name = doc['name'];
+        email = doc['email'];
+        phoneNumber = doc['phone'];
+
+        nameController.text = name;
+        emailController.text = email;
+        phoneNumberController.text = phoneNumber;
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-  return Scaffold(
-        drawer: SideMenu(),
-        appBar: AppBar(
+    return Scaffold(
+      drawer: SideMenu(),
+      appBar: AppBar(
         backgroundColor: mainColor,
         toolbarHeight: 80,
-    ),
-    body: SingleChildScrollView(
-    child: Form(
-    key: _formKey,
-    child: Column(
+      ),
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
             children: [
               SizedBox(height: 35),
               Stack(
@@ -35,7 +119,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   CircleAvatar(
                     radius: 70,
                     backgroundColor: accent,
-                    backgroundImage: _image != null ? FileImage(_image!) : null,
+                    backgroundImage: _image != null ? FileImage(_image!) : (_imageUrl.isNotEmpty ? NetworkImage(_imageUrl) as ImageProvider<Object>? : null),
                   ),
                   Positioned(
                     bottom: 0,
@@ -46,19 +130,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(50),
                       ),
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.camera_alt,
-                          color: mainColor,
-                          size: 24,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                Icons.photo_library,
+                                color: mainColor,
+                                size: 24,
+                              ),
+                            onPressed: pickUploadImage,
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.camera_alt,
+                                color: mainColor,
+                                size: 24,
+                              ),
+                              onPressed: captureImage,
+                            ),
+                          ],
                         ),
-                        onPressed: () async {
-                          File? image = await ImageHandler.getImage(context);
-                          setState(() {
-                            _image = image;
-                          });
-                        },
-                      ),
                     ),
                   ),
                 ],
@@ -79,9 +171,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                 ),
               ),
-              EditBox(text: "Name", hintText: "Name"),
-              EditBox(text: "Email", hintText: "upXXXXXXXXX@up.pt"),
-              EditBox(text: "Phone Number", hintText: "Phone Number"),
+              EditBox(text: "Name", hintText: "Name", controller: nameController),
+              EditBox(text: "Email", hintText: "upXXXXXXXXX@up.pt", controller: emailController),
+              EditBox(text: "Phone Number", hintText: "Phone Number", controller: phoneNumberController),
               SizedBox(height: 40),
               Container(
                 height: 50,
@@ -89,13 +181,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 width: 200,
                 child: ElevatedButton(
                   onPressed: () {
+
                     if (_formKey.currentState!.validate()) {
-                      Navigator.of(context)
-                          .push(
-                          MaterialPageRoute(
-                              builder: (context) => ProfilePage()
-                          )
-                      );
+                      Map<String, dynamic> data = {
+                        'name': nameController.text,
+                        'email': emailController.text,
+                        'phone': phoneNumberController.text,
+                      };
+                      profileBackend.updateProfile(uid, data);
+                      Navigator.of(context).pop();
                     }
                     // função para guardar as informações
                   },
@@ -131,9 +225,9 @@ class EditBox extends StatelessWidget {
 
   final String text;
   final String hintText;
-  EditBox({required this.text, required this.hintText});
+  final TextEditingController controller;
 
-  final controller = TextEditingController();
+  EditBox({required this.text, required this.hintText, required this.controller,});
 
   @override
   Widget build(BuildContext context) {

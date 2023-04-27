@@ -3,6 +3,7 @@ import 'package:TraceBack/posts/timeline.dart';
 import 'package:TraceBack/profile/my_place.dart';
 import 'package:TraceBack/profile/profile.dart';
 import 'package:TraceBack/terms&guidelines/guidelines.dart';
+import 'package:TraceBack/terms&guidelines/privacyAcceptance.dart';
 import 'package:TraceBack/terms&guidelines/privacyInformation.dart';
 import 'package:flutter/material.dart';
 import 'authentication/initial.dart';
@@ -35,7 +36,8 @@ class _TraceBackState extends State<TraceBack> {
         '/Home' : (context) => const SearchPage(),
         '/My Place': (context) => MyPlace(),
         '/Terms': (context) => Terms(),
-        '/Guidelines': (context) => GuidelinesPage()
+        '/Guidelines': (context) => GuidelinesPage(),
+        '/AcceptedTerms' :(context) => PrivacyAcceptancePage()
       },
     );
   }

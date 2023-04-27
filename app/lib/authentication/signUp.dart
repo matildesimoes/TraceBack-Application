@@ -40,6 +40,7 @@ class _signUpPageState extends State<SignUpPage>{
         'email': emailController.text,
         'phone': phoneNumberController.text,
         'password': passwordController.text,
+        'acceptedTerms' : false,
       };
       String? error = await authBackend.registerUser(userDoc);
       if (error != null) {

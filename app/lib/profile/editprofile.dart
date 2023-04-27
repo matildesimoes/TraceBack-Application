@@ -29,11 +29,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void initState() {
     super.initState();
-    FirebaseFirestore.instance.collection('users').doc(uid).get().then(
+    FirebaseFirestore.instance.collection('Users').doc(uid).get().then(
           (doc) {
         name = doc['name'];
         email = doc['email'];
-        phoneNumber = doc['phoneNumber'];
+        phoneNumber = doc['phone'];
 
         nameController.text = name;
         emailController.text = email;
@@ -41,18 +41,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
-  return Scaffold(
-        drawer: SideMenu(),
-        appBar: AppBar(
+    return Scaffold(
+      drawer: SideMenu(),
+      appBar: AppBar(
         backgroundColor: mainColor,
         toolbarHeight: 80,
-    ),
-    body: SingleChildScrollView(
-    child: Form(
-    key: _formKey,
-    child: Column(
+      ),
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
             children: [
               SizedBox(height: 35),
               Stack(
@@ -104,9 +105,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                 ),
               ),
-              EditBox(text: "Name", hintText: "Name"),
-              EditBox(text: "Email", hintText: "upXXXXXXXXX@up.pt"),
-              EditBox(text: "Phone Number", hintText: "Phone Number"),
+              EditBox(text: "Name", hintText: "Name", controller: nameController),
+              EditBox(text: "Email", hintText: "upXXXXXXXXX@up.pt", controller: emailController),
+              EditBox(text: "Phone Number", hintText: "Phone Number", controller: phoneNumberController),
               SizedBox(height: 40),
               Container(
                 height: 50,
@@ -114,11 +115,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 width: 200,
                 child: ElevatedButton(
                   onPressed: () {
+
                     if (_formKey.currentState!.validate()) {
                       Map<String, dynamic> data = {
                         'name': nameController.text,
                         'email': emailController.text,
-                        'phoneNumber': phoneNumberController.text,
+                        'phone': phoneNumberController.text,
                       };
                       profileBackend.updateProfile(uid, data);
                       Navigator.of(context)
@@ -162,9 +164,9 @@ class EditBox extends StatelessWidget {
 
   final String text;
   final String hintText;
-  EditBox({required this.text, required this.hintText});
+  final TextEditingController controller;
 
-  final controller = TextEditingController();
+  EditBox({required this.text, required this.hintText, required this.controller,});
 
   @override
   Widget build(BuildContext context) {

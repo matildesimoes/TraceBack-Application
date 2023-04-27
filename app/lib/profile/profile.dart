@@ -19,6 +19,7 @@ class ProfilePage extends StatefulWidget{
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   User? user = FirebaseAuth.instance.currentUser;
 
@@ -26,6 +27,8 @@ class _ProfilePageState extends State<ProfilePage> {
     DocumentSnapshot snapshot = await firestore.collection("Users").doc(user!.uid).get();
     return snapshot.data() as Map<String, dynamic>;
   }
+
+  //var backend = new BackEnd();
 
   @override
   Widget build(BuildContext context){
@@ -119,6 +122,46 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ],
               ),
+            ),
+          ),
+          SizedBox(height: 20),
+          Padding(
+            padding: EdgeInsets.only(left: 20.0, right: 20.0),
+            child: ElevatedButton(
+              onPressed: () {Navigator.of(context).push(MaterialPageRoute(builder: (context) => Terms()));},
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                elevation: MaterialStateProperty.all<double>(0),
+                side: MaterialStateProperty.all<BorderSide>(BorderSide.none),
+                overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
+              ),
+              child: Text('Terms of Privacy and Responsability     >',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: mainColor,
+                ),
+              )
+            ),
+          ),
+          SizedBox(height: 20),
+          Padding(
+            padding: EdgeInsets.only(left: 20.0, right: 20.0),
+            child: ElevatedButton(
+                onPressed: () {Navigator.of(context).push(MaterialPageRoute(builder: (context) => Terms()));},
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                  elevation: MaterialStateProperty.all<double>(0),
+                  side: MaterialStateProperty.all<BorderSide>(BorderSide.none),
+                  overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                ),
+                child: Text('User Guidelines                                          >',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: mainColor,
+                  ),
+                )
             ),
           ),
           SizedBox(height: 20),

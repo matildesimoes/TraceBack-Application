@@ -3,6 +3,7 @@ import 'package:TraceBack/profile/profileBackend.dart';
 import 'package:TraceBack/terms&guidelines/privacyInformation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'editprofile.dart';
 import 'package:TraceBack/profile/profileBackend.dart';
@@ -21,14 +22,23 @@ class ProfilePage extends StatefulWidget{
 class _ProfilePageState extends State<ProfilePage> {
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  FirebaseStorage storage = FirebaseStorage.instance;
+
   User? user = FirebaseAuth.instance.currentUser;
 
   Future<Map<String, dynamic>> getUserData() async {
     DocumentSnapshot snapshot = await firestore.collection("Users").doc(user!.uid).get();
-    return snapshot.data() as Map<String, dynamic>;
+    String photoUrl;
+    try {
+      photoUrl = await storage.ref('Profile Pics/${user!.uid}/ProfilePic.jpg').getDownloadURL();
+    } catch (e) {
+      photoUrl = '';
+    }
+    Map<String, dynamic> userData = snapshot.data() as Map<String, dynamic>;
+    userData['photoUrl'] = photoUrl;
+    return userData;
   }
 
-  //var backend = new BackEnd();
 
   @override
   Widget build(BuildContext context){
@@ -58,10 +68,21 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  CircleAvatar(
-                    radius: 70,
-                    backgroundColor: accent,
+                  ClipOval(
+                    child: userData['photoUrl'] != ''
+                        ? Image.network(
+                          userData['photoUrl'] as String,
+                          width: 140,
+                          height: 140,
+                          fit: BoxFit.cover,
+                        )
+                        : Container (
+                          width: 140,
+                          height: 140,
+                          color: Colors.white,
+                        ),
                   ),
+
                   SizedBox(width: 16),
                   Expanded(
                     child: Column(
@@ -124,86 +145,6 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
           ),
-          SizedBox(height: 20),
-          Padding(
-            padding: EdgeInsets.only(left: 20.0, right: 20.0),
-            child: ElevatedButton(
-              onPressed: () {Navigator.of(context).push(MaterialPageRoute(builder: (context) => Terms()));},
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                elevation: MaterialStateProperty.all<double>(0),
-                side: MaterialStateProperty.all<BorderSide>(BorderSide.none),
-                overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
-              ),
-              child: Text('Terms of Privacy and Responsability     >',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: mainColor,
-                ),
-              )
-            ),
-          ),
-          SizedBox(height: 20),
-          Padding(
-            padding: EdgeInsets.only(left: 20.0, right: 20.0),
-            child: ElevatedButton(
-                onPressed: () {Navigator.of(context).push(MaterialPageRoute(builder: (context) => Terms()));},
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                  elevation: MaterialStateProperty.all<double>(0),
-                  side: MaterialStateProperty.all<BorderSide>(BorderSide.none),
-                  overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                ),
-                child: Text('User Guidelines                                          >',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: mainColor,
-                  ),
-                )
-            ),
-          ),
-          SizedBox(height: 20),
-          Padding(
-            padding: EdgeInsets.only(left: 20.0, right: 20.0),
-            child: ElevatedButton(
-                onPressed: () {Navigator.of(context).push(MaterialPageRoute(builder: (context) => Terms()));},
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                  elevation: MaterialStateProperty.all<double>(0),
-                  side: MaterialStateProperty.all<BorderSide>(BorderSide.none),
-                  overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                ),
-                child: Text('Found Item Posts                                       >',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: mainColor,
-                  ),
-                )
-            ),
-          ),
-          SizedBox(height: 20),
-          Padding(
-            padding: EdgeInsets.only(left: 20.0, right: 20.0),
-            child: ElevatedButton(
-                onPressed: () {Navigator.of(context).push(MaterialPageRoute(builder: (context) => Terms()));},
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                  elevation: MaterialStateProperty.all<double>(0),
-                  side: MaterialStateProperty.all<BorderSide>(BorderSide.none),
-                  overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                ),
-                child: Text('Lost Item Posts                                         >',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: mainColor,
-                  ),
-                )
-            ),
-          ),
         ],
             );
         }
@@ -213,28 +154,4 @@ class _ProfilePageState extends State<ProfilePage> {
     }
 }
 
-class BackEnd {
-
-  BackEnd(){}
-
-  Map<String, Object> doc = {
-    "Name" : "David",
-    "Email" : "up202112345@up.pt",
-    "Phone number" : "912345678",
-  };
-
-  Object? get name {
-    return doc["Name"];
-  }
-
-  Object? get email {
-    return doc["Email"];
-  }
-
-  Object? get contact {
-    return doc["Phone number"];
-  }
-
-
-}
 

@@ -43,8 +43,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
 
     if (image != null) {
-      final String fileName = uid + DateTime.now().toString() + '.jpg'; // Generate a unique filename
-      final Reference ref = _storage.ref().child(collection).child('$fileName');
+      final String fileName = 'ProfilePic.jpg'; // Generate a unique filename
+      final Reference ref = _storage.ref().child(collection).child('$uid/$fileName');
 
       UploadTask uploadTask = ref.putFile(File(image.path));
       TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
@@ -68,8 +68,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
 
     if (image != null) {
-      final String fileName = uid + DateTime.now().toString() + '.jpg'; // Generate a unique filename
-      final Reference ref = _storage.ref().child(collection).child('$fileName');
+      final String fileName = 'ProfilePic.jpg'; // Generate a unique filename
+      final Reference ref = _storage.ref().child(collection).child('$uid/$fileName');
 
       UploadTask uploadTask = ref.putFile(File(image.path));
       TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});

@@ -175,7 +175,13 @@ class _ShortPostState extends State<ShortPost> {
   Widget? photo;
 
   void initPhoto() async {
-    photo = await ImageHandler().getPictureFrame(widget.imageURL);
+
+    try {
+      photo = await ImageHandler().getPictureFrame(widget.imageURL);
+    } catch (e){
+      photo = const SizedBox(width: 50,);
+    }
+
     setState(() {});
   }
 
@@ -238,30 +244,26 @@ class _ShortPostState extends State<ShortPost> {
                     ),
                   ),
                   Expanded(
-                      child: Align(
-                          alignment: AlignmentDirectional.centerStart,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Text(
-                                    widget.location,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: mainColor),
-                                  ),
-                                ),
+                    child: Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Text(
+                                widget.location,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: mainColor),
                               ),
-                              /*Text(
-                                  "Mariana",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      color: mainColor),
-                                )*/
-                            ],
-                          )))
+                            ),
+                          ),
+                        ],
+                      )
+                    )
+                  )
                 ],
               ),
             ))
@@ -409,8 +411,8 @@ Widget getPosts(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
                   imageURL: imageURL, date: date,);
             }
           ),
-
-  ))
+        )
+      )
     );
   }
 }
@@ -434,7 +436,7 @@ class SideMenu extends StatelessWidget {
           ),
         ),
         SideMenuButton("Home", Icon(Icons.home, color: mainColor)),
-        SideMenuButton("Profile", Icon(Icons.account_circle, color: mainColor)),
+        SideMenuButton("My Place", Icon(Icons.account_circle, color: mainColor)),
         SideMenuButton("Terms", Icon(Icons.privacy_tip, color: mainColor)),
         SideMenuButton("Guidelines", Icon(Icons.explicit, color: mainColor)),
         const Spacer(
@@ -460,7 +462,7 @@ class SideMenu extends StatelessWidget {
         )
       ],
     )
-);
+  );
 }
 
 
@@ -478,7 +480,7 @@ class SideMenuButton extends StatelessWidget{
         Navigator.of(context).popUntil(ModalRoute.withName("/Home"));
         break;
       }
-      case "Profile":
+      case "My Place":
         {
           Navigator.of(context).popUntil(ModalRoute.withName("/Home"));
           Navigator.of(context).pushNamed("/$text");

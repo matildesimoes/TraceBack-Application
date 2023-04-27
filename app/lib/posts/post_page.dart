@@ -26,7 +26,11 @@ class PostPage extends StatelessWidget {
       ) : super(key: key);
 
   Future<Widget> imageRetriever() async {
-    return await ImageHandler().getPictureFrame(imageURL);
+    try {
+      return await ImageHandler().getPictureFrame(imageURL);
+    } catch (e){
+      return SizedBox.shrink();
+    }
   }
 
   @override

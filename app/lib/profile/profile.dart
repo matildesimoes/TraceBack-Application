@@ -15,13 +15,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context){
-    return Scaffold(
-      drawer: SideMenu(),
-      appBar: AppBar(
-        backgroundColor: mainColor,
-        toolbarHeight: 80,
-      ),
-      body: Column(
+    return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Center(
@@ -97,8 +91,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
         ],
-      ),
-    );
+      );
   }
 }
 

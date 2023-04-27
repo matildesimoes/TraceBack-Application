@@ -4,6 +4,8 @@ import 'package:TraceBack/profile/profile.dart';
 import 'package:TraceBack/profile/profileBackend.dart';
 import 'package:TraceBack/util/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../posts/timeline.dart';
@@ -25,6 +27,59 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final phoneNumberController = TextEditingController();
+
+
+  final ImagePicker _picker = ImagePicker();
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+  late String _imageUrl = '';
+
+  void pickUploadImage() async {
+    final image = await _picker.pickImage(
+      source: ImageSource.gallery,
+      maxHeight: 512,
+      maxWidth: 512,
+      imageQuality: 75,
+    );
+
+    if (image != null) {
+      final Reference ref = _storage.ref().child('Profile Pics');
+
+      UploadTask uploadTask = ref.putFile(File(image.path));
+      TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
+
+      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+      print(downloadUrl);
+
+      setState(() {
+        _image = File(image.path);
+        _imageUrl = downloadUrl;
+      });
+    }
+  }
+
+  void captureImage() async {
+    final image = await _picker.pickImage(
+      source: ImageSource.camera,
+      maxHeight: 512,
+      maxWidth: 512,
+      imageQuality: 75,
+    );
+
+    if (image != null) {
+      final Reference ref = _storage.ref().child('Profile Pics');
+
+      UploadTask uploadTask = ref.putFile(File(image.path));
+      TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
+
+      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+      print(downloadUrl);
+
+      setState(() {
+        _image = File(image.path);
+        _imageUrl = downloadUrl;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -61,7 +116,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   CircleAvatar(
                     radius: 70,
                     backgroundColor: accent,
-                    backgroundImage: _image != null ? FileImage(_image!) : null,
+                    backgroundImage: _image != null ? FileImage(_image!) : (_imageUrl.isNotEmpty ? NetworkImage(_imageUrl) as ImageProvider<Object>? : null),
                   ),
                   Positioned(
                     bottom: 0,
@@ -72,19 +127,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(50),
                       ),
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.camera_alt,
-                          color: mainColor,
-                          size: 24,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                Icons.photo_library,
+                                color: mainColor,
+                                size: 24,
+                              ),
+                            onPressed: pickUploadImage,
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.camera_alt,
+                                color: mainColor,
+                                size: 24,
+                              ),
+                              onPressed: captureImage,
+                            ),
+                          ],
                         ),
-                        onPressed: () async {
-                          File? image = await ImageHandler.getImage(context);
-                          setState(() {
-                            _image = image;
-                          });
-                        },
-                      ),
                     ),
                   ),
                 ],

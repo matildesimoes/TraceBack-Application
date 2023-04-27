@@ -32,6 +32,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final ImagePicker _picker = ImagePicker();
   final FirebaseStorage _storage = FirebaseStorage.instance;
   late String _imageUrl = '';
+  String collection = "Profile Pics";
 
   void pickUploadImage() async {
     final image = await _picker.pickImage(
@@ -42,7 +43,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
 
     if (image != null) {
-      final Reference ref = _storage.ref().child('Profile Pics');
+      final String fileName = uid + DateTime.now().toString() + '.jpg'; // Generate a unique filename
+      final Reference ref = _storage.ref().child(collection).child('$fileName');
 
       UploadTask uploadTask = ref.putFile(File(image.path));
       TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
@@ -66,7 +68,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
 
     if (image != null) {
-      final Reference ref = _storage.ref().child('Profile Pics');
+      final String fileName = uid + DateTime.now().toString() + '.jpg'; // Generate a unique filename
+      final Reference ref = _storage.ref().child(collection).child('$fileName');
 
       UploadTask uploadTask = ref.putFile(File(image.path));
       TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});

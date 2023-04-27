@@ -29,10 +29,17 @@ class _signUpPageState extends State<SignUpPage>{
 
   register() async {
     if (_formKey.currentState!.validate()){
+      if (passwordController.text != confirmPasswordController.text) {
+        setState(() {
+          errorMessage = 'Passwords do not match';
+        });
+        return;
+      }
       Map<String, dynamic> userDoc = {
         'name': nameController.text,
         'email': emailController.text,
         'phone': phoneNumberController.text,
+        'password': passwordController.text,
       };
       String? error = await authBackend.registerUser(userDoc);
       if (error != null) {

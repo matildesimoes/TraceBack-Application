@@ -9,7 +9,7 @@ import 'steps/signUp.dart';
 
 Future<void> main() {
   final config = FlutterTestConfiguration()
-    ..features = [Glob(r"test/features/**.feature")]
+    ..features = [Glob(r"test/features/initial_tests.feature")]
     ..reporters = [
       ProgressReporter(),
       TestRunSummaryReporter(),

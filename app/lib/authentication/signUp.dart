@@ -49,9 +49,9 @@ class _signUpPageState extends State<SignUpPage>{
       }
       else {
         Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => PrivacyAcceptancePage(),
-            )
+          MaterialPageRoute(
+            builder: (context) => PrivacyAcceptancePage(),
+          )
         );
       }
     }

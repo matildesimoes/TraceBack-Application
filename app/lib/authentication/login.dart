@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: Key("Login Page"),
+    key: Key("Login Page"),
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -68,8 +68,8 @@ class _LoginPageState extends State<LoginPage> {
                     Container(
                       width: fieldWidth,
                       child: EditBox(
-                        text: "Email",
-                        hintText: "upXXXXXXXXX@up.pt",
+                          text: "Email",
+                          hintText: "upXXXXXXXXX@up.pt",
                         emailController: emailController,
                         passwordController: passwordController,
                       ),
@@ -119,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => SignUpPage()));
+                                builder: (context) => SignUpPage()));
                         },
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),

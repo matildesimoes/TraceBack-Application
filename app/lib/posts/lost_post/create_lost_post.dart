@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:textfield_tags/textfield_tags.dart';
+import '../../profile/profileBackend.dart';
 import '../../util/bottom_button.dart';
 import '../create_post_util/description_field.dart';
 import '../create_post_util/date_picker.dart';
@@ -77,6 +78,7 @@ class _CreateLostPostState extends State<CreateLostPost> {
               date: dateController.text,
               image: _image,
               description: descriptionController.text,
+              authorID: ProfileBackend().getCurrentUserID(),
               submit: submit
             )
         )
@@ -94,19 +96,25 @@ class _CreateLostPostState extends State<CreateLostPost> {
         tagsController.getTags.toString().length - 1
     ) : "";
 
-    String id = await backend.addToCollection(
-        {
-          'title': titleController.text,
-          'category': categoryController.dropDownValue!
-              .value,
-          'tags': tagsString,
-          'location': locationController.text,
-          'date': dateController.text,
-          'description': descriptionController.text,
-          'author_id': FirebaseAuth.instance.currentUser!.uid
-        });
-    String url = await backend.upload(_image!, id);
-    backend.addURL(id, url);
+    Map<String, dynamic> data = {
+      'title': titleController.text,
+      'category': categoryController.dropDownValue!
+          .value,
+      'tags': tagsString,
+      'location': locationController.text,
+      'date': dateController.text,
+      'description': descriptionController.text,
+      'authorID': ProfileBackend().getCurrentUserID()
+    };
+
+    String id = await backend.addToCollection(data);
+    if (_image != null) {
+      String url = await backend.upload(_image!, id);
+      backend.addURL(id, url);
+      data['image_url'] = url;
+    }
+
+    ProfileBackend().addLostItem(data);
   }
 
   @override
@@ -241,7 +249,6 @@ class CategoryDropdown extends StatelessWidget {
           focusedErrorBorder: border(Colors.red)
       ),
       dropDownList: [
-        DropDownValueModel(name: 'All', value: "All"),
         DropDownValueModel(name: 'IT Devices', value: "IT Devices"),
         DropDownValueModel(name: 'Keys', value: "Keys"),
         DropDownValueModel(name: 'Clothing', value: "Clothing"),
@@ -263,7 +270,7 @@ class LocationField extends StatelessWidget {
 
   void _getLocation(BuildContext context) async {
     final location = await Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => Map(controller.text))
+        MaterialPageRoute(builder: (context) => MapBuilder(controller.text))
     );
     controller.text = location;
   }

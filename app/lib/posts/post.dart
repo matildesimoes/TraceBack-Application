@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:TraceBack/profile/profileBackend.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -13,6 +14,7 @@ class Post extends StatefulWidget {
   late String location;
   Future<Widget> Function() imageRetriever;
   late String description;
+  late String authorID;
 
   Post({Key? key,
     required this.tags,
@@ -20,7 +22,9 @@ class Post extends StatefulWidget {
     required this.location,
     required this.imageRetriever,
     required this.date,
-    required this.description}
+    required this.description,
+    required this.authorID
+  }
       ) : super(key: key);
 
   @override
@@ -128,7 +132,7 @@ class _PostState extends State<Post> {
               ),
             ),
             SizedBox(height: 10,),
-            AuthorBox(),
+            AuthorBox(id: widget.authorID),
             SizedBox(height: 100,)
           ],
         ),
@@ -218,47 +222,116 @@ class LocationDate extends StatelessWidget {
   }
 }
 
-class AuthorBox extends StatelessWidget {
+class AuthorBox extends StatefulWidget {
+
+  final String id;
+
   const AuthorBox({
     super.key,
+    required this.id
   });
 
   @override
+  State<AuthorBox> createState() => _AuthorBoxState();
+}
+
+class _AuthorBoxState extends State<AuthorBox> {
+
+  late String authorName;
+
+  late Widget photo;
+
+  getPhoto() async {
+
+    String? photoUrl;
+    
+    photoUrl = await ProfileBackend().getPictureURL(widget.id);
+    
+    if (photoUrl == null){
+      photo = SizedBox.shrink();
+    } else{
+      photo = CircleAvatar(
+        backgroundImage: NetworkImage(photoUrl),
+      );
+    }
+  }
+
+  getAuthor() async{
+
+    await ProfileBackend().getName(widget.id).then((name) {
+      authorName = name;
+    });
+  }
+
+  init() async {
+    await getAuthor();
+    await getPhoto();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: Container(
-          height: 40,
-          width: 110,
-          margin: EdgeInsets.only(bottom: 20),
-          child: Padding(
-              padding: EdgeInsets.only(right: 10),
-              child: TextButton(
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<
-                        Color>(mainColor),
-                    shape: MaterialStateProperty.all<
-                        RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50),
-                        )
-                    )
-                ),
-                onPressed: () {},
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return FutureBuilder(
+      future: init(),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Align(
+              alignment: Alignment.centerRight,
+              child: GestureDetector(
+                onTap: (){},
+                child: Stack(
+                  alignment: Alignment.center,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: Image.asset("assets/profile.jpg"),
+                    Container(
+                      height: 40,
+                      width: 110,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: mainColor
+                      ),
+                      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10)
                     ),
-                    Text("Mariana",
-                      style: TextStyle(color: Colors.white),)
+                    SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        color: secondaryColor,
+                        strokeWidth: 3,
+                      )
+                    ),
                   ],
                 ),
               )
-          )
-      ),
+          );
+        }else {
+          return Align(
+            alignment: Alignment.centerRight,
+            child: InkWell(
+              splashColor: secondaryColor,
+              borderRadius: BorderRadius.circular(50),
+              onTap: (){},
+              child:UnconstrainedBox(
+                child: Ink(
+                  height: 40,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: mainColor
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                  child:  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        photo,
+                        SizedBox(width: 5,),
+                        Text(authorName,
+                          style: TextStyle(color: Colors.white),)
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+        }
+      },
     );
   }
 }

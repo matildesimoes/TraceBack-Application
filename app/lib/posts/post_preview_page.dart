@@ -19,6 +19,7 @@ class PostPreview extends StatelessWidget {
   File? image;
   late String description;
   late String date;
+  late String authorID;
 
   Function() submit;
 
@@ -30,7 +31,9 @@ class PostPreview extends StatelessWidget {
     required this.category,
     required this.date,
     required this.description,
-    required this.submit}
+    required this.submit,
+    required this.authorID
+  }
       ) : super(key: key) {
     if (tags.isNotEmpty) {
       for (String tag in tags.split(',')) {
@@ -75,7 +78,7 @@ class PostPreview extends StatelessWidget {
           children: [
             Post(tags: tagWidgets, title: title, location: location,
               description: description, imageRetriever: imageRetriever,
-              date: date,),
+              date: date, authorID: authorID,),
           ]
       ),
       floatingActionButton: BottomButton(

@@ -15,6 +15,7 @@ class PostPage extends StatelessWidget {
   late String imageURL;
   late String description;
   late String date;
+  late String authorID;
 
   PostPage({Key? key,
     required this.tags,
@@ -22,7 +23,9 @@ class PostPage extends StatelessWidget {
     required this.location,
     required this.imageURL,
     required this.date,
-    required this.description}
+    required this.description,
+    required this.authorID
+  }
       ) : super(key: key);
 
   Future<Widget> imageRetriever() async {
@@ -46,7 +49,7 @@ class PostPage extends StatelessWidget {
         children: [
           Post(tags: tags, title: title, location: location,
             description: description, imageRetriever: imageRetriever,
-            date: date,),
+            date: date, authorID: authorID,),
         ]
       ),
       floatingActionButton: BottomButton(

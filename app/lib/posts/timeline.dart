@@ -155,10 +155,11 @@ class ShortPost extends StatefulWidget {
   late String imageURL;
   late String description;
   late String date;
+  late String authorID;
 
   ShortPost({super.key, required String tags, required this.title,
     required this.location, required this.imageURL, required this.description,
-    required this.date
+    required this.date, required this.authorID
   }){
     if (tags.isNotEmpty)
       for (String tag in tags.split(',')) {
@@ -202,6 +203,7 @@ class _ShortPostState extends State<ShortPost> {
                   imageURL: widget.imageURL,
                   description: widget.description,
                   date: widget.date,
+                  authorID: widget.authorID,
                 )));
       },
       child: Container(
@@ -404,10 +406,11 @@ Widget getPosts(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
               String description = doc['description'].toString();
               String imageURL = doc['image_url'].toString();
               String date = doc['date'].toString();
+              String authorID = doc['authorID'].toString();
 
               return ShortPost(title: title, tags: tags,
                 location: location, description: description,
-                  imageURL: imageURL, date: date,);
+                  imageURL: imageURL, date: date, authorID: authorID,);
             }
           ),
         )

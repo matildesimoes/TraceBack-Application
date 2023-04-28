@@ -16,7 +16,7 @@ class _MyPlaceState extends State<MyPlace> {
 
   int _navBarIndex = 1;
 
-  List<Widget> body = [MyPosts(), ProfilePage(), MyPosts()];
+  List<Widget> body = [MyFoundPosts(), ProfilePage(), MyLostPosts()];
 
   @override
   Widget build(BuildContext context){

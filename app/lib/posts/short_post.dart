@@ -18,11 +18,12 @@ class ShortPost extends StatefulWidget {
   late String authorID;
   late String postID;
   late bool isLostPost;
+  late bool isClosed;
 
   ShortPost({super.key, required String tags, required this.title,
     required this.location, required this.imageURL, required this.description,
     required this.date, required this.authorID, required this.postID,
-    required this.isLostPost
+    required this.isLostPost, required this.isClosed
   }){
     if (tags.isNotEmpty)
       for (String tag in tags.split(',')) {
@@ -58,7 +59,7 @@ class _ShortPostState extends State<ShortPost> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (widget.authorID == ProfileBackend().getCurrentUserID()){
+        if (widget.authorID == ProfileBackend().getCurrentUserID() && !widget.isClosed){
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => MyPostPage(
                 isLostPost: widget.isLostPost,
@@ -74,6 +75,7 @@ class _ShortPostState extends State<ShortPost> {
         } else {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => PostPage(
+                isClosed: widget.isClosed,
                 title: widget.title,
                 tags: widget.tags,
                 location: widget.location,

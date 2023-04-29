@@ -96,7 +96,8 @@ class MyPostPage extends StatelessWidget {
                                 await LostBackend().closePost(postID);
                               else
                                 await FoundBackend().closePost(postID);
-                              Navigator.popUntil(context, ModalRoute.withName('/My Place'));
+                              Navigator.pop(context);
+                              Navigator.pop(context);
                             },
                             child: Text(
                               "Yes",

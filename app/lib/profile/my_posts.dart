@@ -61,8 +61,8 @@ class _MyFoundPostsState extends _MyPostsState<MyFoundPosts>{
 
   @override
   getPosts() async {
+    docs=[];
     List<String> ids = await ProfileBackend().getFoundItemsIDs();
-
     for (String id in ids){
       docs.add(await FoundBackend().getDoc(id));
     }
@@ -101,8 +101,6 @@ abstract class _MyPostsState<T extends MyPosts> extends State<T> {
                   var snapshot = docs.elementAt(index);
                   Map<String, dynamic>? doc = snapshot.data();
                   if (doc != null) {
-
-
                       String title = doc['title'].toString();
                       String tags = doc['tags'].toString();
                       String location = doc['location'].toString();
@@ -110,6 +108,7 @@ abstract class _MyPostsState<T extends MyPosts> extends State<T> {
                       String imageURL = doc['image_url'].toString();
                       String date = doc['date'].toString();
                       String authorID = doc['authorID'].toString();
+                      bool isClosed = doc['closed'];
 
                       ShortPost shortPost = ShortPost(
                         isLostPost: isLostPost,
@@ -121,9 +120,9 @@ abstract class _MyPostsState<T extends MyPosts> extends State<T> {
                         date: date,
                         authorID: authorID,
                         postID: snapshot.id,
+                        isClosed: isClosed,
                       );
 
-                      bool isClosed = doc['closed'];
                       if (isClosed) {
                         return Stack(
                           children: [
@@ -149,7 +148,6 @@ abstract class _MyPostsState<T extends MyPosts> extends State<T> {
                           ],
                         );
                       }
-
                       return shortPost;
                     }
                   }

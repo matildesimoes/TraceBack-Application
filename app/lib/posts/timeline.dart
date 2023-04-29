@@ -186,7 +186,7 @@ class _FoundTimelineState extends State<FoundTimeline> {
     var docs = snapshots.docs;
     docs.removeWhere((doc) => doc.get('closed'));
     setState(() {
-      posts = getPosts(docs, refresh, true);
+      posts = getPosts(docs, refresh, false);
     });
   }
 
@@ -221,7 +221,7 @@ class _LostTimeline extends State<LostTimeline> {
     var docs = snapshots.docs;
     docs.removeWhere((doc) => doc.get('closed'));
     setState(() {
-      posts = getPosts(docs, refresh, false);
+      posts = getPosts(docs, refresh, true);
     });
   }
 
@@ -294,6 +294,7 @@ Widget getPosts(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
                 date: date,
                 authorID: authorID,
                 postID: snapshot.id,
+                isClosed: false,
               );
             }
           ),

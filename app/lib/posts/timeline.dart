@@ -29,7 +29,7 @@ class _SearchPageState extends State<SearchPage> {
 
   int _navBarIndex = 0;
 
-  List<Widget> timelines = [FoundTimeline(), LostTimeline()];
+  List<Widget> timelines = [FoundTimeline(key: Key("Found Timeline")), LostTimeline(key: Key("Lost Timeline"))];
 
   @override
   Widget build(BuildContext context) {
@@ -290,6 +290,8 @@ class LoadingPhoto extends StatelessWidget {
 }
 
 class FoundTimeline extends StatefulWidget {
+  
+  const FoundTimeline({Key? key}) : super(key: key);
 
   @override
   State<FoundTimeline> createState() => _FoundTimelineState();
@@ -325,6 +327,8 @@ class _FoundTimelineState extends State<FoundTimeline> {
 }
 
 class LostTimeline extends StatefulWidget {
+  
+  const LostTimeline({Key? key}) : super(key: key);
 
   @override
   State<LostTimeline> createState() => _LostTimeline();

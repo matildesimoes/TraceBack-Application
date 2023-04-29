@@ -1,6 +1,8 @@
+import 'package:TraceBack/terms&guidelines/termsBackEnd.dart';
 import 'package:flutter_gherkin/flutter_gherkin.dart';
 import 'package:gherkin/gherkin.dart';
 import 'package:flutter_driver/flutter_driver.dart';
+
 
 class UserIsInInitialPage1 extends GivenWithWorld<FlutterWorld> {
   @override
@@ -43,6 +45,10 @@ class EditBoxPage extends And2WithWorld<String, String,FlutterWorld> {
   // TODO: implement pattern
   RegExp get pattern => RegExp(r"I fill the {string} field with {string}");
 }
+
+
+
+
 
 
 

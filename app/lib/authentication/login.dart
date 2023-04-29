@@ -105,9 +105,6 @@ class _LoginPageState extends State<LoginPage> {
                                 backgroundColor: secondaryColor,
                               ),
                             );
-                            /*setState(() {
-                              errorMessage = error;
-                            });*/
                           } else {
                             termsBackend.checkAcceptedTerms(context);
                           }

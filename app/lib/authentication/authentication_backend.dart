@@ -38,6 +38,9 @@ class AuthBackend{
 
         case "wrong-password":
           return "Incorrect password";
+
+        case "invalid-email":
+          return "Invalid email";
       }
     }
 
@@ -61,7 +64,7 @@ class AuthBackend{
     }
     on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
-        return "The account already exists for that email.";
+        return "That e-mail is already in use by another account.";
       }
     }
     return "";

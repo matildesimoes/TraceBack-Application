@@ -17,11 +17,17 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
 
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  FirebaseStorage storage = FirebaseStorage.instance;
+
+  User? user = FirebaseAuth.instance.currentUser;
+
   File? _image;
   late String uid = FirebaseAuth.instance.currentUser!.uid;
   late String name;
   late String email;
   late String phoneNumber;
+  late Map<String, dynamic> userData = {};
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
@@ -33,6 +39,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   late String _imageUrl = '';
   String collection = "Profile Pics";
+
+  Future<String?> getProfilePictureUrl() async {
+    try {
+      final Reference ref =
+      _storage.ref().child(collection).child('$uid/ProfilePic.jpg');
+      final downloadUrl = await ref.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      print('Error retrieving profile picture URL: $e');
+      return null;
+    }
+  }
 
   void pickUploadImage() async {
     final image = await _picker.pickImage(
@@ -55,6 +73,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       setState(() {
         _image = File(image.path);
         _imageUrl = downloadUrl;
+        userData['photoUrl'] = _imageUrl;
       });
     }
   }
@@ -80,13 +99,34 @@ class _EditProfilePageState extends State<EditProfilePage> {
       setState(() {
         _image = File(image.path);
         _imageUrl = downloadUrl;
+        userData['photoUrl'] = _imageUrl;
       });
     }
+  }
+
+  Future<Map<String, dynamic>> getUserData() async {
+    DocumentSnapshot snapshot = await firestore.collection("Users").doc(
+        user!.uid).get();
+    String photoUrl;
+    try {
+      photoUrl = await storage.ref('Profile Pics/${user!.uid}/ProfilePic.jpg')
+          .getDownloadURL();
+    } catch (e) {
+      photoUrl = '';
+    }
+    Map<String, dynamic> userData = snapshot.data() as Map<String, dynamic>;
+    userData['photoUrl'] = photoUrl;
+    return userData;
   }
 
   @override
   void initState() {
     super.initState();
+    getUserData().then((data) {
+      setState(() {
+        userData = data;
+      });
+    });
     FirebaseFirestore.instance.collection('Users').doc(uid).get().then(
           (doc) {
         name = doc['name'];
@@ -96,41 +136,59 @@ class _EditProfilePageState extends State<EditProfilePage> {
         nameController.text = name;
         emailController.text = email;
         phoneNumberController.text = phoneNumber;
-      },
-    );
+
+        setState(() {
+          _imageUrl = doc['photoUrl'] as String ?? '';
+          if (_imageUrl.isNotEmpty) {
+            _image = File.fromUri(Uri.parse(_imageUrl));
+          }
+        });
+      });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: SideMenu(),
-      appBar: AppBar(
-        backgroundColor: mainColor,
-        toolbarHeight: 80,
-      ),
-      body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              SizedBox(height: 35),
-              Stack(
-                children: [
-                  CircleAvatar(
-                    radius: 70,
-                    backgroundColor: accent,
-                    backgroundImage: _image != null ? FileImage(_image!) : (_imageUrl.isNotEmpty ? NetworkImage(_imageUrl) as ImageProvider<Object>? : null),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      padding: EdgeInsets.all(2),
-                      decoration: BoxDecoration(
+    if (userData.isEmpty) {
+      return CircularProgressIndicator();
+    } else {
+      return Scaffold(
+        drawer: SideMenu(),
+        appBar: AppBar(
+          backgroundColor: mainColor,
+          toolbarHeight: 80,
+        ),
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                SizedBox(height: 35),
+                Stack(
+                  children: [
+                    ClipOval(
+                      child: userData.containsKey('photoUrl') && userData['photoUrl'] != ''
+                          ? Image.network(
+                        userData['photoUrl'] as String,
+                        width: 140,
+                        height: 140,
+                        fit: BoxFit.cover,
+                      )
+                          : Container(
+                        width: 140,
+                        height: 140,
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(50),
                       ),
-                      child: Row(
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        padding: EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             IconButton(
@@ -139,7 +197,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 color: mainColor,
                                 size: 24,
                               ),
-                            onPressed: pickUploadImage,
+                              onPressed: pickUploadImage,
                             ),
                             IconButton(
                               icon: Icon(
@@ -151,73 +209,78 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             ),
                           ],
                         ),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 16),
-              Container(
-                padding: EdgeInsets.only(left: 25),
-                margin: EdgeInsets.only(bottom:10),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Your Information',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: mainColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  ],
                 ),
-              ),
-              EditBox(text: "Name", hintText: "Name", controller: nameController),
-              EditBox(text: "Email", hintText: "upXXXXXXXXX@up.pt", controller: emailController),
-              EditBox(text: "Phone Number", hintText: "Phone Number", controller: phoneNumberController),
-              SizedBox(height: 40),
-              Container(
-                height: 50,
-                margin: EdgeInsets.only(top: 5),
-                width: 200,
-                child: ElevatedButton(
-                  onPressed: () {
-
-                    if (_formKey.currentState!.validate()) {
-                      Map<String, dynamic> data = {
-                        'name': nameController.text,
-                        'email': emailController.text,
-                        'phone': phoneNumberController.text,
-                      };
-                      ProfileBackend.updateProfile(uid, data);
-                      Navigator.of(context).pop();
-                    }
-                    // função para guardar as informações
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(mainColor),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25.0),
+                SizedBox(height: 16),
+                Container(
+                  padding: EdgeInsets.only(left: 25),
+                  margin: EdgeInsets.only(bottom: 10),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Your Information',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: mainColor,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  child: Text(
-                    "Save",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                ),
+                EditBox(
+                    text: "Name", hintText: "Name", controller: nameController),
+                EditBox(text: "Email",
+                    hintText: "upXXXXXXXXX@up.pt",
+                    controller: emailController),
+                EditBox(text: "Phone Number",
+                    hintText: "Phone Number",
+                    controller: phoneNumberController),
+                SizedBox(height: 40),
+                Container(
+                  height: 50,
+                  margin: EdgeInsets.only(top: 5),
+                  width: 200,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        Map<String, dynamic> data = {
+                          'name': nameController.text,
+                          'email': emailController.text,
+                          'phone': phoneNumberController.text,
+                        };
+                        ProfileBackend.updateProfile(uid, data);
+                        Navigator.of(context).pop();
+                      }
+                      // função para guardar as informações
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          mainColor),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                      ),
+                    ),
+                    child: Text(
+                      "Save",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: 32),
-            ],
+                SizedBox(height: 32),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
-
 
 }
 

@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import '../posts/timeline.dart';
 import 'dart:ui';
 import '../terms&guidelines/privacyAcceptance.dart';
@@ -44,11 +46,19 @@ class _signUpPageState extends State<SignUpPage>{
       };
       String? error = await authBackend.registerUser(userDoc);
       if (error != null) {
-        setState(() {
-          errorMessage = error;
-        });
-      }
-      else {
+        showTopSnackBar(
+          Overlay.of(context),
+          CustomSnackBar.info(
+            message: error,
+            textStyle: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16
+            ),
+            backgroundColor: secondaryColor,
+          ),
+        );
+      } else {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => PrivacyAcceptancePage(),

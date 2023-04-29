@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:TraceBack/profile/profileBackend.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -13,6 +14,7 @@ class Post extends StatefulWidget {
   late String location;
   Future<Widget> Function() imageRetriever;
   late String description;
+  late String authorID;
 
   Post({Key? key,
     required this.tags,
@@ -20,7 +22,9 @@ class Post extends StatefulWidget {
     required this.location,
     required this.imageRetriever,
     required this.date,
-    required this.description}
+    required this.description,
+    required this.authorID
+  }
       ) : super(key: key);
 
   @override
@@ -29,7 +33,7 @@ class Post extends StatefulWidget {
 
 class _PostState extends State<Post> {
 
-  Widget? map;
+  late Widget map;
 
   Widget? photo;
 
@@ -50,8 +54,7 @@ class _PostState extends State<Post> {
     try {
       locations = await locationFromAddress(widget.location);
     }on Exception{
-      setState(() {
-        map = Container(
+      map = Container(
           height: 30,
           margin: EdgeInsets.only(bottom: 30),
           decoration: BoxDecoration(
@@ -61,7 +64,6 @@ class _PostState extends State<Post> {
           child: Center(child: Text("Could not find location named \"${widget.location}\""),
           ),
         );
-      });
 
       return;
     }
@@ -69,8 +71,7 @@ class _PostState extends State<Post> {
     double long = locations.first.longitude;
     LatLng mapLocation = LatLng(lat, long);
 
-    setState(() {
-      map = SizedBox(
+    map = SizedBox(
         height: 250,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(30),
@@ -96,7 +97,6 @@ class _PostState extends State<Post> {
           )
         ),
       );
-    });
   }
 
   @override
@@ -111,7 +111,7 @@ class _PostState extends State<Post> {
         child: ListView(
           padding: const EdgeInsets.all(15),
           children: [
-            Header(widget: widget, photo: photo),
+            Header(widget: widget),
             SizedBox(height: 10,),
             Wrap(
               direction: Axis.horizontal,
@@ -121,14 +121,23 @@ class _PostState extends State<Post> {
             DescriptionBox(description: widget.description),
             SizedBox(height: 30,),
             LocationDate(location: widget.location, date: widget.date),
-            map ?? SizedBox(
-              height: 250,
-              child: Center(
-                child: CircularProgressIndicator(color: mainColor)
-              ),
+            FutureBuilder(
+              future: loadMap(),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return SizedBox(
+                    height: 250,
+                    child: Center(
+                        child: CircularProgressIndicator(color: mainColor)
+                    ),
+                  );
+                } else {
+                  return map;
+                }
+              }
             ),
             SizedBox(height: 10,),
-            AuthorBox(),
+            AuthorBox(id: widget.authorID),
             SizedBox(height: 100,)
           ],
         ),
@@ -138,14 +147,18 @@ class _PostState extends State<Post> {
 }
 
 class Header extends StatelessWidget {
-  const Header({
+
+  Header({
     super.key,
     required this.widget,
-    required this.photo,
   });
 
   final Post widget;
-  final Widget? photo;
+  late Widget photo;
+
+  loadPhoto() async {
+    photo = await widget.imageRetriever();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,12 +178,22 @@ class Header extends StatelessWidget {
             ),
           ),
         ),
-        photo ?? Container(
-            height: 100.0,
-            width: 100.0,
-            margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
-            child: CircularProgressIndicator(color: mainColor,)
-        ),
+        FutureBuilder(
+            future: loadPhoto(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Container(
+                    height: 100.0,
+                    width: 100.0,
+                    margin: const EdgeInsetsDirectional.symmetric(
+                        horizontal: 15),
+                    child: CircularProgressIndicator(color: mainColor,)
+                );
+              } else {
+                return photo;
+              }
+            }
+        )
       ],
     );
   }
@@ -218,47 +241,108 @@ class LocationDate extends StatelessWidget {
   }
 }
 
-class AuthorBox extends StatelessWidget {
+class AuthorBox extends StatefulWidget {
+
+  final String id;
+
   const AuthorBox({
     super.key,
+    required this.id
   });
 
   @override
+  State<AuthorBox> createState() => _AuthorBoxState();
+}
+
+class _AuthorBoxState extends State<AuthorBox> {
+
+  late String authorName;
+
+  late Widget photo;
+
+  init() async {
+
+    String? photoUrl;
+    
+    photoUrl = await ProfileBackend().getPictureURL(widget.id);
+    
+    if (photoUrl == null){
+      photo = SizedBox.shrink();
+    } else{
+      photo = CircleAvatar(
+        backgroundImage: NetworkImage(photoUrl),
+      );
+    }
+
+    await ProfileBackend().getName(widget.id).then((name) {
+      authorName = name;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: Container(
-          height: 40,
-          width: 110,
-          margin: EdgeInsets.only(bottom: 20),
-          child: Padding(
-              padding: EdgeInsets.only(right: 10),
-              child: TextButton(
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<
-                        Color>(mainColor),
-                    shape: MaterialStateProperty.all<
-                        RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50),
-                        )
-                    )
-                ),
-                onPressed: () {},
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return FutureBuilder(
+      future: init(),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Align(
+              alignment: Alignment.centerRight,
+              child: GestureDetector(
+                onTap: (){},
+                child: Stack(
+                  alignment: Alignment.center,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: Image.asset("assets/profile.jpg"),
+                    Container(
+                      height: 40,
+                      width: 110,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: mainColor
+                      ),
+                      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10)
                     ),
-                    Text("Mariana",
-                      style: TextStyle(color: Colors.white),)
+                    SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        color: secondaryColor,
+                        strokeWidth: 3,
+                      )
+                    ),
                   ],
                 ),
               )
-          )
-      ),
+          );
+        }else {
+          return Align(
+            alignment: Alignment.centerRight,
+            child: InkWell(
+              splashColor: accent,
+              borderRadius: BorderRadius.circular(50),
+              onTap: (){},
+              child:UnconstrainedBox(
+                child: Ink(
+                  height: 40,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: mainColor
+                  ),
+                  padding: EdgeInsets.only(top: 5, bottom: 5, right: 12, left: 2),
+                  child:  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      photo,
+                      SizedBox(width: 5,),
+                      Text(authorName,
+                        style: TextStyle(color: Colors.white),)
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+        }
+      },
     );
   }
 }

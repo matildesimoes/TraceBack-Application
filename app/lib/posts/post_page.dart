@@ -15,14 +15,19 @@ class PostPage extends StatelessWidget {
   late String imageURL;
   late String description;
   late String date;
+  late String authorID;
+  late bool isClosed;
 
   PostPage({Key? key,
+    required this.isClosed,
     required this.tags,
     required this.title,
     required this.location,
     required this.imageURL,
     required this.date,
-    required this.description}
+    required this.description,
+    required this.authorID
+  }
       ) : super(key: key);
 
   Future<Widget> imageRetriever() async {
@@ -46,13 +51,13 @@ class PostPage extends StatelessWidget {
         children: [
           Post(tags: tags, title: title, location: location,
             description: description, imageRetriever: imageRetriever,
-            date: date,),
+            date: date, authorID: authorID,),
         ]
       ),
       floatingActionButton: BottomButton(
-        text: "Contact",
-        icon: Icons.message_outlined,
-        onPressed: (){}),
+        text: isClosed ? "Go Back" : "Contact",
+        icon: isClosed ? Icons.arrow_back_ios : Icons.message_outlined,
+        onPressed: isClosed ? (){Navigator.pop(context);} : (){}),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }

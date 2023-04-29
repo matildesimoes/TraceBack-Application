@@ -188,7 +188,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         'email': emailController.text,
                         'phone': phoneNumberController.text,
                       };
-                      profileBackend.updateProfile(uid, data);
+                      ProfileBackend.updateProfile(uid, data);
                       Navigator.of(context).pop();
                     }
                     // função para guardar as informações

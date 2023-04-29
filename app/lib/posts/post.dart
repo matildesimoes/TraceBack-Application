@@ -103,7 +103,6 @@ class _PostState extends State<Post> {
   Widget build(BuildContext context) {
 
     return Expanded(
-      flex: 20,
       child: Scrollbar(
         thickness: 7,
         thumbVisibility: true,

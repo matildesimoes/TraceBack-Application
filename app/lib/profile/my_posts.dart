@@ -1,8 +1,11 @@
+import 'package:TraceBack/posts/found_post/found_fake_backend.dart';
+import 'package:TraceBack/posts/lost_post/lost_backend.dart';
 import 'package:TraceBack/profile/profileBackend.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../posts/short_post.dart';
 import '../posts/timeline.dart';
 
 
@@ -25,8 +28,18 @@ class MyLostPosts extends MyPosts {
 class _MyLostPostsState extends _MyPostsState<MyLostPosts>{
 
   @override
+  void initState() {
+    super.isLostPost = true;
+    super.initState();
+  }
+
+  @override
   getPosts() async {
-    docs = await ProfileBackend().getLostItems();
+    List<String> ids = await ProfileBackend().getLostItemsIds();
+
+    for (String id in ids){
+      docs.add(await LostBackend().getDoc(id));
+    }
   }
 }
 
@@ -41,14 +54,26 @@ class MyFoundPosts extends MyPosts {
 class _MyFoundPostsState extends _MyPostsState<MyFoundPosts>{
 
   @override
+  void initState() {
+    super.isLostPost = false;
+    super.initState();
+  }
+
+  @override
   getPosts() async {
-    docs = await ProfileBackend().getFoundItems();
+    List<String> ids = await ProfileBackend().getFoundItemsIDs();
+
+    for (String id in ids){
+      docs.add(await FoundBackend().getDoc(id));
+    }
   }
 }
 
 abstract class _MyPostsState<T extends MyPosts> extends State<T> {
 
-  List<QueryDocumentSnapshot<Map<String, dynamic>>> docs = [];
+  List<DocumentSnapshot<Map<String, dynamic>>> docs = [];
+
+  late bool isLostPost;
 
   getPosts();
   
@@ -61,20 +86,23 @@ abstract class _MyPostsState<T extends MyPosts> extends State<T> {
           return Center(child: CircularProgressIndicator(color: secondaryColor,));
         } else {
           return Scrollbar(
-              thickness: 7,
-              thumbVisibility: true,
-              radius: const Radius.circular(10),
-              child: RefreshIndicator(
-                color: Colors.white,
-                backgroundColor: secondaryColor,
-                onRefresh: () async {},
-                child:ListView.builder(
-                    padding: EdgeInsets.all(15),
-                    physics: AlwaysScrollableScrollPhysics(),
-                    itemCount: docs.length,
-                    itemBuilder: (context, index) {
-                      var snapshot = docs.elementAt(index);
-                      Map<String, dynamic> doc = snapshot.data();
+            thickness: 7,
+            thumbVisibility: true,
+            radius: const Radius.circular(10),
+            child: RefreshIndicator(
+              color: Colors.white,
+              backgroundColor: secondaryColor,
+              onRefresh: () async {},
+              child:ListView.builder(
+                padding: EdgeInsets.all(15),
+                physics: AlwaysScrollableScrollPhysics(),
+                itemCount: docs.length,
+                itemBuilder: (context, index) {
+                  var snapshot = docs.elementAt(index);
+                  Map<String, dynamic>? doc = snapshot.data();
+                  if (doc != null) {
+
+
                       String title = doc['title'].toString();
                       String tags = doc['tags'].toString();
                       String location = doc['location'].toString();
@@ -83,12 +111,50 @@ abstract class _MyPostsState<T extends MyPosts> extends State<T> {
                       String date = doc['date'].toString();
                       String authorID = doc['authorID'].toString();
 
-                      return ShortPost(title: title, tags: tags,
-                        location: location, description: description,
-                        imageURL: imageURL, date: date, authorID: authorID,);
+                      ShortPost shortPost = ShortPost(
+                        isLostPost: isLostPost,
+                        title: title,
+                        tags: tags,
+                        location: location,
+                        description: description,
+                        imageURL: imageURL,
+                        date: date,
+                        authorID: authorID,
+                        postID: snapshot.id,
+                      );
+
+                      bool isClosed = doc['closed'];
+                      if (isClosed) {
+                        return Stack(
+                          children: [
+                            shortPost,
+                            Positioned(
+                              top: 0,
+                              right: 25,
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: secondaryColor,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(
+                                  'Closed',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+
+                      return shortPost;
                     }
+                  }
                 ),
-              )
+            )
           );
         }
       }

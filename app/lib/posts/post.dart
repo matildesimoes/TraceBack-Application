@@ -33,7 +33,7 @@ class Post extends StatefulWidget {
 
 class _PostState extends State<Post> {
 
-  Widget? map;
+  late Widget map;
 
   Widget? photo;
 
@@ -54,8 +54,7 @@ class _PostState extends State<Post> {
     try {
       locations = await locationFromAddress(widget.location);
     }on Exception{
-      setState(() {
-        map = Container(
+      map = Container(
           height: 30,
           margin: EdgeInsets.only(bottom: 30),
           decoration: BoxDecoration(
@@ -65,7 +64,6 @@ class _PostState extends State<Post> {
           child: Center(child: Text("Could not find location named \"${widget.location}\""),
           ),
         );
-      });
 
       return;
     }
@@ -73,8 +71,7 @@ class _PostState extends State<Post> {
     double long = locations.first.longitude;
     LatLng mapLocation = LatLng(lat, long);
 
-    setState(() {
-      map = SizedBox(
+    map = SizedBox(
         height: 250,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(30),
@@ -100,7 +97,6 @@ class _PostState extends State<Post> {
           )
         ),
       );
-    });
   }
 
   @override
@@ -115,7 +111,7 @@ class _PostState extends State<Post> {
         child: ListView(
           padding: const EdgeInsets.all(15),
           children: [
-            Header(widget: widget, photo: photo),
+            Header(widget: widget),
             SizedBox(height: 10,),
             Wrap(
               direction: Axis.horizontal,
@@ -125,11 +121,20 @@ class _PostState extends State<Post> {
             DescriptionBox(description: widget.description),
             SizedBox(height: 30,),
             LocationDate(location: widget.location, date: widget.date),
-            map ?? SizedBox(
-              height: 250,
-              child: Center(
-                child: CircularProgressIndicator(color: mainColor)
-              ),
+            FutureBuilder(
+              future: loadMap(),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return SizedBox(
+                    height: 250,
+                    child: Center(
+                        child: CircularProgressIndicator(color: mainColor)
+                    ),
+                  );
+                } else {
+                  return map;
+                }
+              }
             ),
             SizedBox(height: 10,),
             AuthorBox(id: widget.authorID),
@@ -142,14 +147,18 @@ class _PostState extends State<Post> {
 }
 
 class Header extends StatelessWidget {
-  const Header({
+
+  Header({
     super.key,
     required this.widget,
-    required this.photo,
   });
 
   final Post widget;
-  final Widget? photo;
+  late Widget photo;
+
+  loadPhoto() async {
+    photo = await widget.imageRetriever();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -169,12 +178,22 @@ class Header extends StatelessWidget {
             ),
           ),
         ),
-        photo ?? Container(
-            height: 100.0,
-            width: 100.0,
-            margin: const EdgeInsetsDirectional.symmetric(horizontal: 15),
-            child: CircularProgressIndicator(color: mainColor,)
-        ),
+        FutureBuilder(
+            future: loadPhoto(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Container(
+                    height: 100.0,
+                    width: 100.0,
+                    margin: const EdgeInsetsDirectional.symmetric(
+                        horizontal: 15),
+                    child: CircularProgressIndicator(color: mainColor,)
+                );
+              } else {
+                return photo;
+              }
+            }
+        )
       ],
     );
   }
@@ -241,7 +260,7 @@ class _AuthorBoxState extends State<AuthorBox> {
 
   late Widget photo;
 
-  getPhoto() async {
+  init() async {
 
     String? photoUrl;
     
@@ -254,18 +273,10 @@ class _AuthorBoxState extends State<AuthorBox> {
         backgroundImage: NetworkImage(photoUrl),
       );
     }
-  }
-
-  getAuthor() async{
 
     await ProfileBackend().getName(widget.id).then((name) {
       authorName = name;
     });
-  }
-
-  init() async {
-    await getAuthor();
-    await getPhoto();
   }
 
   @override
@@ -306,7 +317,7 @@ class _AuthorBoxState extends State<AuthorBox> {
           return Align(
             alignment: Alignment.centerRight,
             child: InkWell(
-              splashColor: secondaryColor,
+              splashColor: accent,
               borderRadius: BorderRadius.circular(50),
               onTap: (){},
               child:UnconstrainedBox(
@@ -316,14 +327,14 @@ class _AuthorBoxState extends State<AuthorBox> {
                       borderRadius: BorderRadius.circular(50),
                       color: mainColor
                   ),
-                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                  padding: EdgeInsets.only(top: 5, bottom: 5, right: 12, left: 2),
                   child:  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        photo,
-                        SizedBox(width: 5,),
-                        Text(authorName,
-                          style: TextStyle(color: Colors.white),)
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      photo,
+                      SizedBox(width: 5,),
+                      Text(authorName,
+                        style: TextStyle(color: Colors.white),)
                       ],
                     ),
                   ),

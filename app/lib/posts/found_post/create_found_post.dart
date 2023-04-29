@@ -109,7 +109,7 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
     backend.addURL(id, url);
     data['image_url'] = url;
 
-    ProfileBackend().addFoundItem(data);
+    ProfileBackend().addFoundItem(id);
   }
 
   preview() async {

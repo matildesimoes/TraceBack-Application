@@ -16,36 +16,46 @@ class ProfileBackend {
     await FirebaseFirestore.instance.collection('Users').doc(user!.uid).update(data);
   }
 
-  Future<void> addLostItem(Map<String, dynamic> doc) async{
+  Future<void> addLostItem(String id) async{
 
     await firestore.collection(collection)
         .doc(user!.uid)
         .collection('Lost Items')
-        .add(doc);
+        .add({'id': id});
   }
 
-  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getLostItems() async {
+  Future<List<String>> getLostItemsIds() async {
     var snapshot = await firestore.collection(collection)
         .doc(user!.uid)
         .collection('Lost Items').get();
 
-    return snapshot.docs;
+    List<String> ids = [];
+
+    for (var doc in snapshot.docs){
+      ids.add(doc.get('id'));
+    }
+    return ids;
   }
 
-  Future<void> addFoundItem(Map<String, dynamic> doc) async{
+  Future<void> addFoundItem(String id) async{
 
     await firestore.collection(collection)
         .doc(user!.uid)
         .collection('Found Items')
-        .add(doc);
+        .add({'id': id});
   }
 
-  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getFoundItems() async {
+  Future<List<String>> getFoundItemsIDs() async {
     var snapshot = await firestore.collection(collection)
         .doc(user!.uid)
         .collection('Found Items').get();
 
-    return snapshot.docs;
+    List<String> ids = [];
+
+    for (var doc in snapshot.docs){
+      ids.add(doc.get('id'));
+    }
+    return ids;
   }
 
   String getCurrentUserID() {

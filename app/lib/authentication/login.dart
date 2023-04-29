@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import '../posts/timeline.dart';
 import 'dart:ui';
 import 'signUp.dart';
@@ -91,9 +93,21 @@ class _LoginPageState extends State<LoginPage> {
                               passwordController.text
                           );
                           if (error != "") {
-                            setState(() {
+                            showTopSnackBar(
+                              Overlay.of(context),
+                              CustomSnackBar.info(
+                                message: error,
+                                textStyle: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  fontSize: 16
+                                ),
+                                backgroundColor: secondaryColor,
+                              ),
+                            );
+                            /*setState(() {
                               errorMessage = error;
-                            });
+                            });*/
                           } else {
                             termsBackend.checkAcceptedTerms(context);
                           }

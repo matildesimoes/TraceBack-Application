@@ -114,7 +114,7 @@ class _CreateLostPostState extends State<CreateLostPost> {
       data['image_url'] = url;
     }
 
-    ProfileBackend().addLostItem(data);
+    ProfileBackend().addLostItem(id);
   }
 
   @override

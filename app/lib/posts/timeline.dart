@@ -64,10 +64,12 @@ class _SearchPageState extends State<SearchPage> {
           tabBackgroundColor: secondaryColor,
           tabs: [
             GButton(
+                key: Key("Found"),
               icon: Icons.check_box_rounded,
               text: "Found Items"
             ),
             GButton(
+              key: Key("Lost"),
               icon: Icons.indeterminate_check_box_rounded,
               text: "Lost Items",
             )

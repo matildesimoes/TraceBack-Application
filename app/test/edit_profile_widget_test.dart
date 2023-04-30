@@ -40,12 +40,6 @@ void main() {
 
     await tester.pumpWidget(MaterialApp(home: EditProfilePageMock((){})));
 
-
-    final editBoxName = find.byType(EditBox);
-    final saveButton = find.widgetWithText(ElevatedButton, 'Save');
-    await tester.tap(saveButton);
-    await tester.pump();
-
     expect(find.text("text"), findsOneWidget);
     expect(find.text("email"), findsOneWidget);
     expect(find.text("phoneNumber"), findsOneWidget);

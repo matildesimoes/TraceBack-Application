@@ -19,9 +19,10 @@ Future<void> main() {
       UserIsInGivenPage(),
       UserTapsAPost(),
       UserIsInPostPage(),
+      PostCardExists()
     ]
     ..customStepParameterDefinitions = []
-    ..restartAppBetweenScenarios = true
+    ..restartAppBetweenScenarios = false
     ..targetAppPath = "test/posts_tests/acceptance_tests/timeline_initializer.dart";
   return GherkinRunner().execute(config);
 }

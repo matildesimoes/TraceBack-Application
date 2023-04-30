@@ -19,9 +19,8 @@ class PostCard extends StatefulWidget {
   late String postID;
   late bool isLostPost;
   late bool isClosed;
-  Key? key;
 
-  PostCard({this.key, required String tags, required this.title,
+  PostCard({super.key, required String tags, required this.title,
     required this.location, required this.imageURL, required this.description,
     required this.date, required this.authorID, required this.postID,
     required this.isLostPost, required this.isClosed
@@ -59,7 +58,6 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      key: widget.key,
       onTap: () {
         if (widget.authorID == ProfileBackend().getCurrentUserID() && !widget.isClosed){
           Navigator.of(context).push(MaterialPageRoute(

@@ -3,30 +3,34 @@ import 'package:gherkin/gherkin.dart';
 import 'package:flutter_driver/flutter_driver.dart';
 
 class UserIsInGivenPage extends Given1WithWorld<String, FlutterWorld> {
+
   @override
   Future<void> executeStep(String key) async {
+
+    await Future.delayed(Duration(seconds: 8));
     final page = find.byValueKey(key);
     bool pageExists = await FlutterDriverUtils.isPresent(world.driver, page);
     expect(pageExists, true);
   }
 
   @override
-  // TODO: implement pattern
   RegExp get pattern => RegExp(r"I am on the {string}");
 }
 
-class PostCardExists extends Given1WithWorld<String, FlutterWorld> {
+class PostCardExists extends And1WithWorld<String, FlutterWorld> {
 
   @override
   Future<void> executeStep(String key) async {
     final post = find.byValueKey(key);
     bool postExists = await FlutterDriverUtils.isPresent(world.driver, post);
-    expect(postExists, true);
+    if (!postExists) {
+      throw Exception("There are no posts available to test");
+    }
   }
 
   @override
   // TODO: implement pattern
-  Pattern get pattern => RegExp(r"A {string} exists");
+  Pattern get pattern => RegExp(r"a {string} exists");
 }
 
 class UserTapsAPost extends When1WithWorld<String, FlutterWorld> {

@@ -3,7 +3,7 @@ Feature: Open Post
 
   Scenario: Click on a post
     Given I am on the "Timeline"
-    And A "Post Card" exists
+    And a "Post Card" exists
     When I tap a "Post Card"
     Then I should open a "Post Page"
 

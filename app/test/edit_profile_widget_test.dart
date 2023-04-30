@@ -44,7 +44,7 @@ void main() {
     await tester.pump();
 
     expect(find.text("text"), findsOneWidget);
-    expect(find.text("email"), findsOneWidget); 
+    expect(find.text("email"), findsOneWidget);
     expect(find.text("phoneNumber"), findsOneWidget);
 
   });

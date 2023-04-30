@@ -11,6 +11,11 @@ import 'package:flutter/material.dart';
 import '../posts/timeline.dart';
 
 class EditProfilePage extends StatefulWidget {
+
+  final VoidCallback refresh;
+
+  EditProfilePage(this.refresh);
+
   @override
   State<EditProfilePage> createState() => EditProfilePageState();
 }
@@ -192,6 +197,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                       };
                       profileBackend.updateProfile(uid, data);
                       Navigator.of(context).pop();
+                      widget.refresh();
                     }
                     // função para guardar as informações
                   },

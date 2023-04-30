@@ -126,7 +126,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                   onPressed: () {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (context) => EditProfilePage(),
+                                        builder: (context) => EditProfilePage(
+                                            (){setState(() {getUserData();});;}
+                                        ),
                                       ),
                                     );
                                   },

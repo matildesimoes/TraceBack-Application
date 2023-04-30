@@ -12,10 +12,10 @@ import '../posts/timeline.dart';
 
 class EditProfilePage extends StatefulWidget {
   @override
-  State<EditProfilePage> createState() => _EditProfilePageState();
+  State<EditProfilePage> createState() => EditProfilePageState();
 }
 
-class _EditProfilePageState extends State<EditProfilePage> {
+class EditProfilePageState extends State<EditProfilePage> {
 
   File? _image;
   late String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -30,7 +30,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
 
   final ImagePicker _picker = ImagePicker();
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+  late final FirebaseStorage _storage;
   late String _imageUrl = '';
   String collection = "Profile Pics";
 
@@ -86,6 +86,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   void initState() {
+
+    _storage = FirebaseStorage.instance;
     super.initState();
     FirebaseFirestore.instance.collection('Users').doc(uid).get().then(
           (doc) {

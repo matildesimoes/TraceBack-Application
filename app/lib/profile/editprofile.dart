@@ -196,8 +196,9 @@ class EditProfilePageState extends State<EditProfilePage> {
                         'phone': phoneNumberController.text,
                       };
                       profileBackend.updateProfile(uid, data);
-                      Navigator.of(context).pop();
                       widget.refresh();
+                      Navigator.of(context).pop();
+
                     }
                     // função para guardar as informações
                   },

@@ -87,6 +87,7 @@ class _LoginPageState extends State<LoginPage> {
                       margin: EdgeInsets.only(top: constraints.maxHeight * 0.025, bottom: constraints.maxHeight * 0.0125),
                       width: constraints.maxWidth * 0.5,
                       child: ElevatedButton(
+                        key: Key("Logged"),
                         onPressed: () async {
                           String error = await authBackend.login(
                               emailController.text,
@@ -129,6 +130,7 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(height: constraints.maxHeight * 0.025),
                     //Spacer(),
                     Container(
+                      key: Key("Secondary SignUp"),
                       height: constraints.maxHeight * 0.03,
                       width: constraints.maxWidth * 0.75,
                       child: ElevatedButton(
@@ -197,6 +199,7 @@ class _EditBoxState extends State<EditBox> {
       child: Column(
         children: [
           TextFormField(
+            key: Key('Email'),
             controller: widget.emailController,
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
@@ -224,6 +227,7 @@ class _EditBoxState extends State<EditBox> {
           ),
           SizedBox(height: 16),
           TextFormField(
+            key: Key('Password'),
             controller: widget.passwordController,
             obscureText: obscureText,
             decoration: InputDecoration(

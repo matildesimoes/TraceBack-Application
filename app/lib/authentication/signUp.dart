@@ -161,6 +161,7 @@ class _signUpPageState extends State<SignUpPage>{
                     ),
                     SizedBox(height: constraints.maxHeight * 0.025),
                     Container(
+                      key: Key("Secondary Login"),
                       height: constraints.maxHeight * 0.03,
                       width: constraints.maxWidth * 0.75,
                       child: ElevatedButton(

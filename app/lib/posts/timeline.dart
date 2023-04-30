@@ -67,12 +67,12 @@ class _TimelineState extends State<Timeline> {
           tabBackgroundColor: secondaryColor,
           tabs: [
             GButton(
-              key: Key("Found Button"),
+              key: Key("Found"),
               icon: Icons.check_box_rounded,
               text: "Found Items"
             ),
             GButton(
-              key: Key("Lost Button"),
+              key: Key("Lost"),
               icon: Icons.indeterminate_check_box_rounded,
               text: "Lost Items",
             )
@@ -84,7 +84,10 @@ class _TimelineState extends State<Timeline> {
           },
         ),
       ),
-      drawer: SideMenu(),
+      drawer: Drawer(
+        key: Key("Side Menu"),
+        child: SideMenu(),
+      ),
     );
   }
 }
@@ -93,7 +96,7 @@ class CreatePostButton extends StatelessWidget {
 
   late int navBarIndex;
 
-  List<Widget> createPost = [CreateFoundPost(), CreateLostPost()];
+  List<Widget> createPost = [CreateFoundPost(key: Key("Create Found Post")), CreateLostPost(key: Key("Create Lost Post"))];
 
   CreatePostButton(this.navBarIndex, {Key? key}) : super(key: key);
 
@@ -103,6 +106,7 @@ class CreatePostButton extends StatelessWidget {
       widthFactor: 0.2,
       child: FittedBox(
         child: FloatingActionButton(
+          key: Key("Create"),
           backgroundColor: secondaryColor,
           onPressed: (){
             Navigator.of(context).push(
@@ -169,6 +173,8 @@ class LoadingPhoto extends StatelessWidget {
 }
 
 class FoundTimeline extends StatefulWidget {
+  
+  const FoundTimeline({Key? key}) : super(key: key);
 
   const FoundTimeline({super.key});
 
@@ -207,6 +213,7 @@ class _FoundTimelineState extends State<FoundTimeline> {
 }
 
 class LostTimeline extends StatefulWidget {
+
   const LostTimeline({super.key});
 
   @override
@@ -364,12 +371,12 @@ class SideMenu extends StatelessWidget {
 class SideMenuButton extends StatelessWidget{
 
   final Icon icon;
-
   final String text;
 
   SideMenuButton(this.text, this.icon);
-  
+
   navigate(BuildContext context){
+
     switch (text){
       case "Home": {
         Navigator.of(context).popUntil(ModalRoute.withName("/Home"));

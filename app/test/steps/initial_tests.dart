@@ -36,10 +36,12 @@ class UserIsInProfilePage extends Given1WithWorld<String, FlutterWorld> {
 class UserIsInLoginPage extends Then1WithWorld<String, FlutterWorld> {
   @override
   Future<void> executeStep(String input) async {
+    await Future.delayed(const Duration(seconds: 5));
     final initialPage = find.byValueKey(input);
     bool pageExists = await FlutterDriverUtils.isPresent(world.driver, initialPage);
     //await FlutterDriverUtils.tap(world.driver, find.text('TraceBack') as SerializableFinder);
     expect(pageExists, true);
+
   }
 
   @override

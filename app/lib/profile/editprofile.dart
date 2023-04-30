@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:TraceBack/profile/profile.dart';
 import 'package:TraceBack/profile/profileBackend.dart';
-import 'package:TraceBack/util/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -11,11 +9,16 @@ import 'package:flutter/material.dart';
 import '../posts/timeline.dart';
 
 class EditProfilePage extends StatefulWidget {
+
+  final VoidCallback refresh;
+
+  EditProfilePage(this.refresh);
+
   @override
-  State<EditProfilePage> createState() => _EditProfilePageState();
+  State<EditProfilePage> createState() => EditProfilePageState();
 }
 
-class _EditProfilePageState extends State<EditProfilePage> {
+class EditProfilePageState extends State<EditProfilePage> {
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseStorage storage = FirebaseStorage.instance;
@@ -36,7 +39,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
 
   final ImagePicker _picker = ImagePicker();
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+  late final FirebaseStorage _storage;
   late String _imageUrl = '';
   String collection = "Profile Pics";
 
@@ -121,6 +124,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   void initState() {
+
+    _storage = FirebaseStorage.instance;
     super.initState();
     getUserData().then((data) {
       setState(() {
@@ -229,39 +234,34 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                   ),
                 ),
-                EditBox(
-                    text: "Name", hintText: "Name", controller: nameController),
-                EditBox(text: "Email",
-                    hintText: "upXXXXXXXXX@up.pt",
-                    controller: emailController),
-                EditBox(text: "Phone Number",
-                    hintText: "Phone Number",
-                    controller: phoneNumberController),
-                SizedBox(height: 40),
-                Container(
-                  height: 50,
-                  margin: EdgeInsets.only(top: 5),
-                  width: 200,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        Map<String, dynamic> data = {
-                          'name': nameController.text,
-                          'email': emailController.text,
-                          'phone': phoneNumberController.text,
-                        };
-                        ProfileBackend.updateProfile(uid, data);
-                        Navigator.of(context).pop();
-                      }
-                      // função para guardar as informações
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          mainColor),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25.0),
-                        ),
+              ),
+              EditBox(text: "Name", hintText: "Name", controller: nameController),
+              EditBox(text: "Email", hintText: "upXXXXXXXXX@up.pt", controller: emailController),
+              EditBox(text: "Phone Number", hintText: "Phone Number", controller: phoneNumberController),
+              SizedBox(height: 40),
+              Container(
+                height: 50,
+                margin: EdgeInsets.only(top: 5),
+                width: 200,
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      Map<String, dynamic> data = {
+                        'name': nameController.text,
+                        'email': emailController.text,
+                        'phone': phoneNumberController.text,
+                      };
+                      profileBackend.updateProfile(uid, data);
+                      widget.refresh();
+                      Navigator.of(context).pop();
+                    }
+                    // função para guardar as informações
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(mainColor),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25.0),
                       ),
                     ),
                     child: Text(

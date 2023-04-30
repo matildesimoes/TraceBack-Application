@@ -84,10 +84,7 @@ class _TimelineState extends State<Timeline> {
           },
         ),
       ),
-      drawer: Drawer(
-        key: Key("Side Menu"),
-        child: SideMenu(),
-      ),
+      drawer: SideMenu(),
     );
   }
 }
@@ -173,8 +170,6 @@ class LoadingPhoto extends StatelessWidget {
 }
 
 class FoundTimeline extends StatefulWidget {
-  
-  const FoundTimeline({Key? key}) : super(key: key);
 
   const FoundTimeline({super.key});
 

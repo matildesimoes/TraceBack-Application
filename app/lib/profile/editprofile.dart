@@ -20,10 +20,10 @@ class EditProfilePage extends StatefulWidget {
 
 class EditProfilePageState extends State<EditProfilePage> {
 
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-  FirebaseStorage storage = FirebaseStorage.instance;
+  late FirebaseFirestore firestore;
+  late FirebaseStorage storage;
 
-  User? user = FirebaseAuth.instance.currentUser;
+  late User? user;
 
   File? _image;
   late String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -124,6 +124,10 @@ class EditProfilePageState extends State<EditProfilePage> {
 
   @override
   void initState() {
+
+    firestore = FirebaseFirestore.instance;
+    storage = FirebaseStorage.instance;
+    user = FirebaseAuth.instance.currentUser;
 
     _storage = FirebaseStorage.instance;
     super.initState();
@@ -234,7 +238,6 @@ class EditProfilePageState extends State<EditProfilePage> {
                     ),
                   ),
                 ),
-              ),
               EditBox(text: "Name", hintText: "Name", controller: nameController),
               EditBox(text: "Email", hintText: "upXXXXXXXXX@up.pt", controller: emailController),
               EditBox(text: "Phone Number", hintText: "Phone Number", controller: phoneNumberController),
@@ -251,7 +254,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                         'email': emailController.text,
                         'phone': phoneNumberController.text,
                       };
-                      profileBackend.updateProfile(uid, data);
+                      ProfileBackend().updateProfile(uid, data);
                       widget.refresh();
                       Navigator.of(context).pop();
                     }
@@ -264,14 +267,15 @@ class EditProfilePageState extends State<EditProfilePage> {
                         borderRadius: BorderRadius.circular(25.0),
                       ),
                     ),
-                    child: Text(
-                      "Save",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  ),
+                  child: Text(
+                    "Save",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
+                ),
                 ),
                 SizedBox(height: 32),
               ],

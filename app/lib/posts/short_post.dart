@@ -7,7 +7,7 @@ import '../util/camera.dart';
 import 'post_page.dart';
 import 'timeline.dart';
 
-class ShortPost extends StatefulWidget {
+class PostCard extends StatefulWidget {
 
   late String title;
   List<Tag> tags = [];
@@ -20,7 +20,7 @@ class ShortPost extends StatefulWidget {
   late bool isLostPost;
   late bool isClosed;
 
-  ShortPost({super.key, required String tags, required this.title,
+  PostCard({super.key, required String tags, required this.title,
     required this.location, required this.imageURL, required this.description,
     required this.date, required this.authorID, required this.postID,
     required this.isLostPost, required this.isClosed
@@ -32,10 +32,10 @@ class ShortPost extends StatefulWidget {
   }
 
   @override
-  State<ShortPost> createState() => _ShortPostState();
+  State<PostCard> createState() => _PostCardState();
 }
 
-class _ShortPostState extends State<ShortPost> {
+class _PostCardState extends State<PostCard> {
 
   Widget? photo;
 
@@ -62,6 +62,7 @@ class _ShortPostState extends State<ShortPost> {
         if (widget.authorID == ProfileBackend().getCurrentUserID() && !widget.isClosed){
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => MyPostPage(
+                key: Key("Post Page"),
                 isLostPost: widget.isLostPost,
                 postID: widget.postID,
                 title: widget.title,
@@ -75,6 +76,7 @@ class _ShortPostState extends State<ShortPost> {
         } else {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => PostPage(
+                key: Key("Post Page"),
                 isClosed: widget.isClosed,
                 title: widget.title,
                 tags: widget.tags,

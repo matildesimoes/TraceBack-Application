@@ -110,7 +110,7 @@ abstract class _MyPostsState<T extends MyPosts> extends State<T> {
                       String authorID = doc['authorID'].toString();
                       bool isClosed = doc['closed'];
 
-                      ShortPost shortPost = ShortPost(
+                      PostCard postCard = PostCard(
                         isLostPost: isLostPost,
                         title: title,
                         tags: tags,
@@ -126,7 +126,7 @@ abstract class _MyPostsState<T extends MyPosts> extends State<T> {
                       if (isClosed) {
                         return Stack(
                           children: [
-                            shortPost,
+                            postCard,
                             Positioned(
                               top: 0,
                               right: 25,
@@ -148,7 +148,7 @@ abstract class _MyPostsState<T extends MyPosts> extends State<T> {
                           ],
                         );
                       }
-                      return shortPost;
+                      return postCard;
                     }
                   }
                 ),

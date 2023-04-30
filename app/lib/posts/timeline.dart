@@ -10,26 +10,29 @@ import '../util/camera.dart';
 import 'found_post/create_found_post.dart';
 import 'lost_post/create_lost_post.dart';
 import 'lost_post/lost_backend.dart';
+import 'short_post.dart';
 
 const Color mainColor = Color(0xFF1a425b);
 const Color secondaryColor = Color(0xFFd5a820);
 const Color accent = Color(0xFFebebeb);
 
-class SearchPage extends StatefulWidget {
-  const SearchPage({
+class Timeline extends StatefulWidget {
+  const Timeline({
     super.key,
   });
 
   @override
-  State<SearchPage> createState() => _SearchPageState();
+  State<Timeline> createState() => _TimelineState();
 }
 
 
-class _SearchPageState extends State<SearchPage> {
+class _TimelineState extends State<Timeline> {
 
   int _navBarIndex = 0;
 
-  List<Widget> timelines = [FoundTimeline(key: Key("Found Timeline")), LostTimeline(key: Key("Lost Timeline"))];
+  List<Widget> timelines = [
+    FoundTimeline(key: Key("Found Timeline")),
+    LostTimeline(key: Key("Lost Timeline"))];
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +67,7 @@ class _SearchPageState extends State<SearchPage> {
           tabBackgroundColor: secondaryColor,
           tabs: [
             GButton(
-                key: Key("Found"),
+              key: Key("Found"),
               icon: Icons.check_box_rounded,
               text: "Found Items"
             ),
@@ -153,132 +156,6 @@ class Tag extends StatelessWidget {
   );
 }
 
-class ShortPost extends StatefulWidget {
-
-  late String title;
-  List<Tag> tags = [];
-  late String location;
-  late String imageURL;
-  late String description;
-  late String date;
-
-  ShortPost({super.key, required String tags, required this.title,
-    required this.location, required this.imageURL, required this.description,
-    required this.date
-  }){
-    if (tags.isNotEmpty)
-      for (String tag in tags.split(',')) {
-        this.tags.add(Tag(tag));
-    }
-  }
-
-  @override
-  State<ShortPost> createState() => _ShortPostState();
-}
-
-class _ShortPostState extends State<ShortPost> {
-
-  Widget? photo;
-
-  void initPhoto() async {
-
-    try {
-      photo = await ImageHandler().getPictureFrame(widget.imageURL);
-    } catch (e){
-      photo = const SizedBox(width: 50,);
-    }
-    setState(() {});
-  }
-
-  @override
-  void initState() {
-    initPhoto();
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => PostPage(
-                  title: widget.title,
-                  tags: widget.tags,
-                  location: widget.location,
-                  imageURL: widget.imageURL,
-                  description: widget.description,
-                  date: widget.date,
-                )));
-      },
-      child: Container(
-        width: double.maxFinite,
-        height: 130,
-        margin:
-            const EdgeInsetsDirectional.only(bottom: 30, start: 20, end: 20),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(80),
-            color: accent,
-            border: Border.all(style: BorderStyle.solid, color: accent),
-        ),
-        child: Row(
-          children: [
-            (widget.imageURL != "null") ?
-            photo ?? LoadingPhoto() : SizedBox(width: 40),
-            Expanded(
-                child: Padding(
-              padding: EdgeInsets.only(right: 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 10),
-                    child: Text(
-                      widget.title,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 40,
-                    child: ListView(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      children: widget.tags,
-                    ),
-                  ),
-                  Expanded(
-                    child: Align(
-                      alignment: AlignmentDirectional.centerStart,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Text(
-                                widget.location,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: mainColor),
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    )
-                  )
-                ],
-              ),
-            ))
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class LoadingPhoto extends StatelessWidget {
   const LoadingPhoto({
     super.key,
@@ -299,6 +176,8 @@ class FoundTimeline extends StatefulWidget {
   
   const FoundTimeline({Key? key}) : super(key: key);
 
+  const FoundTimeline({super.key});
+
   @override
   State<FoundTimeline> createState() => _FoundTimelineState();
 }
@@ -317,8 +196,9 @@ class _FoundTimelineState extends State<FoundTimeline> {
 
     var snapshots = await FoundBackend().getCollection().get();
     var docs = snapshots.docs;
+    docs.removeWhere((doc) => doc.get('closed'));
     setState(() {
-      posts = getPosts(docs, refresh);
+      posts = getPosts(docs, refresh, false);
     });
   }
 
@@ -333,8 +213,8 @@ class _FoundTimelineState extends State<FoundTimeline> {
 }
 
 class LostTimeline extends StatefulWidget {
-  
-  const LostTimeline({Key? key}) : super(key: key);
+
+  const LostTimeline({super.key});
 
   @override
   State<LostTimeline> createState() => _LostTimeline();
@@ -353,8 +233,9 @@ class _LostTimeline extends State<LostTimeline> {
   Future<void> refresh() async {
     var snapshots = await LostBackend().getCollection().get();
     var docs = snapshots.docs;
+    docs.removeWhere((doc) => doc.get('closed'));
     setState(() {
-      posts = getPosts(docs, refresh);
+      posts = getPosts(docs, refresh, true);
     });
   }
 
@@ -370,7 +251,7 @@ class _LostTimeline extends State<LostTimeline> {
 }
 
 Widget getPosts(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
-    Future<void> Function() refresh) {
+    Future<void> Function() refresh, bool isLostPost) {
 
   if(docs.isEmpty) {
     return Expanded(
@@ -408,16 +289,28 @@ Widget getPosts(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
             itemBuilder: (context, index) {
               var snapshot = docs.elementAt(index);
               Map<String, dynamic> doc = snapshot.data();
+
               String title = doc['title'].toString();
               String tags = doc['tags'].toString();
               String location = doc['location'].toString();
               String description = doc['description'].toString();
               String imageURL = doc['image_url'].toString();
               String date = doc['date'].toString();
+              String authorID = doc['authorID'].toString();
 
-              return ShortPost(title: title, tags: tags,
-                location: location, description: description,
-                  imageURL: imageURL, date: date,);
+              return PostCard(
+                key: isLostPost ? Key("Lost Post Card") : Key("Found Post Card"),
+                isLostPost: isLostPost,
+                title: title,
+                tags: tags,
+                location: location,
+                description: description,
+                imageURL: imageURL,
+                date: date,
+                authorID: authorID,
+                postID: snapshot.id,
+                isClosed: false,
+              );
             }
           ),
         )

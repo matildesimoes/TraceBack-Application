@@ -21,10 +21,8 @@ Future<void> main() async {
     ]
     ..hooks = []
     ..stepDefinitions = [UserIsInInitialPage(),WhenFillFieldStep(), UserIsInInitialPage1(),UserIsInLoginPage(), TapWidgetOfTypeStep(), UserIsInProfilePage(), UserIsInSignUpPage(), SideMenuTesting()]
-    ..customStepParameterDefinitions = [
-
-    ]
+    ..customStepParameterDefinitions = []
     ..restartAppBetweenScenarios = true
-    ..targetAppPath = "test/app.dart";
+    ..targetAppPath = "test/timeline_initializer.dart";
   return GherkinRunner().execute(config);
 }

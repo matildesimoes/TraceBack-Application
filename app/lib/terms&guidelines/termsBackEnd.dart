@@ -13,7 +13,13 @@ class TermsBackend{
 
   Future<void> checkAcceptedTerms(BuildContext context) async{
     var snapshot = await firestore.collection('Users').doc(firebaseAuth.currentUser?.uid).get();
-    bool accepted = snapshot.get('acceptedTerms');
+    bool accepted;
+    try {
+      accepted = snapshot.get('acceptedTerms');
+    }
+    catch (e) {
+      accepted = false;
+    }
     if(!accepted){
       Navigator.of(context).pushNamed("/AcceptedTerms");
     }

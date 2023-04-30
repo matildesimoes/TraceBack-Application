@@ -14,6 +14,8 @@ class LostBackend{
   }
 
   Future<String> addToCollection(Map<String, dynamic> doc) async {
+
+    doc['closed'] = false;
     var ref = await firestore.collection(collection).add(doc);
     return ref.id;
   }
@@ -37,5 +39,16 @@ class LostBackend{
 
   void addURL(String id, String url) {
     firestore.collection(collection).doc(id).update({"image_url": url});
+  }
+
+  Future<DocumentSnapshot<Map<String, dynamic>>> getDoc(String id) async {
+    var doc = await firestore.collection(collection).doc(id).get();
+
+    return doc;
+  }
+
+  Future<void> closePost(String postID) async {
+
+    await firestore.collection(collection).doc(postID).update({"closed": true});
   }
 }

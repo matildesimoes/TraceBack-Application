@@ -68,7 +68,7 @@ class ProfilePageState extends State<ProfilePage> {
                         ClipOval(
                           child: userData['photoUrl'] != ''
                               ? Image.network(
-                            userData['photoUrl'] as String,
+                            userData['photoUrl'],
                             width: 140,
                             height: 140,
                             fit: BoxFit.cover,

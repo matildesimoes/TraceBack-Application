@@ -1,12 +1,9 @@
 import 'dart:ui';
-import 'package:TraceBack/profile/profileBackend.dart';
-import 'package:TraceBack/terms&guidelines/privacyInformation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'editprofile.dart';
-import 'package:TraceBack/profile/profileBackend.dart';
 import '../posts/timeline.dart';
 import 'dart:async';
 
@@ -14,15 +11,14 @@ import 'dart:async';
 class ProfilePage extends StatefulWidget{
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<ProfilePage> createState() => ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class ProfilePageState extends State<ProfilePage> {
 
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-  FirebaseStorage storage = FirebaseStorage.instance;
-
-  User? user = FirebaseAuth.instance.currentUser;
+  late final FirebaseFirestore firestore;
+  late final FirebaseStorage storage;
+  late User? user;
 
   Future<Map<String, dynamic>> getUserData() async {
     DocumentSnapshot snapshot = await firestore.collection("Users").doc(
@@ -39,6 +35,12 @@ class _ProfilePageState extends State<ProfilePage> {
     return userData;
   }
 
+  @override
+  void initState() {
+    storage = FirebaseStorage.instance;
+    firestore = FirebaseFirestore.instance;
+    user = FirebaseAuth.instance.currentUser;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,24 +128,32 @@ class _ProfilePageState extends State<ProfilePage> {
                                   onPressed: () {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (context) => EditProfilePage(
-                                            (){setState(() {getUserData();});;}
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
+                                        builder: (context) =>
+                                            EditProfilePage(
+                                                    () {
+                                                  setState(() {
+                                                    getUserData();
+                                                  }
+                                                );
+                                                ;
+                                              }
+                                          ),
+                                    ),
+                                  );
+                                },
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            );
-          }
-        });
+              ),
+            ],
+          );
+        }
+      }
+    );
   }
 }

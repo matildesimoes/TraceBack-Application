@@ -1,4 +1,4 @@
-Feature: Authentication
+Feature: Timeline testing
 
   Background:
     Given I am on the initial page
@@ -12,3 +12,14 @@ Feature: Authentication
     Given I am on the "Found Timeline"
     And I tap the "Lost" button
     Then I should be navigated to the "Lost Timeline"
+
+  Scenario: Create Found Post
+    Given I am on the "Found Timeline"
+    And I tap the "Create" button
+    Then I should be navigated to the "Create Found Post"
+
+  Scenario: Create Found Post
+    Given I am on the "Found Timeline"
+    And I tap the "Lost" button
+    And I tap the "Create" button
+    Then I should be navigated to the "Create Lost Post"

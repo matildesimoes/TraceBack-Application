@@ -9,6 +9,7 @@ import 'package:glob/glob.dart';
 
 import 'steps/initial_tests.dart';
 import 'steps/signUp.dart';
+import 'steps/timelineTest.dart';
 
 Future<void> main() async {
   final config = FlutterTestConfiguration()
@@ -19,7 +20,7 @@ Future<void> main() async {
       JsonReporter(path: './report.json')
     ]
     ..hooks = []
-    ..stepDefinitions = [UserIsInInitialPage(),WhenFillFieldStep(), UserIsInInitialPage1(),UserIsInLoginPage(), TapWidgetOfTypeStep(), UserIsInProfilePage(), UserIsInSignUpPage()]
+    ..stepDefinitions = [UserIsInInitialPage(),WhenFillFieldStep(), UserIsInInitialPage1(),UserIsInLoginPage(), TapWidgetOfTypeStep(), UserIsInProfilePage(), UserIsInSignUpPage(), SideMenuTesting()]
     ..customStepParameterDefinitions = [
 
     ]

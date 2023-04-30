@@ -81,7 +81,10 @@ class _SearchPageState extends State<SearchPage> {
           },
         ),
       ),
-      drawer: SideMenu(),
+      drawer: Drawer(
+        key: Key("Side Menu"),
+        child: SideMenu(),
+      ),
     );
   }
 }
@@ -90,7 +93,7 @@ class CreatePostButton extends StatelessWidget {
 
   late int navBarIndex;
 
-  List<Widget> createPost = [CreateFoundPost(), CreateLostPost()];
+  List<Widget> createPost = [CreateFoundPost(key: Key("Create Found Post")), CreateLostPost(key: Key("Create Lost Post"))];
 
   CreatePostButton(this.navBarIndex, {Key? key}) : super(key: key);
 
@@ -100,6 +103,7 @@ class CreatePostButton extends StatelessWidget {
       widthFactor: 0.2,
       child: FittedBox(
         child: FloatingActionButton(
+          key: Key("Create"),
           backgroundColor: secondaryColor,
           onPressed: (){
             Navigator.of(context).push(
@@ -474,12 +478,12 @@ class SideMenu extends StatelessWidget {
 class SideMenuButton extends StatelessWidget{
 
   final Icon icon;
-
   final String text;
 
   SideMenuButton(this.text, this.icon);
-  
+
   navigate(BuildContext context){
+
     switch (text){
       case "Home": {
         Navigator.of(context).popUntil(ModalRoute.withName("/Home"));

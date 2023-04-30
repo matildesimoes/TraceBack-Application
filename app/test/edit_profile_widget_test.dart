@@ -1,8 +1,6 @@
-import 'package:TraceBack/firebase_initializer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:TraceBack/profile/editprofile.dart';
-
 
 class EditProfilePageMock extends EditProfilePage  {
 

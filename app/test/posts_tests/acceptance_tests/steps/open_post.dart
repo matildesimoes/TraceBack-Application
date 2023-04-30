@@ -7,7 +7,7 @@ class UserIsInGivenPage extends Given1WithWorld<String, FlutterWorld> {
   @override
   Future<void> executeStep(String key) async {
 
-    await Future.delayed(Duration(seconds: 8));
+    await Future.delayed(Duration(seconds: 5));
     final page = find.byValueKey(key);
     bool pageExists = await FlutterDriverUtils.isPresent(world.driver, page);
     expect(pageExists, true);
@@ -17,27 +17,39 @@ class UserIsInGivenPage extends Given1WithWorld<String, FlutterWorld> {
   RegExp get pattern => RegExp(r"I am on the {string}");
 }
 
-class PostCardExists extends And1WithWorld<String, FlutterWorld> {
+class PostCardExists extends AndWithWorld<FlutterWorld> {
 
   @override
-  Future<void> executeStep(String key) async {
-    final post = find.byValueKey(key);
-    bool postExists = await FlutterDriverUtils.isPresent(world.driver, post);
-    if (!postExists) {
+  Future<void> executeStep() async {
+    final lostPost = find.byValueKey("Lost Post Card");
+    bool lostPostExists = await FlutterDriverUtils.isPresent(world.driver, lostPost);
+
+    final foundPost = find.byValueKey("Found Post Card");
+    bool foundPostExists = await FlutterDriverUtils.isPresent(world.driver, foundPost);
+
+    if (!lostPostExists && !foundPostExists) {
       throw Exception("There are no posts available to test");
     }
   }
 
   @override
   // TODO: implement pattern
-  Pattern get pattern => RegExp(r"a {string} exists");
+  Pattern get pattern => "a Post Card exists";
 }
 
 class UserTapsAPost extends When1WithWorld<String, FlutterWorld> {
   @override
   Future<void> executeStep(String key) async {
-    final post = find.byValueKey(key);
-    await FlutterDriverUtils.tap(world.driver, post);
+
+    final foundPost = find.byValueKey("Found $key");
+    final lostPost = find.byValueKey("Lost $key");
+
+    if (await FlutterDriverUtils.isPresent(world.driver, foundPost)) {
+      await FlutterDriverUtils.tap(world.driver, foundPost);
+    } else {
+      await FlutterDriverUtils.tap(world.driver, lostPost);
+    }
+
   }
 
   @override
@@ -45,7 +57,7 @@ class UserTapsAPost extends When1WithWorld<String, FlutterWorld> {
   Pattern get pattern => RegExp(r"I tap a {string}");
 }
 
-class UserIsInPostPage extends Then1WithWorld<String, FlutterWorld> {
+class UserIsInPage extends Then1WithWorld<String, FlutterWorld> {
 
   @override
   Future<void> executeStep(String key) async {
@@ -56,7 +68,7 @@ class UserIsInPostPage extends Then1WithWorld<String, FlutterWorld> {
 
   @override
   // TODO: implement pattern
-  RegExp get pattern => RegExp(r"I should open a {string}");
+  RegExp get pattern => RegExp(r"I should be on the {string}");
 }
 
 

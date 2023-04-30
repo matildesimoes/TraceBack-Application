@@ -30,7 +30,9 @@ class _TimelineState extends State<Timeline> {
 
   int _navBarIndex = 0;
 
-  List<Widget> timelines = [FoundTimeline(), LostTimeline()];
+  List<Widget> timelines = [
+    FoundTimeline(key: Key("Found Timeline")),
+    LostTimeline(key: Key("Lost Timeline"))];
 
   @override
   Widget build(BuildContext context) {
@@ -65,10 +67,12 @@ class _TimelineState extends State<Timeline> {
           tabBackgroundColor: secondaryColor,
           tabs: [
             GButton(
+              key: Key("Found Button"),
               icon: Icons.check_box_rounded,
               text: "Found Items"
             ),
             GButton(
+              key: Key("Lost Button"),
               icon: Icons.indeterminate_check_box_rounded,
               text: "Lost Items",
             )
@@ -166,6 +170,8 @@ class LoadingPhoto extends StatelessWidget {
 
 class FoundTimeline extends StatefulWidget {
 
+  const FoundTimeline({super.key});
+
   @override
   State<FoundTimeline> createState() => _FoundTimelineState();
 }
@@ -201,6 +207,7 @@ class _FoundTimelineState extends State<FoundTimeline> {
 }
 
 class LostTimeline extends StatefulWidget {
+  const LostTimeline({super.key});
 
   @override
   State<LostTimeline> createState() => _LostTimeline();
@@ -285,7 +292,7 @@ Widget getPosts(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
               String authorID = doc['authorID'].toString();
 
               return PostCard(
-                key: Key("Post Card"),
+                key: isLostPost ? Key("Lost Post Card") : Key("Found Post Card"),
                 isLostPost: isLostPost,
                 title: title,
                 tags: tags,

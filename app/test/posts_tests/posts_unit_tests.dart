@@ -8,7 +8,7 @@ void main(){
 
   testWidgets('Short Post Test', (WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
-      home: ShortPost(
+      home: PostCard(
         title: "Test Title",
         date: "Test Date",
         tags: "Tag1,Tag2",

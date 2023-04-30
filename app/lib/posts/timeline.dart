@@ -16,17 +16,17 @@ const Color mainColor = Color(0xFF1a425b);
 const Color secondaryColor = Color(0xFFd5a820);
 const Color accent = Color(0xFFebebeb);
 
-class SearchPage extends StatefulWidget {
-  const SearchPage({
+class Timeline extends StatefulWidget {
+  const Timeline({
     super.key,
   });
 
   @override
-  State<SearchPage> createState() => _SearchPageState();
+  State<Timeline> createState() => _TimelineState();
 }
 
 
-class _SearchPageState extends State<SearchPage> {
+class _TimelineState extends State<Timeline> {
 
   int _navBarIndex = 0;
 
@@ -284,7 +284,8 @@ Widget getPosts(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
               String date = doc['date'].toString();
               String authorID = doc['authorID'].toString();
 
-              return ShortPost(
+              return PostCard(
+                key: Key("Post Card"),
                 isLostPost: isLostPost,
                 title: title,
                 tags: tags,

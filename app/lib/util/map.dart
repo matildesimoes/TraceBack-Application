@@ -8,17 +8,17 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
-class Map extends StatefulWidget {
+class MapBuilder extends StatefulWidget {
 
   late String text;
 
-  Map(this.text, {Key? key}) : super(key: key);
+  MapBuilder(this.text, {Key? key}) : super(key: key);
 
   @override
-  State<Map> createState() => MapState();
+  State<MapBuilder> createState() => MapBuilderState();
 }
 
-class MapState extends State<Map> {
+class MapBuilderState extends State<MapBuilder> {
 
   final Completer<GoogleMapController> _controller =
     Completer<GoogleMapController>();
@@ -147,8 +147,6 @@ class MapState extends State<Map> {
 
   Future<void> _backToInitial_() async {
     final GoogleMapController controller = await _controller.future;
-
-    LocationData? locationData;
 
     await loadLocation();
 

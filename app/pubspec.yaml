@@ -48,6 +48,12 @@ dependencies:
   geolocator: ^9.0.2
   flutter_gherkin: ^2.0.0
   glob: ^2.1.1
+  firebase_core: ^2.9.0
+  cloud_firestore: ^4.5.1
+  firebase_storage: ^11.1.0
+  firebase_auth: ^4.4.2
+  mockito: ^5.4.0
+  top_snackbar_flutter: ^3.0.0+1
 
 dev_dependencies:
   flutter_test:

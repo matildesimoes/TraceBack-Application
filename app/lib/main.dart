@@ -1,9 +1,16 @@
-import 'package:TraceBack/posts/found_post/create_found_post.dart';
+import 'package:TraceBack/firebase_initializer.dart';
 import 'package:TraceBack/posts/timeline.dart';
+import 'package:TraceBack/profile/my_place.dart';
+import 'package:TraceBack/profile/profile.dart';
+import 'package:TraceBack/terms&guidelines/guidelines.dart';
+import 'package:TraceBack/terms&guidelines/privacyAcceptance.dart';
+import 'package:TraceBack/terms&guidelines/privacyInformation.dart';
 import 'package:flutter/material.dart';
 import 'authentication/initial.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FirebaseInitializer().initializeDefault();
   runApp(TraceBack());
 }
 
@@ -22,7 +29,16 @@ class _TraceBackState extends State<TraceBack> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: InitialPage()
+      builder: (context, child) => SafeArea(child: child!),
+      initialRoute: "/",
+      routes: {
+        '/' : (context) => InitialPage(),
+        '/Home' : (context) => const Timeline(),
+        '/My Place': (context) => MyPlace(),
+        '/Terms': (context) => Terms(),
+        '/Guidelines': (context) => GuidelinesPage(),
+        '/AcceptedTerms' :(context) => PrivacyAcceptancePage()
+      },
     );
   }
 }

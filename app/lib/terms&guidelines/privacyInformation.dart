@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import '../posts/timeline.dart';
 
-class PrivacyInformationPage extends StatefulWidget {
+class Terms extends StatefulWidget {
   @override
-  _PrivacyInformationPageState createState() => _PrivacyInformationPageState();
+  _TermsState createState() => _TermsState();
 }
 
-class _PrivacyInformationPageState extends State<PrivacyInformationPage> {
+class _TermsState extends State<Terms> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,6 +15,10 @@ class _PrivacyInformationPageState extends State<PrivacyInformationPage> {
         toolbarHeight: 80,
         title: Text('Terms of Privacy and Responsibility'),
         centerTitle: true,
+        leading: BackButton(
+          color: Colors.white,
+          onPressed: (){Navigator.of(context).pop();},
+        ),
       ),
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
@@ -27,7 +31,7 @@ class _PrivacyInformationPageState extends State<PrivacyInformationPage> {
                 'Privacy Policy\n',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 24,
+                  fontSize: 20,
                 ),
               ),
               Text(
@@ -50,7 +54,7 @@ class _PrivacyInformationPageState extends State<PrivacyInformationPage> {
                 'Responsibility Policy\n',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 24,
+                  fontSize: 20,
                 ),
               ),
               Text(
@@ -70,6 +74,7 @@ class _PrivacyInformationPageState extends State<PrivacyInformationPage> {
           ),
         ),
       ),
+      drawer: SideMenu(),
     );
   }
 }

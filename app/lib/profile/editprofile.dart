@@ -1,87 +1,246 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:TraceBack/profile/profile.dart';
-import 'package:TraceBack/util/camera.dart';
+import 'package:TraceBack/profile/profileBackend.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../posts/timeline.dart';
 
 class EditProfilePage extends StatefulWidget {
+
+  final VoidCallback refresh;
+
+  EditProfilePage(this.refresh);
+
   @override
-  State<EditProfilePage> createState() => _EditProfilePageState();
+  State<EditProfilePage> createState() => EditProfilePageState();
 }
 
-class _EditProfilePageState extends State<EditProfilePage> {
+class EditProfilePageState extends State<EditProfilePage> {
+
+  late FirebaseFirestore firestore;
+  late FirebaseStorage storage;
+
+  late User? user;
 
   File? _image;
+  late String uid = FirebaseAuth.instance.currentUser!.uid;
+  late String name;
+  late String email;
+  late String phoneNumber;
+  late Map<String, dynamic> userData = {};
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final phoneNumberController = TextEditingController();
+
+
+  final ImagePicker _picker = ImagePicker();
+  late final FirebaseStorage _storage;
+  late String _imageUrl = '';
+  String collection = "Profile Pics";
+
+  Future<String?> getProfilePictureUrl() async {
+    try {
+      final Reference ref =
+      _storage.ref().child(collection).child('$uid/ProfilePic.jpg');
+      final downloadUrl = await ref.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      print('Error retrieving profile picture URL: $e');
+      return null;
+    }
+  }
+
+  void pickUploadImage() async {
+    final image = await _picker.pickImage(
+      source: ImageSource.gallery,
+      maxHeight: 512,
+      maxWidth: 512,
+      imageQuality: 75,
+    );
+
+    if (image != null) {
+      final String fileName = 'ProfilePic.jpg'; // Generate a unique filename
+      final Reference ref = _storage.ref().child(collection).child('$uid/$fileName');
+
+      UploadTask uploadTask = ref.putFile(File(image.path));
+      TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
+
+      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+      print(downloadUrl);
+
+      setState(() {
+        _image = File(image.path);
+        _imageUrl = downloadUrl;
+        userData['photoUrl'] = _imageUrl;
+      });
+    }
+  }
+
+  void captureImage() async {
+    final image = await _picker.pickImage(
+      source: ImageSource.camera,
+      maxHeight: 512,
+      maxWidth: 512,
+      imageQuality: 75,
+    );
+
+    if (image != null) {
+      final String fileName = 'ProfilePic.jpg'; // Generate a unique filename
+      final Reference ref = _storage.ref().child(collection).child('$uid/$fileName');
+
+      UploadTask uploadTask = ref.putFile(File(image.path));
+      TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
+
+      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+      print(downloadUrl);
+
+      setState(() {
+        _image = File(image.path);
+        _imageUrl = downloadUrl;
+        userData['photoUrl'] = _imageUrl;
+      });
+    }
+  }
+
+  Future<Map<String, dynamic>> getUserData() async {
+    DocumentSnapshot snapshot = await firestore.collection("Users").doc(
+        user!.uid).get();
+    String photoUrl;
+    try {
+      photoUrl = await storage.ref('Profile Pics/${user!.uid}/ProfilePic.jpg')
+          .getDownloadURL();
+    } catch (e) {
+      photoUrl = '';
+    }
+    Map<String, dynamic> userData = snapshot.data() as Map<String, dynamic>;
+    userData['photoUrl'] = photoUrl;
+    return userData;
+  }
+
+  @override
+  void initState() {
+
+    firestore = FirebaseFirestore.instance;
+    storage = FirebaseStorage.instance;
+    user = FirebaseAuth.instance.currentUser;
+
+    _storage = FirebaseStorage.instance;
+    super.initState();
+    getUserData().then((data) {
+      setState(() {
+        userData = data;
+      });
+    });
+    FirebaseFirestore.instance.collection('Users').doc(uid).get().then(
+          (doc) {
+        name = doc['name'];
+        email = doc['email'];
+        phoneNumber = doc['phone'];
+
+        nameController.text = name;
+        emailController.text = email;
+        phoneNumberController.text = phoneNumber;
+
+        setState(() {
+          _imageUrl = doc['photoUrl'] as String ?? '';
+          if (_imageUrl.isNotEmpty) {
+            _image = File.fromUri(Uri.parse(_imageUrl));
+          }
+        });
+      });
+  }
 
   @override
   Widget build(BuildContext context) {
-  return Scaffold(
+    if (userData.isEmpty) {
+      return CircularProgressIndicator();
+    } else {
+      return Scaffold(
         drawer: SideMenu(),
         appBar: AppBar(
-        backgroundColor: mainColor,
-        toolbarHeight: 80,
-    ),
-    body: SingleChildScrollView(
-    child: Form(
-    key: _formKey,
-    child: Column(
-            children: [
-              SizedBox(height: 35),
-              Stack(
-                children: [
-                  CircleAvatar(
-                    radius: 70,
-                    backgroundColor: grey,
-                    backgroundImage: _image != null ? FileImage(_image!) : null,
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      padding: EdgeInsets.all(2),
-                      decoration: BoxDecoration(
+          backgroundColor: mainColor,
+          toolbarHeight: 80,
+        ),
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                SizedBox(height: 35),
+                Stack(
+                  children: [
+                    ClipOval(
+                      child: userData.containsKey('photoUrl') && userData['photoUrl'] != ''
+                          ? Image.network(
+                        userData['photoUrl'] as String,
+                        width: 140,
+                        height: 140,
+                        fit: BoxFit.cover,
+                      )
+                          : Container(
+                        width: 140,
+                        height: 140,
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.camera_alt,
-                          color: mainColor,
-                          size: 24,
-                        ),
-                        onPressed: () async {
-                          File? image = await ImageHandler.getImage(context);
-                          setState(() {
-                            _image = image;
-                          });
-                        },
                       ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 16),
-              Container(
-                padding: EdgeInsets.only(left: 25),
-                margin: EdgeInsets.only(bottom:10),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Your Information',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: mainColor,
-                      fontWeight: FontWeight.bold,
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        padding: EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                Icons.photo_library,
+                                color: mainColor,
+                                size: 24,
+                              ),
+                              onPressed: pickUploadImage,
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.camera_alt,
+                                color: mainColor,
+                                size: 24,
+                              ),
+                              onPressed: captureImage,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16),
+                Container(
+                  padding: EdgeInsets.only(left: 25),
+                  margin: EdgeInsets.only(bottom: 10),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Your Information',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: mainColor,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              EditBox(text: "Name", hintText: "Name"),
-              EditBox(text: "Email", hintText: "upXXXXXXXXX@up.pt"),
-              EditBox(text: "Phone Number", hintText: "Phone Number"),
+              EditBox(text: "Name", hintText: "Name", controller: nameController),
+              EditBox(text: "Email", hintText: "upXXXXXXXXX@up.pt", controller: emailController),
+              EditBox(text: "Phone Number", hintText: "Phone Number", controller: phoneNumberController),
               SizedBox(height: 40),
               Container(
                 height: 50,
@@ -90,12 +249,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      Navigator.of(context)
-                          .push(
-                          MaterialPageRoute(
-                              builder: (context) => ProfilePage()
-                          )
-                      );
+                      Map<String, dynamic> data = {
+                        'name': nameController.text,
+                        'email': emailController.text,
+                        'phone': phoneNumberController.text,
+                      };
+                      ProfileBackend().updateProfile(uid, data);
+                      widget.refresh();
+                      Navigator.of(context).pop();
                     }
                     // função para guardar as informações
                   },
@@ -115,15 +276,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: 32),
-            ],
+                ),
+                SizedBox(height: 32),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
-
 
 }
 
@@ -131,9 +292,9 @@ class EditBox extends StatelessWidget {
 
   final String text;
   final String hintText;
-  EditBox({required this.text, required this.hintText});
+  final TextEditingController controller;
 
-  final controller = TextEditingController();
+  EditBox({required this.text, required this.hintText, required this.controller,});
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +314,7 @@ class EditBox extends StatelessWidget {
             icon: Icon(Icons.edit, color: mainColor),
           ),
           filled: true,
-          fillColor: grey,
+          fillColor: accent,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(25),
             borderSide: BorderSide(

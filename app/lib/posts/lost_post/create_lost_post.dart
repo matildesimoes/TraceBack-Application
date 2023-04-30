@@ -2,15 +2,20 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:TraceBack/posts/create_post_util/tag_field.dart';
+import 'package:TraceBack/posts/post_preview_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:textfield_tags/textfield_tags.dart';
+import '../../profile/profileBackend.dart';
+import '../../util/bottom_button.dart';
 import '../create_post_util/description_field.dart';
 import '../create_post_util/date_picker.dart';
 import '../create_post_util/image_selector.dart';
+import '../found_post/found_fake_backend.dart';
 import '../timeline.dart';
 import '../../util/map.dart';
-import 'submit_button.dart';
+import 'lost_backend.dart';
 
 class CreateLostPost extends StatefulWidget {
   const CreateLostPost({Key? key}) : super(key: key);
@@ -22,8 +27,6 @@ class CreateLostPost extends StatefulWidget {
 class _CreateLostPostState extends State<CreateLostPost> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  List<String> tags = [];
 
   File? _image;
 
@@ -49,16 +52,69 @@ class _CreateLostPostState extends State<CreateLostPost> {
   );
   TextEditingController descriptionController = TextEditingController();
 
-
-
   @override
   void dispose() {
     super.dispose();
     titleController.dispose();
     categoryController.dispose();
-    tagsController.dispose();
     locationController.dispose();
     dateController.dispose();
+  }
+
+  preview(){
+    if (_formKey.currentState!.validate()){
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) =>
+            PostPreview(
+              tags: tagsController.hasTags ?
+              tagsController.getTags.toString().substring(
+                  1,
+                  tagsController.getTags.toString().length - 1
+              ) : "",
+              category: categoryController.dropDownValue!.value,
+              title: titleController.text,
+              location: locationController.text,
+              date: dateController.text,
+              image: _image,
+              description: descriptionController.text,
+              authorID: ProfileBackend().getCurrentUserID(),
+              submit: submit
+            )
+        )
+      );
+    }
+  }
+
+  submit () async {
+    LostBackend backend = LostBackend();
+
+    String tagsString  = tagsController.hasTags ?
+
+    tagsController.getTags.toString().substring(
+        1,
+        tagsController.getTags.toString().length - 1
+    ) : "";
+
+    Map<String, dynamic> data = {
+      'title': titleController.text,
+      'category': categoryController.dropDownValue!
+          .value,
+      'tags': tagsString,
+      'location': locationController.text,
+      'date': dateController.text,
+      'description': descriptionController.text,
+      'authorID': ProfileBackend().getCurrentUserID()
+    };
+
+    String id = await backend.addToCollection(data);
+    if (_image != null) {
+      String url = await backend.upload(_image!, id);
+      backend.addURL(id, url);
+      data['image_url'] = url;
+    }
+
+    ProfileBackend().addLostItem(id);
   }
 
   @override
@@ -83,70 +139,55 @@ class _CreateLostPostState extends State<CreateLostPost> {
         padding: const EdgeInsets.all(0),
         child: Form(
           key: _formKey,
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: Scrollbar(
-                  thickness: 7,
-                  thumbVisibility: true,
-                  radius: Radius.circular(10),
-                  child: ListView(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    children: [
-                      SizedBox(
-                        height: 20,
-                      ),
-                      TitleField(controller: titleController),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      CategoryDropdown(controller: categoryController),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      TagField(controller: tagsController),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      LocationField(controller: locationController),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      DatePicker(controller: dateController,),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      DescriptionField(controller: descriptionController),
-                      SizedBox(height: 20),
-                      ImageSelector(
-                          setImage: setImage,
-                          getImage: getImage,
-                          imageValidates: imageValidates
-                      )
-                    ],
-                  ),
+          child: Scrollbar(
+            thickness: 7,
+            thumbVisibility: true,
+            radius: Radius.circular(10),
+            child: ListView(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              children: [
+                SizedBox(
+                  height: 20,
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              SubmitLostButton(
-                formKey: _formKey,
-                tagsController: tagsController,
-                titleController: titleController,
-                categoryController: categoryController,
-                locationController: locationController,
-                dateController: dateController,
-                descriptionController: descriptionController
-              ),
-              SizedBox(
-                height: 10,
-              )
-            ],
+                TitleField(controller: titleController),
+                SizedBox(
+                  height: 20,
+                ),
+                CategoryDropdown(controller: categoryController),
+                SizedBox(
+                  height: 20,
+                ),
+                TagField(controller: tagsController),
+                SizedBox(
+                  height: 20,
+                ),
+                LocationField(controller: locationController),
+                SizedBox(
+                  height: 20,
+                ),
+                DatePicker(controller: dateController,),
+                SizedBox(
+                  height: 20,
+                ),
+                DescriptionField(controller: descriptionController),
+                SizedBox(height: 20),
+                ImageSelector(
+                    setImage: setImage,
+                    getImage: getImage,
+                    imageValidates: imageValidates
+                ),
+                SizedBox(height: 120,)
+              ],
+            ),
           ),
         ),
-      )
-
+      ),
+      floatingActionButton: BottomButton(
+          text: "Preview",
+          icon: Icons.remove_red_eye,
+          onPressed: preview
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
@@ -170,7 +211,7 @@ class TitleField extends StatelessWidget {
     decoration: InputDecoration(
         label: Text("Title"),
       filled: true,
-      fillColor: grey,
+      fillColor: accent,
       enabledBorder: border(mainColor),
       focusedBorder: border(mainColor),
       errorBorder:border(Colors.red),
@@ -201,14 +242,13 @@ class CategoryDropdown extends StatelessWidget {
       textFieldDecoration: InputDecoration(
           label: Text("Category"),
           filled: true,
-          fillColor: grey,
+          fillColor: accent,
           enabledBorder: border(mainColor),
           focusedBorder: border(mainColor),
           errorBorder:border(Colors.red),
           focusedErrorBorder: border(Colors.red)
       ),
       dropDownList: [
-        DropDownValueModel(name: 'All', value: "All"),
         DropDownValueModel(name: 'IT Devices', value: "IT Devices"),
         DropDownValueModel(name: 'Keys', value: "Keys"),
         DropDownValueModel(name: 'Clothing', value: "Clothing"),
@@ -230,7 +270,7 @@ class LocationField extends StatelessWidget {
 
   void _getLocation(BuildContext context) async {
     final location = await Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => Map(controller.text))
+        MaterialPageRoute(builder: (context) => MapBuilder(controller.text))
     );
     controller.text = location;
   }
@@ -253,7 +293,7 @@ class LocationField extends StatelessWidget {
             icon: Icon(Icons.location_on, color: mainColor)
         ),
         filled: true,
-        fillColor: grey,
+        fillColor: accent,
         enabledBorder: border(mainColor),
         focusedBorder: border(mainColor),
         errorBorder:border(Colors.red),

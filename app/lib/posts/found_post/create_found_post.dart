@@ -3,12 +3,16 @@ import 'dart:ui';
 
 import 'package:TraceBack/posts/create_post_util/description_field.dart';
 import 'package:TraceBack/posts/create_post_util/tag_field.dart';
+import 'package:TraceBack/profile/profileBackend.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:textfield_tags/textfield_tags.dart';
+import '../../util/bottom_button.dart';
+import '../post_preview_page.dart';
 import '../timeline.dart';
 import '../../util/map.dart';
-import 'submit_button.dart';
+import 'found_fake_backend.dart';
 import '../create_post_util/date_picker.dart';
 import '../create_post_util/image_selector.dart';
 
@@ -22,25 +26,24 @@ class CreateFoundPost extends StatefulWidget {
 class _CreateFoundPostState extends State<CreateFoundPost> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _imageSelected = false;
   bool _clicked = false;
 
   List<String> tags = [];
 
   File? _image;
 
-  getImage(){
+  getImage() {
     return _image;
   }
-  setImage(File? _image){
+
+  setImage(File? image) {
     setState(() {
-      this._image = _image;
-      _imageSelected = true;
+      _image = image;
     });
   }
 
-  imageValidates(){
-    if (!_imageSelected && _clicked) {
+  imageValidates() {
+    if (!(_image != null) && _clicked) {
       return false;
     }
     return true;
@@ -51,11 +54,17 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
   TextfieldTagsController tagsController = new TextfieldTagsController();
   TextEditingController locationController = new TextEditingController();
   TextEditingController dateController = TextEditingController(
-      text: "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}"
+      text: "${DateTime
+          .now()
+          .day}/${DateTime
+          .now()
+          .month}/${DateTime
+          .now()
+          .year}"
   );
   TextEditingController descriptionController = TextEditingController();
 
-  setClicked(bool cond){
+  setClicked(bool cond) {
     setState(() {
       _clicked = cond;
     });
@@ -69,6 +78,68 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
     tagsController.dispose();
     locationController.dispose();
     dateController.dispose();
+  }
+
+  submit() async {
+    FoundBackend backend = FoundBackend();
+
+    String tagsString = tagsController.hasTags ?
+
+    tagsController.getTags.toString().substring(
+        1,
+        tagsController.getTags
+            .toString()
+            .length - 1
+    ) : "";
+
+    Map<String, dynamic> data = {
+      'title': titleController.text,
+      'category': categoryController.dropDownValue!
+          .value,
+      'tags': tagsString,
+      'location': locationController.text,
+      'date': dateController.text,
+      'description': descriptionController.text,
+      'authorID': ProfileBackend().getCurrentUserID()
+    };
+
+    String id = await backend.addToCollection(data);
+
+    String url = await backend.upload(_image!, id);
+    backend.addURL(id, url);
+    data['image_url'] = url;
+
+    ProfileBackend().addFoundItem(id);
+  }
+
+  preview() async {
+    setState(() {
+      _clicked = true;
+    });
+    if (_formKey.currentState!.validate() && _image != null) {
+      Navigator.of(context).push(
+          MaterialPageRoute(
+              builder: (context) =>
+                  PostPreview(
+                    tags: tagsController.hasTags ?
+                    tagsController.getTags.toString().substring(
+                        1,
+                        tagsController.getTags
+                            .toString()
+                            .length - 1
+                    ) : "",
+                    category: categoryController.dropDownValue!.value,
+                    title: titleController.text,
+                    location: locationController.text,
+                    date: dateController.text,
+                    image: _image,
+                    description: descriptionController.text,
+                    authorID: ProfileBackend().getCurrentUserID(),
+                    submit: submit,
+                  )
+          )
+      );
+    }
   }
 
   @override
@@ -89,75 +160,62 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
         toolbarHeight: 80,
       ),
       drawer: SideMenu(),
-      body: Form(
+      body: Padding(
+        padding: const EdgeInsets.all(0),
+        child: Form(
           key: _formKey,
           child: Scrollbar(
             thickness: 7,
             thumbVisibility: true,
             radius: Radius.circular(10),
-            child: Column(
+            child: ListView(
+              padding: EdgeInsets.symmetric(horizontal: 15),
               children: [
-                Expanded(
-                  flex: 20,
-                  child: ListView(
-                    padding: EdgeInsetsDirectional.symmetric(horizontal: 15),
-                    children: [
-                      SizedBox(
-                        height: 20,
-                      ),
-                      TitleField(controller: titleController),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      CategoryDropdown(controller: categoryController),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      TagField(controller: tagsController),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      LocationField(controller: locationController),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      DatePicker(controller: dateController,),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      DescriptionField(controller: descriptionController),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      ImageSelector(
-                          setImage: setImage,
-                          getImage: getImage,
-                          imageValidates: imageValidates),
-                    ],
-                  ),
+                SizedBox(
+                  height: 20,
                 ),
-                Spacer(),
-                SubmitFoundButton(
-                  clicked: setClicked,
-                  imageSelected: _imageSelected,
-                  formKey: _formKey,
-                  tagsController: tagsController,
-                  titleController: titleController,
-                  categoryController: categoryController,
-                  locationController: locationController,
-                  dateController: dateController,
-                  descriptionController: descriptionController,
+                TitleField(controller: titleController),
+                SizedBox(
+                  height: 20,
                 ),
-                SizedBox(height: 10,)
+                CategoryDropdown(controller: categoryController),
+                SizedBox(
+                  height: 20,
+                ),
+                TagField(controller: tagsController),
+                SizedBox(
+                  height: 20,
+                ),
+                LocationField(controller: locationController),
+                SizedBox(
+                  height: 20,
+                ),
+                DatePicker(controller: dateController,),
+                SizedBox(
+                  height: 20,
+                ),
+                DescriptionField(controller: descriptionController),
+                SizedBox(height: 20),
+                ImageSelector(
+                    setImage: setImage,
+                    getImage: getImage,
+                    imageValidates: imageValidates
+                ),
+                SizedBox(height: 120,)
               ],
             ),
           ),
         ),
+      ),
+      floatingActionButton: BottomButton(
+          text: "Preview",
+          icon: Icons.remove_red_eye,
+          onPressed: preview
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
-
-
 
 class TitleField extends StatelessWidget {
   final TextEditingController controller;
@@ -178,7 +236,7 @@ class TitleField extends StatelessWidget {
     decoration: InputDecoration(
         label: Text("Title"),
       filled: true,
-      fillColor: grey,
+      fillColor: accent,
       enabledBorder: border(mainColor),
       focusedBorder: border(mainColor),
       errorBorder:border(Colors.red),
@@ -209,14 +267,13 @@ class CategoryDropdown extends StatelessWidget {
       textFieldDecoration: InputDecoration(
           label: Text("Category"),
           filled: true,
-          fillColor: grey,
+          fillColor: accent,
           enabledBorder: border(mainColor),
           focusedBorder: border(mainColor),
           errorBorder:border(Colors.red),
           focusedErrorBorder: border(Colors.red)
       ),
       dropDownList: [
-        DropDownValueModel(name: 'All', value: "All"),
         DropDownValueModel(name: 'IT Devices', value: "IT Devices"),
         DropDownValueModel(name: 'Keys', value: "Keys"),
         DropDownValueModel(name: 'Clothing', value: "Clothing"),
@@ -238,7 +295,7 @@ class LocationField extends StatelessWidget {
 
   void _getLocation(BuildContext context) async {
     final location = await Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => Map(controller.text))
+        MaterialPageRoute(builder: (context) => MapBuilder(controller.text))
     );
     controller.text = location;
   }
@@ -261,7 +318,7 @@ class LocationField extends StatelessWidget {
             icon: Icon(Icons.location_on, color: mainColor)
         ),
         filled: true,
-        fillColor: grey,
+        fillColor: accent,
         enabledBorder: border(mainColor),
         focusedBorder: border(mainColor),
         errorBorder:border(Colors.red),

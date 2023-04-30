@@ -5,17 +5,23 @@ import 'package:textfield_tags/textfield_tags.dart';
 import '../timeline.dart';
 import '../found_post/create_found_post.dart';
 
-class TagField extends StatelessWidget {
+class TagField extends StatefulWidget {
 
   TagField({
     super.key,
     required this.controller
   });
 
-  double? _distanceToField;
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  TextfieldTagsController controller;
 
-  final TextfieldTagsController controller;
+  @override
+  State<TagField> createState() => _TagFieldState();
+}
+
+class _TagFieldState extends State<TagField> {
+  double? _distanceToField;
+
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +30,11 @@ class TagField extends StatelessWidget {
       borderRadius: BorderRadius.circular(25),
       child: TextFieldTags(
         key: formKey,
-        textfieldTagsController: controller,
+        textfieldTagsController: widget.controller,
         textSeparators: const [' ', ','],
         letterCase: LetterCase.normal,
         validator: (String tag) {
-          if (controller.getTags!.contains(tag)) {
+          if (widget.controller.getTags!.contains(tag)) {
             return 'you already entered that';
           }
           return null;
@@ -42,12 +48,12 @@ class TagField extends StatelessWidget {
               decoration: InputDecoration(
                 isDense: true,
                 filled: true,
-                fillColor: grey,
+                fillColor: accent,
                 enabledBorder: border(mainColor),
                 focusedBorder: border(mainColor),
                 errorBorder:border(Colors.red),
                 focusedErrorBorder: border(Colors.red),
-                hintText: controller.hasTags ? '' : "Enter tag...",
+                hintText: widget.controller.hasTags ? '' : "Enter tag...",
                 errorText: error,
                 prefixIconConstraints:
                 BoxConstraints(maxWidth: _distanceToField! * 0.74),

@@ -1,3 +1,4 @@
+import 'package:TraceBack/terms&guidelines/termsBackEnd.dart';
 import 'package:flutter/material.dart';
 import '../posts/timeline.dart';
 
@@ -9,6 +10,8 @@ class PrivacyAcceptancePage extends StatefulWidget {
 class _PrivacyAcceptancePageState extends State<PrivacyAcceptancePage> {
   ScrollController _scrollController = ScrollController();
   bool _acceptButtonEnabled = false;
+
+  TermsBackend termsBackend = TermsBackend();
 
   @override
   void initState() {
@@ -44,7 +47,7 @@ class _PrivacyAcceptancePageState extends State<PrivacyAcceptancePage> {
                 'Privacy Policy\n',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 24,
+                  fontSize: 20,
                 ),
               ),
               Text(
@@ -67,7 +70,7 @@ class _PrivacyAcceptancePageState extends State<PrivacyAcceptancePage> {
                 'Responsibility Policy\n',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 24,
+                  fontSize: 20,
                 ),
               ),
               Text(
@@ -100,9 +103,8 @@ class _PrivacyAcceptancePageState extends State<PrivacyAcceptancePage> {
               child: Text('Accept'),
               onPressed: _acceptButtonEnabled
                   ? () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => SearchPage()),
-                );
+                termsBackend.setUserAcceptedTerms();
+                Navigator.of(context).pushNamed("/Home");
               }
               : null,
             ),

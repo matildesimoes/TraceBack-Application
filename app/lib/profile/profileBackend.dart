@@ -11,7 +11,7 @@ class ProfileBackend {
 
   String collection = 'Users';
 
-  static Future<void> updateProfile(String uid, Map<String, dynamic> data) async {
+  Future<void> updateProfile(String uid, Map<String, dynamic> data) async {
     User? user = FirebaseAuth.instance.currentUser;
     await FirebaseFirestore.instance.collection('Users').doc(user!.uid).update(data);
   }

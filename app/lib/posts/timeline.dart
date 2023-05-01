@@ -4,6 +4,7 @@ import 'package:TraceBack/posts/post.dart';
 import 'package:TraceBack/posts/found_post/found_fake_backend.dart';
 import 'package:TraceBack/posts/post_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -182,12 +183,14 @@ class _FoundTimelineState extends State<FoundTimeline> {
 
   Widget? posts;
   String? mtoken = " ";
+  User? user;
 
   @override
   void initState() {
     refresh();
     super.initState();
-    //getToken();
+    getToken();
+    // initinfo();
   }
 
 void getToken() async{
@@ -196,6 +199,13 @@ void getToken() async{
       mtoken = token;
       print("my token is $mtoken");
     });
+    saveToken(token!);
+  });
+}
+
+void saveToken(String token) async{
+  await FirebaseFirestore.instance.collection("Users").doc(user!.uid).set({
+    'token' : token,
   });
 }
 

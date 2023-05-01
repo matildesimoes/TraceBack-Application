@@ -14,6 +14,8 @@ import 'found_post/create_found_post.dart';
 import 'lost_post/create_lost_post.dart';
 import 'lost_post/lost_backend.dart';
 import 'short_post.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 
 const Color mainColor = Color(0xFF1a425b);
 const Color secondaryColor = Color(0xFFd5a820);
@@ -185,6 +187,7 @@ class _FoundTimelineState extends State<FoundTimeline> {
   Widget? posts;
   String? mtoken = " ";
   User? user;
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
@@ -219,6 +222,21 @@ initinfo(){
   }
     return;
   });
+
+FirebaseMessaging.onMessage.listen((RemoteMessage message) async{
+print ("....onMessage...");
+print ("onMessage: ${message.notification?.title}/${message.notification?.body}}");
+BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation (
+message.notification!.body.toString(), htmlFormatBigText: true, contentTitle: message.notification! .title.toString(), htmlFormatContentTitle: true
+) ;
+AndroidNotificationDetails androidPlatformChannelSpecifics=AndroidNotificationDetails(
+'defed', 'dbfood', importance: Importance.max,
+styleInformation: bigTextStyleInformation, priority: Priority.max, playSound: false,
+// sound: RawResourceAndroidNotificationSound('notification'), );
+);
+NotificationDetails platformChannelSpecifics = NotificationDetails (android: androidPlatformChannelSpecifics);
+await flutterLocalNotificationsPlugin.show(O, message.notification?.title, message.notification?.body, platformChannelSpecifics, payload: message.data['title']);
+});
 }
 
 void saveToken(String token) async{

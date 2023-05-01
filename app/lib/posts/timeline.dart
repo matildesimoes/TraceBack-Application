@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import '../util/camera.dart';
 import 'found_post/create_found_post.dart';
@@ -203,9 +204,26 @@ void getToken() async{
   });
 }
 
+initinfo(){
+  var androidInitialize = const AndroidInitializationSettings('mipmap/ic_laucher');
+  var iOSInitialize = const DarwinInitializationSettings();
+  var initializationSettings = InitializationSettings(android: androidInitialize, iOS: iOSInitialize);
+  flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: (String? payload) async {
+    try{
+      if(payload != null && payload.isNotEmpty){
+
+      }else {
+      }
+  }catch (e){
+
+  }
+    return;
+  });
+}
+
 void saveToken(String token) async{
-  await FirebaseFirestore.instance.collection("Users").doc(user!.uid).set({
-    'token' : token,
+  await FirebaseFirestore.instance.collection("UsersTokens").doc(user!.uid).set({
+    'userToken' : token,
   });
 }
 

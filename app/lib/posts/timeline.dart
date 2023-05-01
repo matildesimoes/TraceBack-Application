@@ -4,6 +4,7 @@ import 'package:TraceBack/posts/post.dart';
 import 'package:TraceBack/posts/found_post/found_fake_backend.dart';
 import 'package:TraceBack/posts/post_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import '../util/camera.dart';
@@ -180,12 +181,23 @@ class FoundTimeline extends StatefulWidget {
 class _FoundTimelineState extends State<FoundTimeline> {
 
   Widget? posts;
+  String? mtoken = " ";
 
   @override
   void initState() {
     refresh();
     super.initState();
+    //getToken();
   }
+
+void getToken() async{
+  await FirebaseMessaging.instance.getToken().then((token){
+    setState((){
+      mtoken = token;
+      print("my token is $mtoken");
+    });
+  });
+}
 
   Future<void> refresh() async {
 

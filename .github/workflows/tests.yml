@@ -19,7 +19,7 @@ jobs:
     - name: Setup Emulator
       uses: reactivecircus/android-emulator-runner@v2
       with:
-        api-level: 31
+        api-level: 28
         profile: Nexus 6
         arch: arm64-v8a
         force-avd-creation: false

@@ -8,6 +8,9 @@ jobs:
   flutter_test:
     env: 
       working-directory: ./app
+    defaults:
+      run:
+        working-directory: ${{ env.working-directory }}
     name: Run Flutter Acceptance Tests and Unit Tests
     runs-on: ubuntu-latest
     steps:

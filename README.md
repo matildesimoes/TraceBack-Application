@@ -19,6 +19,8 @@ So far, contributions are exclusively made by the initial team, but we hope to o
 
 Please contact us!
 
+Thank you!
+
 António Silva (up202108760)
 Daniel Carneiro (up202108832)
 Gonçalo Costa (up202108814)

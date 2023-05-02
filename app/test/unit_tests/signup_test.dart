@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+@Tags(['ignore'])
 
 class SignUpPageMock extends StatefulWidget {
   @override

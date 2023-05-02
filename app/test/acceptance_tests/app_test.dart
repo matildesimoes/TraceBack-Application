@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_gherkin/flutter_gherkin.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:gherkin/gherkin.dart';
 
 import 'package:glob/glob.dart';

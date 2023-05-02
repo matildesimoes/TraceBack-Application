@@ -6,6 +6,8 @@ on:
 
 jobs:
   flutter_test:
+    env: 
+      working-directory: ./app
     name: Run Flutter Acceptance Tests and Unit Tests
     runs-on: ubuntu-latest
     steps:

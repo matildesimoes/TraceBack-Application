@@ -14,14 +14,11 @@ jobs:
     name: Run Flutter Acceptance Tests and Unit Tests
     runs-on: ubuntu-latest
     steps:
-    - name: Start emulator
-      run: |
-        sdkmanager --list || true
-        echo y | sdkmanager "system-images;android-29;google_apis;x86_64"
-        echo no | avdmanager create avd -n test -k "system-images;android-29;google_apis;x86_64" --force
-        emulator -avd test -no-audio -no-window &
-        android-wait-for-emulator
-        adb shell input keyevent 82 &
+    - name: run tests
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 29
+        script: ./gradlew connectedCheck
     - uses: actions/checkout@v2
     - uses: actions/setup-java@v1
       with:
@@ -30,4 +27,4 @@ jobs:
       with:
         channel: 'stable'
     - run: flutter pub get
-    - run: flutter test --coverage -x ignore --device-id emulator-5554
+    - run: flutter test --coverage -x ignore

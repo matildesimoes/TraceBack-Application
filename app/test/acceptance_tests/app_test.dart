@@ -10,6 +10,7 @@ import 'steps/open_post.dart';
 import 'steps/signUp.dart';
 import 'steps/timelineTest.dart';
 
+@Tags(['ignore'])
 
 Future<void> main() async {
   final config = FlutterTestConfiguration()

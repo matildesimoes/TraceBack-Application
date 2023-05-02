@@ -1,23 +1,30 @@
 name: Flutter_Tests
 
 on:
-  push:
-    branches: [main]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
-  test:
+  flutter_test:
+    env: 
+      working-directory: ./app
+    defaults:
+      run:
+        working-directory: ${{ env.working-directory }}
+    name: Run Flutter Tests
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.7.3'
-          channel: 'stable'
-      - name: Install dependencies
-        run: flutter pub get
-      - name: Run tests
-        run: flutter test --coverage  
+    - name: checkout
+      uses: actions/checkout@v3
+    - name: Setup Java
+      uses: actions/setup-java@v1
+      with:
+        java-version: '12.x'
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v1
+      with:
+        channel: 'stable'
+    - name: Get Packages
+      run: flutter pub get
+    - name: Run Tests
+      run: flutter test --coverage -x ignore

@@ -3,7 +3,6 @@ import 'package:TraceBack/profile/profileBackend.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../util/camera.dart';
 import 'timeline.dart';
 
 class Post extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:TraceBack/posts/timeline.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({Key? key}) : super(key: key);
@@ -49,7 +49,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: mainColor,
         elevation: 0,
       ),
       body: Container(
@@ -81,7 +81,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               onPressed: () => _passwordReset(),
               child: Text('Reset Password'),
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                backgroundColor: MaterialStateProperty.all<Color>(mainColor),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25),
@@ -95,3 +95,4 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     );
   }
 }
+

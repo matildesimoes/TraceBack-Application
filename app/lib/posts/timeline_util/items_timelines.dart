@@ -1,3 +1,4 @@
+import 'package:TraceBack/posts/timeline_util/filter.dart';
 import 'package:TraceBack/posts/timeline_util/post_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -7,10 +8,19 @@ import '../lost_post/lost_backend.dart';
 import '../main_timeline.dart';
 
 abstract class ItemsTimeline extends StatefulWidget {
-  const ItemsTimeline({Key? key}) : super(key: key);
+
+  final ItemsFilter filter;
+
+  ItemsTimeline({Key? key, required this.filter}) : super(key: key);
+
+  late _ItemsTimelineState state;
 
   @override
   State<ItemsTimeline> createState();
+
+  search(){
+    this.state.search();
+  }
 }
 
 abstract class _ItemsTimelineState extends State<ItemsTimeline> {
@@ -66,6 +76,17 @@ abstract class _ItemsTimelineState extends State<ItemsTimeline> {
   }
 
   Future<void> refresh() async {
+    widget.filter.setSearchQuery("");
+    await getItems();
+    setState(() {});
+  }
+
+  Future<void> search() async {
+    await getItems();
+    setState(() {});
+  }
+
+  Future<void> getItems() async {
     QuerySnapshot<Map<String, dynamic>> snapshots = await getSnapshots();
     List<QueryDocumentSnapshot<Map<String, dynamic>>> docs = snapshots.docs;
     docs.removeWhere((doc) => doc.get('closed'));
@@ -73,6 +94,8 @@ abstract class _ItemsTimelineState extends State<ItemsTimeline> {
     for (var doc in docs) {
       postsData.add(PostData(doc, isLostPost));
     }
+
+    postsData = widget.filter.filterThrough(postsData);
     posts = getPosts(postsData);
   }
 
@@ -81,7 +104,7 @@ abstract class _ItemsTimelineState extends State<ItemsTimeline> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: refresh(),
+      future: getItems(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting){
           return const Flexible(
@@ -104,10 +127,13 @@ abstract class _ItemsTimelineState extends State<ItemsTimeline> {
 
 class LostTimeline extends ItemsTimeline{
 
-  const LostTimeline({super.key});
+  LostTimeline({super.key, required super.filter});
 
   @override
-  State<ItemsTimeline> createState() => _LostTimelineState();
+  State<ItemsTimeline> createState() {
+    super.state = _LostTimelineState();
+    return super.state;
+  }
 }
 
 class _LostTimelineState extends _ItemsTimelineState {
@@ -124,10 +150,13 @@ class _LostTimelineState extends _ItemsTimelineState {
 
 class FoundTimeline extends ItemsTimeline{
 
-  const FoundTimeline({super.key});
+  FoundTimeline({super.key, required super.filter});
 
   @override
-  State<ItemsTimeline> createState() => _FoundTimelineState();
+  State<ItemsTimeline> createState() {
+    super.state = _FoundTimelineState();
+    return super.state;
+  }
 }
 
 class _FoundTimelineState extends _ItemsTimelineState {

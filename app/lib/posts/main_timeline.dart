@@ -1,14 +1,11 @@
 import 'dart:ui';
 import 'package:TraceBack/authentication/initial.dart';
-import 'package:TraceBack/posts/found_post/found_fake_backend.dart';
+import 'package:TraceBack/posts/timeline_util/filter.dart';
 import 'package:TraceBack/posts/timeline_util/items_nav_bar.dart';
 import 'package:TraceBack/posts/timeline_util/items_timelines.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'found_post/create_found_post.dart';
 import 'lost_post/create_lost_post.dart';
-import 'lost_post/lost_backend.dart';
-import 'short_post.dart';
 
 const Color mainColor = Color(0xFF1a425b);
 const Color secondaryColor = Color(0xFFd5a820);
@@ -28,10 +25,22 @@ class _MainTimelineState extends State<MainTimeline> {
 
   int _navBarIndex = 0;
 
-  List<Widget> timelines = [
-    FoundTimeline(key: Key("Found Timeline")),
-    LostTimeline(key: Key("Lost Timeline"))
-  ];
+  ItemsFilter filter = ItemsFilter();
+
+  late List<ItemsTimeline> timelines;
+
+  @override
+  void initState() {
+    timelines = [
+      FoundTimeline(key: Key("Found Timeline"), filter: filter),
+      LostTimeline(key: Key("Lost Timeline"), filter: filter)
+    ];
+    super.initState();
+  }
+
+  search(){
+    timelines[_navBarIndex].search();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +55,8 @@ class _MainTimelineState extends State<MainTimeline> {
       body: Container(
         child: Column(
           children: <Widget>[
-            CategoryBar(),
-            SearchBar(),
+            CategoryBar(filter: filter),
+            SearchBar(filter: filter, search: search),
             timelines[_navBarIndex]
           ],
         ),
@@ -241,6 +250,10 @@ class SideMenuButton extends StatelessWidget{
 
 class CategoryBar extends StatelessWidget {
 
+  ItemsFilter filter;
+
+  CategoryBar({super.key, required this.filter});
+
   @override
   Widget build(BuildContext context) => ConstrainedBox(
     constraints: BoxConstraints(maxHeight: 50, minHeight: 50),
@@ -261,11 +274,19 @@ class CategoryBar extends StatelessWidget {
 
 class SearchBar extends StatelessWidget{
 
+  final ItemsFilter filter;
+  final Function search;
+
+  SearchBar({super.key, required this.filter, required this.search});
+
+  final TextEditingController controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) => Container(
     height: 70,
     padding: EdgeInsets.only(bottom: 30, right: 30, left: 30),
     child: TextField(
+      controller: controller,
       textAlignVertical: TextAlignVertical.center,
       style: TextStyle(
           fontSize: 17
@@ -293,7 +314,10 @@ class SearchBar extends StatelessWidget{
         suffixIconColor: mainColor,
         suffixIcon: IconButton(
           icon: Icon(Icons.search_outlined,),
-          onPressed: (){},
+          onPressed: (){
+            filter.setSearchQuery(controller.text);
+            search();
+          },
         ),
       ),
     )

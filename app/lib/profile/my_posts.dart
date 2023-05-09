@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../posts/short_post.dart';
-import '../posts/timeline.dart';
+import '../posts/main_timeline.dart';
 
 
 

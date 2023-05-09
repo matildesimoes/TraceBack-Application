@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../timeline.dart';
+import '../main_timeline.dart';
 
 class Post extends StatefulWidget {
 
@@ -36,17 +36,19 @@ class _PostState extends State<Post> {
   late Widget map;
 
   Widget? photo;
+  Widget? authorPhoto;
+
+  late String authorName;
 
   @override
-  void initState(){
-    loadPhoto();
-    loadMap();
-    super.initState();
+  load() async {
+    await loadPhoto();
+    await loadMap();
+    await loadAuthor();
   }
 
-  void loadPhoto() async {
+  loadPhoto() async {
     photo = await widget.imageRetriever();
-    setState(() {});
   }
 
   loadMap() async {
@@ -64,7 +66,6 @@ class _PostState extends State<Post> {
           child: Center(child: Text("Could not find location named \"${widget.location}\""),
           ),
         );
-
       return;
     }
     double lat = locations.first.latitude;
@@ -99,50 +100,74 @@ class _PostState extends State<Post> {
       );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  loadAuthor() async {
 
-    return Expanded(
-      child: Scrollbar(
-        thickness: 7,
-        thumbVisibility: true,
-        radius: Radius.circular(10),
-        child: ListView(
-          padding: const EdgeInsets.all(15),
-          children: [
-            Header(widget: widget),
-            SizedBox(height: 10,),
-            Wrap(
-              direction: Axis.horizontal,
-              children: widget.tags,
-            ),
-            SizedBox(height: 30,),
-            DescriptionBox(description: widget.description),
-            SizedBox(height: 30,),
-            LocationDate(location: widget.location, date: widget.date),
-            FutureBuilder(
-              future: loadMap(),
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return SizedBox(
-                    height: 250,
-                    child: Center(
-                        child: CircularProgressIndicator(color: mainColor)
-                    ),
-                  );
-                } else {
-                  return map;
-                }
-              }
-            ),
-            SizedBox(height: 10,),
-            AuthorBox(id: widget.authorID),
-            SizedBox(height: 100,)
-          ],
-        ),
-      ),
-    );
+    await ProfileBackend().getName(widget.authorID).then((name) {
+      authorName = name;
+    });
+
+    String? photoUrl;
+
+    try {
+      photoUrl = await ProfileBackend().getPictureURL(widget.authorID);
+    } on Exception {
+      authorPhoto = SizedBox.shrink();
+      return;
+    }
+
+    if (photoUrl == null){
+      authorPhoto = SizedBox.shrink();
+    } else{
+      authorPhoto = CircleAvatar(
+        backgroundImage: NetworkImage(photoUrl),
+      );
+    }
   }
+
+  @override
+  Widget build(BuildContext context) => FutureBuilder(
+    future: load(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Expanded(
+          child: const Center(
+              child: CircularProgressIndicator(
+                  backgroundColor: secondaryColor,
+                  color: Colors.white
+              )
+          ),
+        );
+      }
+      else {
+        return Expanded(
+          child: Scrollbar(
+            thickness: 7,
+            thumbVisibility: true,
+            radius: Radius.circular(10),
+            child: ListView(
+              padding: const EdgeInsets.all(15),
+              children: [
+                Header(widget: widget, photo: photo),
+                SizedBox(height: 10,),
+                Wrap(
+                  direction: Axis.horizontal,
+                  children: widget.tags,
+                ),
+                SizedBox(height: 30,),
+                DescriptionBox(description: widget.description),
+                SizedBox(height: 30,),
+                LocationDate(location: widget.location, date: widget.date),
+                map,
+                SizedBox(height: 10,),
+                AuthorBox(authorPhoto: authorPhoto, authorName: authorName),
+                SizedBox(height: 100,)
+              ],
+            ),
+          ),
+        );
+      }
+    }
+  );
 }
 
 class Header extends StatelessWidget {
@@ -150,14 +175,11 @@ class Header extends StatelessWidget {
   Header({
     super.key,
     required this.widget,
+    required this.photo
   });
 
   final Post widget;
-  late Widget photo;
-
-  loadPhoto() async {
-    photo = await widget.imageRetriever();
-  }
+  late Widget? photo;
 
   @override
   Widget build(BuildContext context) {
@@ -177,22 +199,7 @@ class Header extends StatelessWidget {
             ),
           ),
         ),
-        FutureBuilder(
-            future: loadPhoto(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Container(
-                    height: 100.0,
-                    width: 100.0,
-                    margin: const EdgeInsetsDirectional.symmetric(
-                        horizontal: 15),
-                    child: CircularProgressIndicator(color: mainColor,)
-                );
-              } else {
-                return photo;
-              }
-            }
-        )
+        photo ?? SizedBox.shrink()
       ],
     );
   }
@@ -240,109 +247,46 @@ class LocationDate extends StatelessWidget {
   }
 }
 
-class AuthorBox extends StatefulWidget {
+class AuthorBox extends StatelessWidget {
 
-  final String id;
+  final Widget? authorPhoto;
+  final String authorName;
 
   const AuthorBox({
     super.key,
-    required this.id
+    required this.authorPhoto,
+    required this.authorName
   });
 
   @override
-  State<AuthorBox> createState() => _AuthorBoxState();
-}
-
-class _AuthorBoxState extends State<AuthorBox> {
-
-  late String authorName;
-
-  late Widget photo;
-
-  init() async {
-
-    String? photoUrl;
-    
-    photoUrl = await ProfileBackend().getPictureURL(widget.id);
-    
-    if (photoUrl == null){
-      photo = SizedBox.shrink();
-    } else{
-      photo = CircleAvatar(
-        backgroundImage: NetworkImage(photoUrl),
-      );
-    }
-
-    await ProfileBackend().getName(widget.id).then((name) {
-      authorName = name;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: init(),
-      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Align(
-              alignment: Alignment.centerRight,
-              child: GestureDetector(
-                onTap: (){},
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      height: 40,
-                      width: 110,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: mainColor
-                      ),
-                      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10)
-                    ),
-                    SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(
-                        color: secondaryColor,
-                        strokeWidth: 3,
-                      )
-                    ),
-                  ],
-                ),
-              )
-          );
-        }else {
-          return Align(
-            alignment: Alignment.centerRight,
-            child: InkWell(
-              splashColor: accent,
-              borderRadius: BorderRadius.circular(50),
-              onTap: (){},
-              child:UnconstrainedBox(
-                child: Ink(
-                  height: 40,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      color: mainColor
-                  ),
-                  padding: EdgeInsets.only(top: 5, bottom: 5, right: 12, left: 2),
-                  child:  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      photo,
-                      SizedBox(width: 5,),
-                      Text(authorName,
-                        style: TextStyle(color: Colors.white),)
-                      ],
-                    ),
-                  ),
-                ),
+    return Align(
+      alignment: Alignment.centerRight,
+      child: InkWell(
+        splashColor: accent,
+        borderRadius: BorderRadius.circular(50),
+        onTap: (){},
+        child:UnconstrainedBox(
+          child: Ink(
+            height: 40,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                color: mainColor
+            ),
+            padding: EdgeInsets.only(top: 5, bottom: 5, right: 12, left: 2),
+            child:  Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                authorPhoto ?? SizedBox.shrink(),
+                SizedBox(width: 5,),
+                Text(authorName,
+                  style: TextStyle(color: Colors.white),)
+                ],
               ),
-            );
-        }
-      },
-    );
+            ),
+          ),
+        ),
+      );
   }
 }
 

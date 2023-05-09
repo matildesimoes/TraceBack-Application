@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:textfield_tags/textfield_tags.dart';
-import '../timeline.dart';
+import '../main_timeline.dart';
 import '../found_post/create_found_post.dart';
 
 class DatePicker extends StatefulWidget {

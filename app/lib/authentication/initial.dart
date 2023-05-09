@@ -2,7 +2,7 @@ import 'package:TraceBack/authentication/signUp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'login.dart';
-import '../posts/timeline.dart';
+import '../posts/main_timeline.dart';
 import 'dart:ui';
 
 class InitialPage extends StatefulWidget {

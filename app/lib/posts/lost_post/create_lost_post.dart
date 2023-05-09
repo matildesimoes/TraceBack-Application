@@ -12,7 +12,7 @@ import '../../util/bottom_button.dart';
 import '../create_post_util/description_field.dart';
 import '../create_post_util/date_picker.dart';
 import '../create_post_util/image_selector.dart';
-import '../timeline.dart';
+import '../main_timeline.dart';
 import '../../util/map.dart';
 import 'lost_backend.dart';
 

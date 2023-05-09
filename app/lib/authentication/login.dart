@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import '../posts/timeline.dart';
+import '../posts/main_timeline.dart';
 import 'dart:ui';
 import 'signUp.dart';
 

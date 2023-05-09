@@ -1,9 +1,10 @@
 import 'dart:ui';
 import 'package:TraceBack/authentication/initial.dart';
 import 'package:TraceBack/posts/found_post/found_fake_backend.dart';
+import 'package:TraceBack/posts/timeline_util/items_nav_bar.dart';
+import 'package:TraceBack/posts/timeline_util/items_timelines.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'found_post/create_found_post.dart';
 import 'lost_post/create_lost_post.dart';
 import 'lost_post/lost_backend.dart';
@@ -29,7 +30,8 @@ class _MainTimelineState extends State<MainTimeline> {
 
   List<Widget> timelines = [
     FoundTimeline(key: Key("Found Timeline")),
-    LostTimeline(key: Key("Lost Timeline"))];
+    LostTimeline(key: Key("Lost Timeline"))
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -50,37 +52,12 @@ class _MainTimelineState extends State<MainTimeline> {
           ],
         ),
       ),
-      bottomNavigationBar: Container(
-        color: mainColor,
-        padding: EdgeInsetsDirectional.symmetric(vertical: 10),
-        child: GNav(
-          iconSize: 30.0,
-          gap: 8,
-          backgroundColor: mainColor,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          color: Colors.white,
-          rippleColor: secondaryColor,
-          activeColor: Colors.white,
-          tabBackgroundColor: secondaryColor,
-          tabs: [
-            GButton(
-              key: Key("Found"),
-              icon: Icons.check_box_rounded,
-              text: "Found Items"
-            ),
-            GButton(
-              key: Key("Lost"),
-              icon: Icons.indeterminate_check_box_rounded,
-              text: "Lost Items",
-            )
-          ],
-          onTabChange: (index){
-            setState(() {
-              _navBarIndex = index;
-            });
-          },
-        ),
-      ),
+      bottomNavigationBar: ItemsNavBar(
+        setNavBar: (index){
+          setState(() {
+            _navBarIndex = index;
+          });
+      }),
       drawer: SideMenu(),
     );
   }
@@ -166,151 +143,6 @@ class LoadingPhoto extends StatelessWidget {
   }
 }
 
-class FoundTimeline extends StatefulWidget {
-
-  const FoundTimeline({super.key});
-
-  @override
-  State<FoundTimeline> createState() => _FoundTimelineState();
-}
-
-class _FoundTimelineState extends State<FoundTimeline> {
-
-  Widget? posts;
-
-  @override
-  void initState() {
-    refresh();
-    super.initState();
-  }
-
-  Future<void> refresh() async {
-
-    var snapshots = await FoundBackend().getCollection().get();
-    var docs = snapshots.docs;
-    docs.removeWhere((doc) => doc.get('closed'));
-    setState(() {
-      posts = getPosts(docs, refresh, false);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) =>
-    posts ?? const Expanded(child:Center(child:
-    CircularProgressIndicator(
-        backgroundColor: secondaryColor,
-        color: Colors.white
-    )
-    ));
-}
-
-class LostTimeline extends StatefulWidget {
-
-  const LostTimeline({super.key});
-
-  @override
-  State<LostTimeline> createState() => _LostTimeline();
-}
-
-class _LostTimeline extends State<LostTimeline> {
-
-  Widget? posts;
-
-  @override
-  void initState() {
-    refresh();
-    super.initState();
-  }
-
-  Future<void> refresh() async {
-    var snapshots = await LostBackend().getCollection().get();
-    var docs = snapshots.docs;
-    docs.removeWhere((doc) => doc.get('closed'));
-    setState(() {
-      posts = getPosts(docs, refresh, true);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return posts ?? const Expanded(child:Center(child:
-      CircularProgressIndicator(
-          backgroundColor: secondaryColor,
-          color: Colors.white
-      )
-    ));
-  }
-}
-
-Widget getPosts(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
-    Future<void> Function() refresh, bool isLostPost) {
-
-  if(docs.isEmpty) {
-    return Expanded(
-      child:LayoutBuilder(
-        builder: (context, constraints) => RefreshIndicator(
-          color: Colors.white,
-          backgroundColor: secondaryColor,
-          onRefresh: refresh,
-          child: SingleChildScrollView(
-            physics: AlwaysScrollableScrollPhysics(),
-            child: SizedBox(
-              height: constraints.maxHeight / 2,
-              child: Center(
-                  child:Text("Currently, there are no items to show")
-              )
-            )
-          )
-        )
-      )
-    );
-  }
-  else {
-    return Expanded(
-      child: Scrollbar(
-        thickness: 7,
-        thumbVisibility: true,
-        radius: const Radius.circular(10),
-        child: RefreshIndicator(
-          color: Colors.white,
-          backgroundColor: secondaryColor,
-          onRefresh: refresh,
-          child:ListView.builder(
-            physics: AlwaysScrollableScrollPhysics(),
-            itemCount: docs.length,
-            itemBuilder: (context, index) {
-              var snapshot = docs.elementAt(index);
-              Map<String, dynamic> doc = snapshot.data();
-
-              String title = doc['title'].toString();
-              String tags = doc['tags'].toString();
-              String location = doc['location'].toString();
-              String description = doc['description'].toString();
-              String imageURL = doc['image_url'].toString();
-              String date = doc['date'].toString();
-              String authorID = doc['authorID'].toString();
-
-              return PostCard(
-                key: isLostPost ? Key("Lost Post Card") : Key("Found Post Card"),
-                isLostPost: isLostPost,
-                title: title,
-                tags: tags,
-                location: location,
-                description: description,
-                imageURL: imageURL,
-                date: date,
-                authorID: authorID,
-                postID: snapshot.id,
-                isClosed: false,
-              );
-            }
-          ),
-        )
-      )
-    );
-  }
-}
-
 class SideMenu extends StatelessWidget {
 
   @override
@@ -358,7 +190,6 @@ class SideMenu extends StatelessWidget {
     )
   );
 }
-
 
 class SideMenuButton extends StatelessWidget{
 

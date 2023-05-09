@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:TraceBack/posts/post_pages/post.dart';
 import 'package:flutter/material.dart';
 import '../../util/bottom_button.dart';
-import '../timeline.dart';
+import '../main_timeline.dart';
 
 class PostPreview extends StatelessWidget {
 

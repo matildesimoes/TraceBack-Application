@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../posts/timeline.dart';
+import '../posts/main_timeline.dart';
 
 class GuidelinesPage extends StatefulWidget {
   @override

@@ -3,14 +3,14 @@ import 'package:TraceBack/posts/post_pages/post.dart';
 import 'package:flutter/material.dart';
 import '../../util/bottom_button.dart';
 import '../../util/camera.dart';
-import '../timeline.dart';
+import '../main_timeline.dart';
 
 class PostPage extends StatelessWidget {
 
   late String title;
   List<Tag> tags = [];
   late String location;
-  late String imageURL;
+  late String? imageURL;
   late String description;
   late String date;
   late String authorID;
@@ -29,8 +29,10 @@ class PostPage extends StatelessWidget {
       ) : super(key: key);
 
   Future<Widget> imageRetriever() async {
+    if (imageURL == null)
+      return SizedBox.shrink();
     try {
-      return await ImageHandler().getPictureFrame(imageURL);
+      return await ImageHandler().getPictureFrame(imageURL!);
     } catch (e){
       return SizedBox.shrink();
     }

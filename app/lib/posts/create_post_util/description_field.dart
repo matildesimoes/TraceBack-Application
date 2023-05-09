@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../found_post/create_found_post.dart';
-import '../timeline.dart';
+import '../main_timeline.dart';
 
 class DescriptionField extends StatefulWidget {
 

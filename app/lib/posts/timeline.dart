@@ -193,57 +193,8 @@ class _FoundTimelineState extends State<FoundTimeline> {
   void initState() {
     refresh();
     super.initState();
-    getToken();
-    // initinfo();
   }
 
-void getToken() async{
-  await FirebaseMessaging.instance.getToken().then((token){
-    setState((){
-      mtoken = token;
-      print("my token is $mtoken");
-    });
-    saveToken(token!);
-  });
-}
-
-initinfo(){
-  var androidInitialize = const AndroidInitializationSettings('mipmap/ic_laucher');
-  var iOSInitialize = const DarwinInitializationSettings();
-  var initializationSettings = InitializationSettings(android: androidInitialize, iOS: iOSInitialize);
-  flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: (String? payload) async {
-    try{
-      if(payload != null && payload.isNotEmpty){
-
-      }else {
-      }
-  }catch (e){
-
-  }
-    return;
-  });
-
-FirebaseMessaging.onMessage.listen((RemoteMessage message) async{
-print ("....onMessage...");
-print ("onMessage: ${message.notification?.title}/${message.notification?.body}}");
-BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation (
-message.notification!.body.toString(), htmlFormatBigText: true, contentTitle: message.notification! .title.toString(), htmlFormatContentTitle: true
-) ;
-AndroidNotificationDetails androidPlatformChannelSpecifics=AndroidNotificationDetails(
-'defed', 'dbfood', importance: Importance.max,
-styleInformation: bigTextStyleInformation, priority: Priority.max, playSound: false,
-// sound: RawResourceAndroidNotificationSound('notification'), );
-);
-NotificationDetails platformChannelSpecifics = NotificationDetails (android: androidPlatformChannelSpecifics);
-await flutterLocalNotificationsPlugin.show(O, message.notification?.title, message.notification?.body, platformChannelSpecifics, payload: message.data['title']);
-});
-}
-
-void saveToken(String token) async{
-  await FirebaseFirestore.instance.collection("UsersTokens").doc(user!.uid).set({
-    'userToken' : token,
-  });
-}
 
   Future<void> refresh() async {
 

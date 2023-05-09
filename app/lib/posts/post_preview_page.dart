@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:TraceBack/posts/post.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../notifications/firebaseMessagingService.dart';
 import '../util/bottom_button.dart';
 import '../util/camera.dart';
 import 'lost_post/lost_backend.dart';
@@ -11,6 +14,7 @@ import 'timeline.dart';
 
 class PostPreview extends StatelessWidget {
 
+  final FirebaseMessagingService _firebaseMessagingService = FirebaseMessagingService();
   late String title;
   late String category;
   List<Tag> tagWidgets = [];
@@ -65,6 +69,8 @@ class PostPreview extends StatelessWidget {
     }
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
 
@@ -84,7 +90,10 @@ class PostPreview extends StatelessWidget {
       floatingActionButton: BottomButton(
         text: "Submit",
         icon: Icons.post_add_rounded,
-        onPressed: () {submit(); Navigator.popUntil(context, ModalRoute.withName("/Home"));}
+        onPressed: () async {submit();
+        // Construa a mensagem de notificação
+        _firebaseMessagingService.sendNotificationToAllUsers('New Found Post', 'A new post has been upload to TraceBack! Check it out to see if it´s yours!');
+        Navigator.popUntil(context, ModalRoute.withName("/Home"));}
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );

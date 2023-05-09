@@ -22,6 +22,8 @@
               />
 
             <intent-filter>
+                <action android:name="FLUTTER_NOTIFICATION_CLICK" />
+                <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
@@ -34,6 +36,9 @@
 
        <meta-data android:name="com.google.android.geo.API_KEY"
            android:value="AIzaSyCwWDnpyGbMm1JilMRzHyyU3VftU_8blrM"/>
+
+       <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id"
+           android:value="post" />
 
     </application>
 </manifest>

@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 import '../../util/bottom_button.dart';
-import '../post_preview_page.dart';
+import '../post_pages/post_preview_page.dart';
 import '../timeline.dart';
 import '../../util/map.dart';
 import 'found_fake_backend.dart';

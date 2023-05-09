@@ -1,10 +1,10 @@
-import 'package:TraceBack/posts/my_post_page.dart';
+import 'package:TraceBack/posts/post_pages/my_post_page.dart';
 import 'package:TraceBack/profile/profileBackend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../util/camera.dart';
-import 'post_page.dart';
+import 'post_pages/post_page.dart';
 import 'timeline.dart';
 
 class PostCard extends StatefulWidget {

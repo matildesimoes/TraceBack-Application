@@ -1,8 +1,6 @@
 import 'dart:ui';
 import 'package:TraceBack/authentication/initial.dart';
-import 'package:TraceBack/posts/post.dart';
 import 'package:TraceBack/posts/found_post/found_fake_backend.dart';
-import 'package:TraceBack/posts/post_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -15,17 +13,17 @@ const Color mainColor = Color(0xFF1a425b);
 const Color secondaryColor = Color(0xFFd5a820);
 const Color accent = Color(0xFFebebeb);
 
-class Timeline extends StatefulWidget {
-  const Timeline({
+class MainTimeline extends StatefulWidget {
+  const MainTimeline({
     super.key,
   });
 
   @override
-  State<Timeline> createState() => _TimelineState();
+  State<MainTimeline> createState() => _MainTimelineState();
 }
 
 
-class _TimelineState extends State<Timeline> {
+class _MainTimelineState extends State<MainTimeline> {
 
   int _navBarIndex = 0;
 

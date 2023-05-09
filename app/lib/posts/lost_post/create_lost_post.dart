@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:TraceBack/posts/create_post_util/tag_field.dart';
-import 'package:TraceBack/posts/post_preview_page.dart';
+import 'package:TraceBack/posts/post_pages/post_preview_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';

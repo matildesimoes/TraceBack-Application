@@ -33,7 +33,7 @@ class _TraceBackState extends State<TraceBack> {
       initialRoute: "/",
       routes: {
         '/' : (context) => InitialPage(),
-        '/Home' : (context) => const Timeline(),
+        '/Home' : (context) => const MainTimeline(),
         '/My Place': (context) => MyPlace(),
         '/Terms': (context) => Terms(),
         '/Guidelines': (context) => GuidelinesPage(),

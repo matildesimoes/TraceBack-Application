@@ -1,12 +1,10 @@
 import 'dart:ui';
-import 'package:TraceBack/posts/post.dart';
+import 'package:TraceBack/posts/post_pages/post.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../util/camera.dart';
-import 'found_post/found_fake_backend.dart';
-import 'lost_post/lost_backend.dart';
-import 'timeline.dart';
+import '../../util/camera.dart';
+import '../found_post/found_fake_backend.dart';
+import '../lost_post/lost_backend.dart';
+import '../timeline.dart';
 
 class MyPostPage extends StatelessWidget {
 

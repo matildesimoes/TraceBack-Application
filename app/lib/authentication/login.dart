@@ -89,6 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: ElevatedButton(
                         key: Key("Logged"),
                         onPressed: () async {
+                          FocusScope.of(context).unfocus();
                           showDialog(
                             context: context,
                             builder: (context) =>
@@ -102,7 +103,6 @@ class _LoginPageState extends State<LoginPage> {
                               emailController.text,
                               passwordController.text
                           );
-                          Navigator.of(context).pop();
                           if (error != "") {
                             showTopSnackBar(
                               Overlay.of(context),

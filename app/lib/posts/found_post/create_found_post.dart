@@ -101,6 +101,7 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
   }
 
   preview() async {
+    FocusScope.of(context).unfocus();
     if (_formKey.currentState!.validate()) {
       if (_image == null){
         showTopSnackBar(

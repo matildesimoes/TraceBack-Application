@@ -24,7 +24,7 @@ class _InitialPageState extends State<InitialPage>{
         child: Column(
           children: [
             Flexible(
-              flex: 3,
+              flex: 1,
               child: Column(
                 children: [
                   Spacer(),
@@ -53,7 +53,7 @@ class _InitialPageState extends State<InitialPage>{
               )
             ),
             Flexible(
-              flex: 3,
+              flex: 1,
               child: Column(
                 children: [
                   SizedBox(height: 30),

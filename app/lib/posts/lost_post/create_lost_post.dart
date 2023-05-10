@@ -58,6 +58,7 @@ class _CreateLostPostState extends State<CreateLostPost> {
 
   preview(){
     if (_formKey.currentState!.validate()){
+      FocusScope.of(context).unfocus();
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) =>

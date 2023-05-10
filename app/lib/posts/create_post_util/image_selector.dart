@@ -22,6 +22,7 @@ class ImageSelector extends StatefulWidget {
 class _ImageSelectorState extends State<ImageSelector> {
 
   setImage() async {
+    FocusScope.of(context).unfocus();
     File? image = await ImageHandler.getImage(context);
     if (image != null){
       setState(() {

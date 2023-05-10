@@ -48,7 +48,7 @@ class _DescriptionFieldState extends State<DescriptionField> {
                           controller: _scrollController,
                           child: TextFormField(
                             keyboardType: TextInputType.multiline,
-                            maxLines: 5,
+                            maxLines: 4,
                             controller: tempController,
                             scrollController: _scrollController,
                             autofocus: true,

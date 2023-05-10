@@ -44,7 +44,17 @@ class _signUpPageState extends State<SignUpPage>{
         'password': passwordController.text,
         'acceptedTerms' : false,
       };
+      showDialog(
+          context: context,
+          builder: (context) =>
+              Center (
+                child:  CircularProgressIndicator(
+                  color: secondaryColor,
+                ),
+              )
+      );
       String? error = await authBackend.registerUser(userDoc);
+      Navigator.of(context).pop();
       if (error != null) {
         showTopSnackBar(
           Overlay.of(context),

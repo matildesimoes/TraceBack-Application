@@ -54,14 +54,21 @@ class _MainTimelineState extends State<MainTimeline> {
         toolbarHeight: 80,
       ),
       floatingActionButton: CreatePostButton(_navBarIndex),
-      body: Container(
-        child: Column(
-          children: <Widget>[
-            CategoryBar(filter: filter, search: search, searchCtrl: searchCtrl),
-            SearchBar(filter: filter, search: search, controller: searchCtrl,),
-            timelines[_navBarIndex]
-          ],
-        ),
+      body: Column(
+        children: <Widget>[
+          CategoryBar(
+            filter: filter,
+            search: search,
+            searchCtrl: searchCtrl
+          ),
+          SearchBar(
+            filter: filter,
+            search: search,
+            controller: searchCtrl,
+          ),
+          SizedBox(height: 10),
+          Expanded(child: timelines[_navBarIndex])
+        ],
       ),
       bottomNavigationBar: ItemsNavBar(
         setNavBar: (index){
@@ -250,7 +257,7 @@ class SideMenuButton extends StatelessWidget{
   );
 }
 
-class CategoryBar extends StatelessWidget {
+class CategoryBar extends StatefulWidget {
 
   ItemsFilter filter;
   Function() search;
@@ -262,27 +269,47 @@ class CategoryBar extends StatelessWidget {
   required this.search,
   required this.searchCtrl});
 
+  @override
+  State<CategoryBar> createState() => _CategoryBarState();
+}
+
+class _CategoryBarState extends State<CategoryBar> {
   filterCategory(String category){
-    filter.setCategory(category);
-    filter.setSearchQuery("");
-    searchCtrl.text = "";
-    search();
+    widget.filter.setCategory(category);
+    widget.filter.setSearchQuery("");
+    widget.searchCtrl.text = "";
+    widget.search();
   }
+
+  updateCategoryIndex(int index){
+    setState(() {
+      _categoryIndex = index;
+    });
+  }
+
+  int _categoryIndex = 0;
+
+  List<String> categories = [
+    "All", "IT Devices", "Keys", "Clothing", "School Supplies", "Other"
+  ];
 
   @override
   Widget build(BuildContext context) => ConstrainedBox(
     constraints: BoxConstraints(maxHeight: 50, minHeight: 50),
-    child:ListView (
+    child: ListView.builder (
       scrollDirection: Axis.horizontal,
       shrinkWrap: true,
-      children: [
-        Category("All", filterCategory: filterCategory),
-        Category("IT Devices", filterCategory: filterCategory),
-        Category("Keys", filterCategory: filterCategory),
-        Category("Clothing", filterCategory: filterCategory),
-        Category("School Supplies", filterCategory: filterCategory),
-        Category("Other", filterCategory: filterCategory)
-      ],
+      itemBuilder: (context, index) {
+        bool active = index == _categoryIndex;
+        return Category(
+          categories[index],
+          filterCategory: filterCategory,
+          index: index,
+          active: active,
+          updateIndex: updateCategoryIndex,
+        );
+      },
+      itemCount: categories.length,
     )
   );
 }
@@ -302,8 +329,8 @@ class SearchBar extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) => Container(
-    height: 70,
-    padding: EdgeInsets.only(bottom: 30, right: 30, left: 30),
+    height: 40,
+    padding: EdgeInsets.only(right: 30, left: 30),
     child: TextField(
       controller: controller,
       textAlignVertical: TextAlignVertical.center,
@@ -343,22 +370,54 @@ class SearchBar extends StatelessWidget{
   );
 }
 
-class Category extends StatelessWidget{
+class Category extends StatefulWidget{
 
   final String text;
   final Function filterCategory;
+  final int index;
+  final bool active;
+  final Function updateIndex;
 
-  const Category(this.text, {super.key, required this.filterCategory});
+  const Category(
+    this.text, {
+      super.key,
+      required this.filterCategory,
+      required this.index,
+      required this.active,
+      required this.updateIndex
+    }
+  );
 
   @override
-  Widget build(BuildContext context) => TextButton(
-    onPressed: (){
-      filterCategory(text);
-    },
-    child: Text(
-      text,
-      style: TextStyle(color: mainColor),
-    )
+  State<Category> createState() => _CategoryState();
+}
+
+class _CategoryState extends State<Category> {
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5.0),
+    child: TextButton(
+      onPressed: (){
+        widget.updateIndex(widget.index);
+        widget.filterCategory(widget.text);
+      },
+      child: Text(
+        widget.text,
+        style: TextStyle(
+            color: Colors.white,
+        ),
+      ),
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all<Color>(
+            widget.active ? secondaryColor : mainColor
+        ),
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+            )
+        ),
+      ),
+    ),
   );
 }
 

@@ -35,7 +35,7 @@ class PostData {
     return get('tags');
   }
   getImageURL() {
-    return get('imageURL');
+    return get('image_url');
   }
   getAuthorID() {
     return get('authorID');

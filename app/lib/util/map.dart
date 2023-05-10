@@ -165,10 +165,21 @@ class MapBuilderState extends State<MapBuilder> {
 
   }
 
-  Future<String?> getAdress() async {
+  Future<Place> getAdress() async {
 
     List<Placemark> placemarks = await placemarkFromCoordinates(
         selectedMarker!.position.latitude, selectedMarker!.position.longitude);
-    return "${placemarks.first.street},${placemarks.first.locality}";
+    return Place(
+        "${placemarks.first.street},${placemarks.first.locality}",
+        selectedMarker!.position)
+    ;
   }
+}
+
+class Place {
+
+  final String address;
+  final LatLng latLng;
+
+  Place(this.address, this.latLng);
 }

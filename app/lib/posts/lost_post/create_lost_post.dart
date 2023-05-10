@@ -38,10 +38,6 @@ class _CreateLostPostState extends State<CreateLostPost> {
     });
   }
 
-  imageValidates(){
-    return true;
-  }
-
   TextEditingController titleController = TextEditingController();
   SingleValueDropDownController categoryController = SingleValueDropDownController();
   TextfieldTagsController tagsController = TextfieldTagsController();
@@ -173,7 +169,6 @@ class _CreateLostPostState extends State<CreateLostPost> {
                 ImageSelector(
                     setImage: setImage,
                     getImage: getImage,
-                    imageValidates: imageValidates
                 ),
                 SizedBox(height: 120,)
               ],

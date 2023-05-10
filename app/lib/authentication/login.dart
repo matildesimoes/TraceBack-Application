@@ -89,10 +89,20 @@ class _LoginPageState extends State<LoginPage> {
                       child: ElevatedButton(
                         key: Key("Logged"),
                         onPressed: () async {
+                          showDialog(
+                            context: context,
+                            builder: (context) =>
+                              Center (
+                                child:  CircularProgressIndicator(
+                                  color: secondaryColor,
+                                ),
+                              )
+                          );
                           String error = await authBackend.login(
                               emailController.text,
                               passwordController.text
                           );
+                          Navigator.of(context).pop();
                           if (error != "") {
                             showTopSnackBar(
                               Overlay.of(context),

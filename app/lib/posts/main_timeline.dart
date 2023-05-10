@@ -1,8 +1,10 @@
 import 'dart:ui';
 import 'package:TraceBack/authentication/initial.dart';
+import 'package:TraceBack/posts/timeline_util/category_bar.dart';
 import 'package:TraceBack/posts/timeline_util/filter.dart';
 import 'package:TraceBack/posts/timeline_util/items_nav_bar.dart';
 import 'package:TraceBack/posts/timeline_util/items_timelines.dart';
+import 'package:TraceBack/posts/timeline_util/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'found_post/create_found_post.dart';
 import 'lost_post/create_lost_post.dart';
@@ -56,6 +58,7 @@ class _MainTimelineState extends State<MainTimeline> {
       floatingActionButton: CreatePostButton(_navBarIndex),
       body: Column(
         children: <Widget>[
+          SizedBox(height: 5),
           CategoryBar(
             filter: filter,
             search: search,
@@ -254,170 +257,6 @@ class SideMenuButton extends StatelessWidget{
       icon: icon,
       label: Text(text, style: TextStyle(color: mainColor),),
     )
-  );
-}
-
-class CategoryBar extends StatefulWidget {
-
-  ItemsFilter filter;
-  Function() search;
-  final TextEditingController searchCtrl;
-
-  CategoryBar({
-  super.key,
-  required this.filter,
-  required this.search,
-  required this.searchCtrl});
-
-  @override
-  State<CategoryBar> createState() => _CategoryBarState();
-}
-
-class _CategoryBarState extends State<CategoryBar> {
-  filterCategory(String category){
-    widget.filter.setCategory(category);
-    widget.filter.setSearchQuery("");
-    widget.searchCtrl.text = "";
-    widget.search();
-  }
-
-  updateCategoryIndex(int index){
-    setState(() {
-      _categoryIndex = index;
-    });
-  }
-
-  int _categoryIndex = 0;
-
-  List<String> categories = [
-    "All", "IT Devices", "Keys", "Clothing", "School Supplies", "Other"
-  ];
-
-  @override
-  Widget build(BuildContext context) => ConstrainedBox(
-    constraints: BoxConstraints(maxHeight: 50, minHeight: 50),
-    child: ListView.builder (
-      scrollDirection: Axis.horizontal,
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        bool active = index == _categoryIndex;
-        return Category(
-          categories[index],
-          filterCategory: filterCategory,
-          index: index,
-          active: active,
-          updateIndex: updateCategoryIndex,
-        );
-      },
-      itemCount: categories.length,
-    )
-  );
-}
-
-class SearchBar extends StatelessWidget{
-
-  final ItemsFilter filter;
-  final Function search;
-  final TextEditingController controller;
-
-  SearchBar({
-    super.key,
-    required this.filter,
-    required this.search,
-    required this.controller
-  });
-
-  @override
-  Widget build(BuildContext context) => Container(
-    height: 40,
-    padding: EdgeInsets.only(right: 30, left: 30),
-    child: TextField(
-      controller: controller,
-      textAlignVertical: TextAlignVertical.center,
-      style: TextStyle(
-          fontSize: 17
-      ),
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: accent,
-        labelText: "search",
-        enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(25),
-            borderSide: BorderSide(
-                color: mainColor,
-                width: 2,
-                style: BorderStyle.solid
-            )
-        ),
-        focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(25),
-            borderSide: BorderSide(
-                color: mainColor,
-                width: 1,
-                style: BorderStyle.solid
-            )
-        ),
-        suffixIconColor: mainColor,
-        suffixIcon: IconButton(
-          icon: Icon(Icons.search_outlined,),
-          onPressed: (){
-            filter.setSearchQuery(controller.text);
-            search();
-          },
-        ),
-      ),
-    )
-  );
-}
-
-class Category extends StatefulWidget{
-
-  final String text;
-  final Function filterCategory;
-  final int index;
-  final bool active;
-  final Function updateIndex;
-
-  const Category(
-    this.text, {
-      super.key,
-      required this.filterCategory,
-      required this.index,
-      required this.active,
-      required this.updateIndex
-    }
-  );
-
-  @override
-  State<Category> createState() => _CategoryState();
-}
-
-class _CategoryState extends State<Category> {
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5.0),
-    child: TextButton(
-      onPressed: (){
-        widget.updateIndex(widget.index);
-        widget.filterCategory(widget.text);
-      },
-      child: Text(
-        widget.text,
-        style: TextStyle(
-            color: Colors.white,
-        ),
-      ),
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(
-            widget.active ? secondaryColor : mainColor
-        ),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0),
-            )
-        ),
-      ),
-    ),
   );
 }
 

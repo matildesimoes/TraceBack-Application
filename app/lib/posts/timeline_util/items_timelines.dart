@@ -72,6 +72,7 @@ abstract class _ItemsTimelineState extends State<ItemsTimeline> {
   }
 
   Future<void> refresh() async {
+    FocusScope.of(context).unfocus();
     widget.filter.setSearchQuery("");
     await getItems();
     setState(() {});

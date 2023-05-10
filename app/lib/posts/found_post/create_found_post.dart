@@ -8,6 +8,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:textfield_tags/textfield_tags.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import '../../util/bottom_button.dart';
 import '../post_pages/post_preview_page.dart';
 import '../main_timeline.dart';
@@ -26,7 +28,6 @@ class CreateFoundPost extends StatefulWidget {
 class _CreateFoundPostState extends State<CreateFoundPost> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _clicked = false;
 
   List<String> tags = [];
 
@@ -40,13 +41,6 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
     setState(() {
       _image = image;
     });
-  }
-
-  imageValidates() {
-    if (!(_image != null) && _clicked) {
-      return false;
-    }
-    return true;
   }
 
   TextEditingController titleController = new TextEditingController();
@@ -63,12 +57,6 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
           .year}"
   );
   TextEditingController descriptionController = TextEditingController();
-
-  setClicked(bool cond) {
-    setState(() {
-      _clicked = cond;
-    });
-  }
 
   @override
   void dispose() {
@@ -113,10 +101,22 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
   }
 
   preview() async {
-    setState(() {
-      _clicked = true;
-    });
-    if (_formKey.currentState!.validate() && _image != null) {
+    if (_formKey.currentState!.validate()) {
+      if (_image == null){
+        showTopSnackBar(
+          Overlay.of(context),
+          const CustomSnackBar.info(
+            message: "Please upload a photo of the item",
+            textStyle: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16
+            ),
+            backgroundColor: secondaryColor,
+          ),
+        );
+        return;
+      }
       Navigator.of(context).push(
           MaterialPageRoute(
               builder: (context) =>
@@ -199,7 +199,6 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
                 ImageSelector(
                     setImage: setImage,
                     getImage: getImage,
-                    imageValidates: imageValidates
                 ),
                 SizedBox(height: 120,)
               ],

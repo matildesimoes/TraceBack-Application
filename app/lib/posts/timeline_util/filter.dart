@@ -26,18 +26,30 @@ class ItemsFilter {
 
   List<PostData> filterThrough(List<PostData> postsData) {
 
+    List<PostData> filteredCategory = [];
+
+    if (_category != 'All') {
+      for (var postData in postsData){
+        if (postData.getCategory() == _category) {
+          filteredCategory.add(postData);
+        }
+      }
+    }
+    else {
+      filteredCategory = postsData;
+    }
+
     if (_searchInfo.trim().isEmpty)
-      return postsData;
+      return filteredCategory;
 
     List<String> keys = _searchInfo.split(' ');
 
-    for (String key in keys) {key = key.toLowerCase().trim();}
-
     List<PostData> filtered = [];
 
-    for (var postData in postsData){
+    for (var postData in filteredCategory){
       bool match = false;
       for (String key in keys){
+        key = key.toLowerCase().trim();
         match = match || matches(postData, key);
       }
       if (match) {

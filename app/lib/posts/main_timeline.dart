@@ -29,6 +29,8 @@ class _MainTimelineState extends State<MainTimeline> {
 
   late List<ItemsTimeline> timelines;
 
+  final TextEditingController searchCtrl = TextEditingController();
+
   @override
   void initState() {
     timelines = [
@@ -55,8 +57,8 @@ class _MainTimelineState extends State<MainTimeline> {
       body: Container(
         child: Column(
           children: <Widget>[
-            CategoryBar(filter: filter),
-            SearchBar(filter: filter, search: search),
+            CategoryBar(filter: filter, search: search, searchCtrl: searchCtrl),
+            SearchBar(filter: filter, search: search, controller: searchCtrl,),
             timelines[_navBarIndex]
           ],
         ),
@@ -251,8 +253,21 @@ class SideMenuButton extends StatelessWidget{
 class CategoryBar extends StatelessWidget {
 
   ItemsFilter filter;
+  Function() search;
+  final TextEditingController searchCtrl;
 
-  CategoryBar({super.key, required this.filter});
+  CategoryBar({
+  super.key,
+  required this.filter,
+  required this.search,
+  required this.searchCtrl});
+
+  filterCategory(String category){
+    filter.setCategory(category);
+    filter.setSearchQuery("");
+    searchCtrl.text = "";
+    search();
+  }
 
   @override
   Widget build(BuildContext context) => ConstrainedBox(
@@ -261,12 +276,12 @@ class CategoryBar extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       shrinkWrap: true,
       children: [
-        Category("All"),
-        Category("IT Devices"),
-        Category("Keys"),
-        Category("Clothing"),
-        Category("School Supplies"),
-        Category("Other")
+        Category("All", filterCategory: filterCategory),
+        Category("IT Devices", filterCategory: filterCategory),
+        Category("Keys", filterCategory: filterCategory),
+        Category("Clothing", filterCategory: filterCategory),
+        Category("School Supplies", filterCategory: filterCategory),
+        Category("Other", filterCategory: filterCategory)
       ],
     )
   );
@@ -276,10 +291,14 @@ class SearchBar extends StatelessWidget{
 
   final ItemsFilter filter;
   final Function search;
+  final TextEditingController controller;
 
-  SearchBar({super.key, required this.filter, required this.search});
-
-  final TextEditingController controller = TextEditingController();
+  SearchBar({
+    super.key,
+    required this.filter,
+    required this.search,
+    required this.controller
+  });
 
   @override
   Widget build(BuildContext context) => Container(
@@ -327,12 +346,15 @@ class SearchBar extends StatelessWidget{
 class Category extends StatelessWidget{
 
   final String text;
+  final Function filterCategory;
 
-  const Category(this.text, {super.key});
+  const Category(this.text, {super.key, required this.filterCategory});
 
   @override
   Widget build(BuildContext context) => TextButton(
-    onPressed: (){},
+    onPressed: (){
+      filterCategory(text);
+    },
     child: Text(
       text,
       style: TextStyle(color: mainColor),

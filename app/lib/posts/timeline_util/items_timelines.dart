@@ -39,11 +39,16 @@ abstract class _ItemsTimelineState extends State<ItemsTimeline> {
           onRefresh: refresh,
           child: SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
-            child: SizedBox(
-              height: constraints.maxHeight / 2,
-              child: Center(
-                  child:Text("Currently, there are no items to show")
-              )
+            child: Stack(
+              children: [
+                SizedBox(height: constraints.maxHeight,),
+                SizedBox(
+                    height: constraints.maxHeight / 2,
+                    child: Center(
+                        child:Text("No items were found")
+                    )
+                ),
+              ]
             )
           )
         )

@@ -27,23 +27,7 @@ class _SearchBarState extends State<SearchBar> {
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: CircleAvatar(
-            radius: 20,
-            backgroundColor: mainColor,
-            child: IconButton(
-              splashRadius: 20,
-              icon: Icon(
-                Icons.map_outlined,
-                color: Colors.white,
-              ),
-              onPressed: () {
-
-              },
-            ),
-          ),
-        ),
+        SizedBox(width: 5),
         Expanded(
           child: Container(
               height: 40,

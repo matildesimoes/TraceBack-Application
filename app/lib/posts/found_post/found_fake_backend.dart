@@ -40,8 +40,8 @@ class FoundBackend{
     firestore.collection(collection).doc(id).update({"image_url": url});
   }
 
-  Future<DocumentSnapshot<Map<String, dynamic>>> getDoc(String id) async {
-    var doc = await firestore.collection(collection).doc(id).get();
+  Future<DocumentReference<Map<String, dynamic>>> getDoc(String id) async {
+    var doc = await firestore.collection(collection).doc(id);
 
     return doc;
   }

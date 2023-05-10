@@ -6,7 +6,7 @@ class PostData {
 
   PostData(this.doc, this._isLostPost);
 
-  final QueryDocumentSnapshot<Map<String, dynamic>> doc;
+  final DocumentSnapshot<Map<String, dynamic>> doc;
   final bool _isLostPost;
 
   get(String field) {
@@ -44,7 +44,7 @@ class PostData {
     return get('date');
   }
   bool isClosed() {
-    bool? isClosed = get('isClosed');
+    bool? isClosed = get('closed');
     return isClosed ?? false;
   }
   bool isLostPost() {

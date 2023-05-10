@@ -103,13 +103,10 @@ abstract class _ItemsTimelineState extends State<ItemsTimeline> {
       future: getItems(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting){
-          return const Flexible(
-            flex: 2,
-            child:Center(
-              child: CircularProgressIndicator(
-                backgroundColor: secondaryColor,
-                color: Colors.white
-              )
+          return Center(
+            child: CircularProgressIndicator(
+              backgroundColor: secondaryColor,
+              color: Colors.white
             )
           );
         }

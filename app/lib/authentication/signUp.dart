@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import '../posts/timeline.dart';
+import '../posts/main_timeline.dart';
 import 'dart:ui';
 import '../terms&guidelines/privacyAcceptance.dart';
 import 'authentication_backend.dart';
@@ -44,7 +44,17 @@ class _signUpPageState extends State<SignUpPage>{
         'password': passwordController.text,
         'acceptedTerms' : false,
       };
+      showDialog(
+          context: context,
+          builder: (context) =>
+              Center (
+                child:  CircularProgressIndicator(
+                  color: secondaryColor,
+                ),
+              )
+      );
       String? error = await authBackend.registerUser(userDoc);
+      Navigator.of(context).pop();
       if (error != null) {
         showTopSnackBar(
           Overlay.of(context),

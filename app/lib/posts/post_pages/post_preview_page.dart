@@ -1,11 +1,9 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:TraceBack/posts/post.dart';
+import 'package:TraceBack/posts/post_pages/post.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../util/bottom_button.dart';
-import 'timeline.dart';
+import '../../util/bottom_button.dart';
+import '../main_timeline.dart';
 
 class PostPreview extends StatelessWidget {
 

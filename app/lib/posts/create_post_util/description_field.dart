@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../found_post/create_found_post.dart';
-import '../timeline.dart';
+import '../main_timeline.dart';
 
 class DescriptionField extends StatefulWidget {
 
@@ -48,7 +48,7 @@ class _DescriptionFieldState extends State<DescriptionField> {
                           controller: _scrollController,
                           child: TextFormField(
                             keyboardType: TextInputType.multiline,
-                            maxLines: 5,
+                            maxLines: 4,
                             controller: tempController,
                             scrollController: _scrollController,
                             autofocus: true,

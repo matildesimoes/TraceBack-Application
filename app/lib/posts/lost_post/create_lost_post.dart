@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:TraceBack/posts/create_post_util/tag_field.dart';
-import 'package:TraceBack/posts/post_preview_page.dart';
+import 'package:TraceBack/posts/post_pages/post_preview_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
@@ -12,7 +12,7 @@ import '../../util/bottom_button.dart';
 import '../create_post_util/description_field.dart';
 import '../create_post_util/date_picker.dart';
 import '../create_post_util/image_selector.dart';
-import '../timeline.dart';
+import '../main_timeline.dart';
 import '../../util/map.dart';
 import 'lost_backend.dart';
 
@@ -38,10 +38,6 @@ class _CreateLostPostState extends State<CreateLostPost> {
     });
   }
 
-  imageValidates(){
-    return true;
-  }
-
   TextEditingController titleController = TextEditingController();
   SingleValueDropDownController categoryController = SingleValueDropDownController();
   TextfieldTagsController tagsController = TextfieldTagsController();
@@ -62,6 +58,7 @@ class _CreateLostPostState extends State<CreateLostPost> {
 
   preview(){
     if (_formKey.currentState!.validate()){
+      FocusScope.of(context).unfocus();
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) =>
@@ -173,7 +170,6 @@ class _CreateLostPostState extends State<CreateLostPost> {
                 ImageSelector(
                     setImage: setImage,
                     getImage: getImage,
-                    imageValidates: imageValidates
                 ),
                 SizedBox(height: 120,)
               ],

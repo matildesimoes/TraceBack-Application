@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:TraceBack/posts/found_post/create_found_post.dart';
-import 'package:TraceBack/posts/timeline.dart';
+import 'package:TraceBack/posts/main_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -165,10 +165,21 @@ class MapBuilderState extends State<MapBuilder> {
 
   }
 
-  Future<String?> getAdress() async {
+  Future<Place> getAdress() async {
 
     List<Placemark> placemarks = await placemarkFromCoordinates(
         selectedMarker!.position.latitude, selectedMarker!.position.longitude);
-    return "${placemarks.first.street},${placemarks.first.locality}";
+    return Place(
+        "${placemarks.first.street},${placemarks.first.locality}",
+        selectedMarker!.position)
+    ;
   }
+}
+
+class Place {
+
+  final String address;
+  final LatLng latLng;
+
+  Place(this.address, this.latLng);
 }

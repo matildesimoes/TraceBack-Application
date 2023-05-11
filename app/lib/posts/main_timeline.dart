@@ -167,49 +167,52 @@ class LoadingPhoto extends StatelessWidget {
 class SideMenu extends StatelessWidget {
 
   @override
-  Widget build(BuildContext context) => Drawer(
-    width: 180,
-    child: Column(
-      children: [
-        Container(
-          height: 110,
-          color: mainColor,
-          child: Center(
+  Widget build(BuildContext context) {
+    FocusScope.of(context).unfocus();
+    return Drawer(
+      width: 180,
+      child: Column(
+        children: [
+          Container(
+            height: 110,
+            color: mainColor,
+            child: Center(
               child:Icon(
                 Icons.account_circle_outlined,
                 color: Colors.white,
                 size: 50.0,
               )
+            ),
           ),
-        ),
-        SideMenuButton("Home", Icon(Icons.home, color: mainColor)),
-        SideMenuButton("My Place", Icon(Icons.account_circle, color: mainColor)),
-        SideMenuButton("Terms", Icon(Icons.privacy_tip, color: mainColor)),
-        SideMenuButton("Guidelines", Icon(Icons.explicit, color: mainColor)),
-        const Spacer(
-          flex: 6,
-        ),
-        Container (
+          SideMenuButton("Home", Icon(Icons.home, color: mainColor)),
+          SideMenuButton("My Place", Icon(Icons.account_circle, color: mainColor)),
+          SideMenuButton("Terms", Icon(Icons.privacy_tip, color: mainColor)),
+          SideMenuButton("Guidelines", Icon(Icons.explicit, color: mainColor)),
+          const Spacer(
+            flex: 6,
+          ),
+          Container (
             width: 200,
             height: 60,
             color: mainColor,
             child:TextButton(
-                onPressed: (){
-                  Navigator.of(context)
-                      .popUntil(ModalRoute.withName("/"));
-                },
-                child: Text(
-                  "Logout",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold),
-                )
+              onPressed: (){
+                Navigator.of(context)
+                    .popUntil(ModalRoute.withName("/"));
+              },
+              child: Text(
+                "Logout",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold),
+              )
             )
-        )
-      ],
-    )
-  );
+          )
+        ],
+      )
+    );
+  }
 }
 
 class SideMenuButton extends StatelessWidget{
@@ -252,6 +255,7 @@ class SideMenuButton extends StatelessWidget{
         alignment: Alignment.centerLeft
       ),
       onPressed: () {
+        FocusScope.of(context).unfocus();
         navigate(context);
       },
       icon: icon,

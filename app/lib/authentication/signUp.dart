@@ -30,11 +30,10 @@ class _signUpPageState extends State<SignUpPage>{
   String errorMessage = "";
 
   register() async {
+    FocusScope.of(context).unfocus();
     if (_formKey.currentState!.validate()){
       if (passwordController.text != confirmPasswordController.text) {
-        setState(() {
-          errorMessage = 'Passwords do not match';
-        });
+        showError("Passwords do not match");
         return;
       }
       Map<String, dynamic> userDoc = {
@@ -56,18 +55,7 @@ class _signUpPageState extends State<SignUpPage>{
       String? error = await authBackend.registerUser(userDoc);
       Navigator.of(context).pop();
       if (error != null) {
-        showTopSnackBar(
-          Overlay.of(context),
-          CustomSnackBar.info(
-            message: error,
-            textStyle: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 16
-            ),
-            backgroundColor: secondaryColor,
-          ),
-        );
+        showError(error);
       } else {
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -76,6 +64,21 @@ class _signUpPageState extends State<SignUpPage>{
         );
       }
     }
+  }
+
+  void showError(String error) {
+    showTopSnackBar(
+      Overlay.of(context),
+      CustomSnackBar.info(
+        message: error,
+        textStyle: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 16
+        ),
+        backgroundColor: secondaryColor,
+      ),
+    );
   }
 
   Widget build(BuildContext context) {

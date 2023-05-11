@@ -32,6 +32,11 @@ class _SearchBarState extends State<SearchBar> {
           child: Container(
               height: 40,
               child: TextField(
+                onSubmitted: (value){
+                  FocusScope.of(context).unfocus();
+                  widget.filter.setSearchQuery(widget.controller.text);
+                  widget.search();
+                },
                 controller: widget.controller,
                 textAlignVertical: TextAlignVertical.center,
                 style: TextStyle(

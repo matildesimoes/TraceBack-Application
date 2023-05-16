@@ -8,10 +8,7 @@ import 'package:TraceBack/posts/timeline_util/items_timelines.dart';
 import 'package:TraceBack/posts/timeline_util/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'create_post/create_found_post.dart';
-
-const Color mainColor = Color(0xFF1a425b);
-const Color secondaryColor = Color(0xFFd5a820);
-const Color accent = Color(0xFFebebeb);
+import 'package:TraceBack/util/colors.dart';
 
 class MainTimeline extends StatefulWidget {
   const MainTimeline({

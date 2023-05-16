@@ -1,6 +1,7 @@
-import 'package:TraceBack/posts/create_post/create_post.dart';
-import 'package:TraceBack/posts/main_timeline.dart';
+import 'package:TraceBack/util/colors.dart';
 import 'package:flutter/material.dart';
+
+import '../../../util/custom_border.dart';
 
 class DatePicker extends StatefulWidget {
 
@@ -51,8 +52,8 @@ class _DatePickerState extends State<DatePicker> {
         ),
         filled: true,
         fillColor: accent,
-        enabledBorder: border(mainColor),
-        focusedBorder: border(mainColor),
+        enabledBorder: CustomBorder(mainColor),
+        focusedBorder: CustomBorder(mainColor),
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:TraceBack/posts/post_pages/post.dart';
 import 'package:flutter/material.dart';
 import '../../util/bottom_button.dart';
 import '../main_timeline.dart';
+import 'package:TraceBack/util/colors.dart';
 
 class PostPreview extends StatelessWidget {
 

@@ -6,7 +6,7 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../profile/profileBackend.dart';
-import '../main_timeline.dart';
+import 'package:TraceBack/util/colors.dart';
 import '../post_pages/post_preview_page.dart';
 
 class CreateFoundPost extends CreatePost{

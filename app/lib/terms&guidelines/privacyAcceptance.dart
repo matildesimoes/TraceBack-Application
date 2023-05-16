@@ -1,6 +1,7 @@
 import 'package:TraceBack/terms&guidelines/termsBackEnd.dart';
 import 'package:flutter/material.dart';
-import '../posts/main_timeline.dart';
+import 'package:TraceBack/util/colors.dart';
+
 
 class PrivacyAcceptancePage extends StatefulWidget {
   @override

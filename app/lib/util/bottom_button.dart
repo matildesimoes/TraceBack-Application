@@ -1,6 +1,6 @@
+import 'package:TraceBack/util/colors.dart';
 import 'package:flutter/material.dart';
 
-import '../posts/main_timeline.dart';
 
 class BottomButton extends StatelessWidget {
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:TraceBack/util/colors.dart';
 
-import '../main_timeline.dart';
 
 class ItemsNavBar extends StatefulWidget {
 

@@ -3,8 +3,7 @@ import 'package:TraceBack/posts/timeline_util/filter.dart';
 import 'package:TraceBack/posts/timeline_util/post_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
-import '../main_timeline.dart';
+import 'package:TraceBack/util/colors.dart';
 
 abstract class ItemsTimeline extends StatefulWidget {
 

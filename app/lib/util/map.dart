@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:TraceBack/posts/main_timeline.dart';
+import 'package:TraceBack/util/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';

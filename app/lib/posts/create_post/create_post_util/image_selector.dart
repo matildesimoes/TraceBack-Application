@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:TraceBack/util/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:TraceBack/posts/main_timeline.dart';
+import 'package:TraceBack/util/colors.dart';
 
 class ImageSelector extends StatefulWidget {
 

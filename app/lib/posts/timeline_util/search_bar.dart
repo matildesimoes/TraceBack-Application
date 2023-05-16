@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../main_timeline.dart';
+import 'package:TraceBack/util/colors.dart';
 import 'filter.dart';
 
 class SearchBar extends StatefulWidget{

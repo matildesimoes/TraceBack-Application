@@ -1,14 +1,18 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:TraceBack/posts/create_post/create_post_util/category_dropdown.dart';
+import 'package:TraceBack/posts/create_post/create_post_util/location_field.dart';
+import 'package:TraceBack/posts/create_post/create_post_util/title_field.dart';
 import 'package:TraceBack/posts/posts_backend/posts_backend.dart';
 import 'package:TraceBack/profile/profileBackend.dart';
+import 'package:TraceBack/util/colors.dart';
+
 import 'package:flutter/material.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 import '../../util/bottom_button.dart';
 import '../main_timeline.dart';
-import '../../util/map.dart';
 import 'create_post_util/date_picker.dart';
 import 'create_post_util/description_field.dart';
 import 'create_post_util/image_selector.dart';
@@ -177,126 +181,4 @@ abstract class CreatePostState extends State<CreatePost> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
-}
-
-class TitleField extends StatelessWidget {
-  final TextEditingController controller;
-
-  TitleField({
-    super.key, required this.controller,
-  });
-
-  static String? validator(String?value){
-    if (value == "")
-      return "Please type a title!";
-    return null;
-  }
-  @override
-  Widget build(BuildContext context) => TextFormField(
-    validator: validator,
-    controller: controller,
-    decoration: InputDecoration(
-        label: Text("Title"),
-      filled: true,
-      fillColor: accent,
-      enabledBorder: border(mainColor),
-      focusedBorder: border(mainColor),
-      errorBorder:border(Colors.red),
-      focusedErrorBorder: border(Colors.red)
-    ),
-  );
-}
-
-class CategoryDropdown extends StatelessWidget {
-
-  late SingleValueDropDownController controller;
-
-  CategoryDropdown({
-    super.key, required this.controller,
-  });
-
-  static String? validator(String?value){
-    if (value == "")
-      return "Please choose a category!";
-    return null;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return DropDownTextField(
-      validator: validator,
-      controller: controller,
-      textFieldDecoration: InputDecoration(
-          label: Text("Category"),
-          filled: true,
-          fillColor: accent,
-          enabledBorder: border(mainColor),
-          focusedBorder: border(mainColor),
-          errorBorder:border(Colors.red),
-          focusedErrorBorder: border(Colors.red)
-      ),
-      dropDownList: [
-        DropDownValueModel(name: 'IT Devices', value: "IT Devices"),
-        DropDownValueModel(name: 'Keys', value: "Keys"),
-        DropDownValueModel(name: 'Clothing', value: "Clothing"),
-        DropDownValueModel(name: 'School Supplies', value: "School Supplies"),
-        DropDownValueModel(name: 'Other', value: "Other"),
-      ],
-    );
-  }
-}
-
-class LocationField extends StatelessWidget {
-
-  final TextEditingController controller;
-
-  LocationField({
-    super.key,
-    required this.controller
-  });
-
-  void _getLocation(BuildContext context) async {
-    final location = await Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => MapBuilder(controller.text))
-    );
-    controller.text = location;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      validator: (value) {
-        if (value!.trim().isEmpty) {
-          return "Please select a location";
-        }
-        return null;
-      },
-      controller: controller,
-      decoration: InputDecoration(
-        label: Text("Location"),
-        hintText: "Select location >",
-        suffixIcon: IconButton(
-            onPressed: (){_getLocation(context);},
-            icon: Icon(Icons.location_on, color: mainColor)
-        ),
-        filled: true,
-        fillColor: accent,
-        enabledBorder: border(mainColor),
-        focusedBorder: border(mainColor),
-        errorBorder:border(Colors.red),
-        focusedErrorBorder: border(Colors.red),
-      ),
-    );
-  }
-}
-
-OutlineInputBorder border(Color color) {
-  return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(25),
-      borderSide: BorderSide(
-          color: color,
-          width: 2,
-          style: BorderStyle.solid
-      )
-  );
 }

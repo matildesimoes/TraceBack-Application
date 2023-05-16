@@ -1,4 +1,4 @@
-
+import 'package:TraceBack/util/colors.dart';
 import 'package:TraceBack/posts/post_pages/post.dart';
 import 'package:flutter/material.dart';
 import '../../util/bottom_button.dart';

@@ -1,10 +1,9 @@
+import 'package:TraceBack/posts/posts_backend/posts_backend.dart';
 import 'package:TraceBack/posts/timeline_util/filter.dart';
 import 'package:TraceBack/posts/timeline_util/post_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../found_post/found_fake_backend.dart';
-import '../lost_post/lost_backend.dart';
 import '../main_timeline.dart';
 
 abstract class ItemsTimeline extends StatefulWidget {
@@ -27,7 +26,7 @@ abstract class _ItemsTimelineState extends State<ItemsTimeline> {
 
   Future<QuerySnapshot<Map<String, dynamic>>> getSnapshots();
 
-  get isLostPost;
+  bool get isLostPost;
 
   Widget getPosts(List<PostData> postsData) {
 

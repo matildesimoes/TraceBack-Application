@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:TraceBack/posts/found_post/create_found_post.dart';
 import 'package:TraceBack/posts/main_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';

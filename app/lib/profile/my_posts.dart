@@ -1,5 +1,4 @@
-import 'package:TraceBack/posts/found_post/found_fake_backend.dart';
-import 'package:TraceBack/posts/lost_post/lost_backend.dart';
+import 'package:TraceBack/posts/posts_backend/posts_backend.dart';
 import 'package:TraceBack/profile/profileBackend.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';

@@ -1,5 +1,5 @@
+import 'package:TraceBack/posts/create_post/create_post.dart';
 import 'package:flutter/material.dart';
-import '../found_post/create_found_post.dart';
 import '../main_timeline.dart';
 
 class DescriptionField extends StatefulWidget {

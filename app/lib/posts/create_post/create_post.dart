@@ -3,8 +3,8 @@ import 'dart:ui';
 
 import 'package:TraceBack/posts/create_post_util/description_field.dart';
 import 'package:TraceBack/posts/create_post_util/tag_field.dart';
+import 'package:TraceBack/posts/posts_backend/posts_backend.dart';
 import 'package:TraceBack/profile/profileBackend.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:textfield_tags/textfield_tags.dart';
@@ -14,24 +14,29 @@ import '../../util/bottom_button.dart';
 import '../post_pages/post_preview_page.dart';
 import '../main_timeline.dart';
 import '../../util/map.dart';
-import 'found_fake_backend.dart';
 import '../create_post_util/date_picker.dart';
 import '../create_post_util/image_selector.dart';
 
-class CreateFoundPost extends StatefulWidget {
-  const CreateFoundPost({Key? key}) : super(key: key);
+abstract class CreatePost extends StatefulWidget {
+  const CreatePost({Key? key}) : super(key: key);
 
   @override
-  State<CreateFoundPost> createState() => _CreateFoundPostState();
+  State<CreatePost> createState();
 }
 
-class _CreateFoundPostState extends State<CreateFoundPost> {
+abstract class CreatePostState extends State<CreatePost> {
+
+  PostsBackend get backend;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  get formkey => _formKey;
 
   List<String> tags = [];
 
   File? _image;
+
+  get image => _image;
 
   getImage() {
     return _image;
@@ -69,7 +74,6 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
   }
 
   submit() async {
-    FoundBackend backend = FoundBackend();
 
     String tagsString = tagsController.hasTags ?
 
@@ -97,7 +101,7 @@ class _CreateFoundPostState extends State<CreateFoundPost> {
     backend.addURL(id, url);
     data['image_url'] = url;
 
-    ProfileBackend().addFoundItem(id);
+    backend.addItemToUser(id);
   }
 
   preview() async {

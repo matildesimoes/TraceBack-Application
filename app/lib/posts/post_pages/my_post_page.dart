@@ -1,9 +1,8 @@
 import 'dart:ui';
 import 'package:TraceBack/posts/post_pages/post.dart';
+import 'package:TraceBack/posts/posts_backend/posts_backend.dart';
 import 'package:flutter/material.dart';
 import '../../util/camera.dart';
-import '../found_post/found_fake_backend.dart';
-import '../lost_post/lost_backend.dart';
 import '../main_timeline.dart';
 
 class MyPostPage extends StatelessWidget {

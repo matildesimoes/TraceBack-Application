@@ -11,10 +11,14 @@ import '../util/bottom_button.dart';
 import '../util/camera.dart';
 import 'lost_post/lost_backend.dart';
 import 'timeline.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+
 
 class PostPreview extends StatelessWidget {
 
-  final FirebaseMessagingService _firebaseMessagingService = FirebaseMessagingService();
+  //final FirebaseMessagingService _firebaseMessagingService = FirebaseMessagingService();
   late String title;
   late String category;
   List<Tag> tagWidgets = [];
@@ -69,7 +73,39 @@ class PostPreview extends StatelessWidget {
     }
   }
 
-  
+  Future<void> sendNotificationToAllUsers() async {
+    // Configure as opções da notificação
+    var notification = {
+      'notification': {
+        'title': 'New Found Post',
+        'body': 'A new post has been uploaded to TraceBack! Check it out to see if it´s yours!',
+      },
+    };
+
+    // Converta as opções da notificação para JSON
+    var notificationJson = jsonEncode(notification);
+
+    // Configure o cabeçalho da solicitação
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'key=AAAA_neZ-1A:APA91bF8CgwFgZjzcWEipzNgVnjkAG84HuYCxd0Hzu69k7yXTySL4FZRzznfkCXwEVqfdhzS_RjqPKr9gb1MJzMMS-gCuFJzeW9qJKkEv6SMe1RB8Slm7LBEDYU3aNVr2So5xN5DAbNs', // Substitua YOUR_SERVER_KEY pela chave do servidor do Firebase
+    };
+
+    // Envie a solicitação HTTP para enviar a notificação
+    var response = await http.post(
+      Uri.parse('https://fcm.googleapis.com/fcm/send'),
+      headers: headers,
+      body: notificationJson,
+    );
+
+    // Verifique a resposta
+    if (response.statusCode == 200) {
+      print('Notificação enviada com sucesso!');
+    } else {
+      print('Erro ao enviar notificação. Status code: ${response.statusCode}');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +128,8 @@ class PostPreview extends StatelessWidget {
         icon: Icons.post_add_rounded,
         onPressed: () async {submit();
         // Construa a mensagem de notificação
-        _firebaseMessagingService.sendNotificationToAllUsers('New Found Post', 'A new post has been upload to TraceBack! Check it out to see if it´s yours!');
+        //_firebaseMessagingService.sendNotificationToAllUsers('New Found Post', 'A new post has been upload to TraceBack! Check it out to see if it´s yours!');
+        await sendNotificationToAllUsers();
         Navigator.popUntil(context, ModalRoute.withName("/Home"));}
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

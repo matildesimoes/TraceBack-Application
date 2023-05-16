@@ -109,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                             );
                           } else {
                             termsBackend.checkAcceptedTerms(context);
-                            FirebaseMessaging.instance.subscribeToTopic('found_new_post');
+                            //FirebaseMessaging.instance.subscribeToTopic('found_new_post');
                           }
                         },
                         style: ButtonStyle(

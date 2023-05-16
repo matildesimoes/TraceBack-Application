@@ -1,17 +1,14 @@
 import 'dart:ui';
 import 'package:TraceBack/authentication/initial.dart';
+import 'package:TraceBack/posts/create_post/create_lost_post.dart';
 import 'package:TraceBack/posts/timeline_util/category_bar.dart';
 import 'package:TraceBack/posts/timeline_util/filter.dart';
 import 'package:TraceBack/posts/timeline_util/items_nav_bar.dart';
 import 'package:TraceBack/posts/timeline_util/items_timelines.dart';
 import 'package:TraceBack/posts/timeline_util/search_bar.dart';
 import 'package:flutter/material.dart';
-import 'found_post/create_found_post.dart';
-import 'lost_post/create_lost_post.dart';
-
-const Color mainColor = Color(0xFF1a425b);
-const Color secondaryColor = Color(0xFFd5a820);
-const Color accent = Color(0xFFebebeb);
+import 'create_post/create_found_post.dart';
+import 'package:TraceBack/util/colors.dart';
 
 class MainTimeline extends StatefulWidget {
   const MainTimeline({
@@ -98,6 +95,7 @@ class CreatePostButton extends StatelessWidget {
       widthFactor: 0.2,
       child: FittedBox(
         child: FloatingActionButton(
+          heroTag: "Create",
           key: Key("Create"),
           backgroundColor: secondaryColor,
           onPressed: (){
@@ -273,6 +271,7 @@ class GoBackButton extends StatelessWidget {
       widthFactor: 0.2,
       child: FittedBox(
         child: FloatingActionButton(
+          heroTag: "GoBack",
           backgroundColor: Colors.white,
           onPressed: (){
             Navigator.of(context)

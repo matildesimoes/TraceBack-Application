@@ -1,8 +1,8 @@
-import 'dart:ui';
 import 'package:TraceBack/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import '../posts/main_timeline.dart';
+import 'package:TraceBack/util/colors.dart';
 import 'my_posts.dart';
 
 class MyPlace extends StatefulWidget{

@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../posts/main_timeline.dart';
+import 'package:TraceBack/util/colors.dart';
 
 class EditProfilePage extends StatefulWidget {
 

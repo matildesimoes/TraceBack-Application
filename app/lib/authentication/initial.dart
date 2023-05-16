@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'login.dart';
 import '../posts/main_timeline.dart';
+import 'package:TraceBack/util/colors.dart';
 import 'dart:ui';
 
 class InitialPage extends StatefulWidget {
@@ -17,7 +18,6 @@ class _InitialPageState extends State<InitialPage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: SideMenu(),
         backgroundColor : mainColor,
         body: Form(
         key: _formKey,
@@ -48,7 +48,8 @@ class _InitialPageState extends State<InitialPage>{
                         ),
                       ),
                     ),
-                  )
+                  ),
+                  SizedBox(height: 10),
                 ],
               )
             ),

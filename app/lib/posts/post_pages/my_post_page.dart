@@ -1,9 +1,9 @@
 import 'dart:ui';
 import 'package:TraceBack/posts/post_pages/post.dart';
+import 'package:TraceBack/posts/posts_backend/posts_backend.dart';
 import 'package:flutter/material.dart';
+import 'package:TraceBack/util/colors.dart';
 import '../../util/camera.dart';
-import '../found_post/found_fake_backend.dart';
-import '../lost_post/lost_backend.dart';
 import '../main_timeline.dart';
 
 class MyPostPage extends StatelessWidget {
@@ -67,6 +67,7 @@ class MyPostPage extends StatelessWidget {
               height: 70,
               child: FittedBox(
                 child: FloatingActionButton(
+                  heroTag: "remove",
                   backgroundColor: secondaryColor,
                   onPressed: (){
                     showDialog(
@@ -125,6 +126,7 @@ class MyPostPage extends StatelessWidget {
               width: 70,
               height: 70,
               child: FloatingActionButton(
+                heroTag: "edit",
                 backgroundColor: secondaryColor,
                 onPressed: (){
                 },

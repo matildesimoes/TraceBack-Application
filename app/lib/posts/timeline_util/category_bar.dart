@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:TraceBack/util/colors.dart';
 
-import '../main_timeline.dart';
 import 'filter.dart';
 
 class CategoryBar extends StatefulWidget {

@@ -1,12 +1,10 @@
-import 'package:TraceBack/posts/found_post/found_fake_backend.dart';
-import 'package:TraceBack/posts/lost_post/lost_backend.dart';
+import 'package:TraceBack/posts/posts_backend/posts_backend.dart';
 import 'package:TraceBack/profile/profileBackend.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../posts/short_post.dart';
-import '../posts/main_timeline.dart';
+import '../posts/timeline_util/short_post.dart';
+import 'package:TraceBack/util/colors.dart';
 import '../posts/timeline_util/post_data.dart';
 
 abstract class MyPosts extends StatefulWidget {

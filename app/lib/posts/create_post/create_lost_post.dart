@@ -16,6 +16,9 @@ class CreateLostPost extends CreatePost{
 class _CreateLostPostState extends CreatePostState {
 
   @override
+  String get title => "Post Lost Item";
+
+  @override
   PostsBackend get backend => LostBackend();
 
   @override

@@ -1,21 +1,18 @@
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:TraceBack/posts/create_post_util/description_field.dart';
-import 'package:TraceBack/posts/create_post_util/tag_field.dart';
 import 'package:TraceBack/posts/posts_backend/posts_backend.dart';
 import 'package:TraceBack/profile/profileBackend.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:textfield_tags/textfield_tags.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import '../../util/bottom_button.dart';
-import '../post_pages/post_preview_page.dart';
 import '../main_timeline.dart';
 import '../../util/map.dart';
-import '../create_post_util/date_picker.dart';
-import '../create_post_util/image_selector.dart';
+import 'create_post_util/date_picker.dart';
+import 'create_post_util/description_field.dart';
+import 'create_post_util/image_selector.dart';
+import 'create_post_util/tag_field.dart';
 
 abstract class CreatePost extends StatefulWidget {
   const CreatePost({Key? key}) : super(key: key);
@@ -104,56 +101,17 @@ abstract class CreatePostState extends State<CreatePost> {
     backend.addItemToUser(id);
   }
 
-  preview() async {
-    FocusScope.of(context).unfocus();
-    if (_formKey.currentState!.validate()) {
-      if (_image == null){
-        showTopSnackBar(
-          Overlay.of(context),
-          const CustomSnackBar.info(
-            message: "Please upload a photo of the item",
-            textStyle: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 16
-            ),
-            backgroundColor: secondaryColor,
-          ),
-        );
-        return;
-      }
-      Navigator.of(context).push(
-          MaterialPageRoute(
-              builder: (context) =>
-                  PostPreview(
-                    tags: tagsController.hasTags ?
-                    tagsController.getTags.toString().substring(
-                        1,
-                        tagsController.getTags
-                            .toString()
-                            .length - 1
-                    ) : "",
-                    category: categoryController.dropDownValue!.value,
-                    title: titleController.text,
-                    location: locationController.text,
-                    date: dateController.text,
-                    image: _image,
-                    description: descriptionController.text,
-                    authorID: ProfileBackend().getCurrentUserID(),
-                    submit: submit,
-                  )
-          )
-      );
-    }
-  }
+  preview();
+
+  String get title;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text(
-          "Post Found Item",
+        title: Text(
+          title,
           style: TextStyle(
               color: Colors.white,
               fontSize: 23,

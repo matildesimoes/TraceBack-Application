@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:TraceBack/posts/create_post/create_post.dart';
 import 'package:flutter/material.dart';
 import 'package:textfield_tags/textfield_tags.dart';
-import '../main_timeline.dart';
+import 'package:TraceBack/posts/main_timeline.dart';
 
 class TagField extends StatefulWidget {
 

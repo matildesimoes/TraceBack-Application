@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../short_post.dart';
+import 'short_post.dart';
 
 class PostData {
 

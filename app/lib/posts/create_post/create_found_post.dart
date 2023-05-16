@@ -19,6 +19,9 @@ class CreateFoundPost extends CreatePost{
 class _CreateFoundPostState extends CreatePostState {
 
   @override
+  String get title => "Post Found Item";
+
+  @override
   PostsBackend get backend => FoundBackend();
 
   @override

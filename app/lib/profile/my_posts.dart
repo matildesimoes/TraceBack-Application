@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../posts/short_post.dart';
+import '../posts/timeline_util/short_post.dart';
 import '../posts/main_timeline.dart';
 import '../posts/timeline_util/post_data.dart';
 

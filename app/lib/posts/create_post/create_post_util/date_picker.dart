@@ -1,6 +1,6 @@
 import 'package:TraceBack/posts/create_post/create_post.dart';
+import 'package:TraceBack/posts/main_timeline.dart';
 import 'package:flutter/material.dart';
-import '../main_timeline.dart';
 
 class DatePicker extends StatefulWidget {
 

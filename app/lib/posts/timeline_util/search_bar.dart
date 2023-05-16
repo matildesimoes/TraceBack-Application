@@ -33,7 +33,10 @@ class _SearchBarState extends State<SearchBar> {
               height: 40,
               child: TextField(
                 onSubmitted: (value){
-                  FocusScope.of(context).unfocus();
+                  final FocusScopeNode currentScope = FocusScope.of(context);
+                  if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
+                    FocusManager.instance.primaryFocus!.unfocus();
+                  }
                   widget.filter.setSearchQuery(widget.controller.text);
                   widget.search();
                 },
@@ -69,7 +72,10 @@ class _SearchBarState extends State<SearchBar> {
                     onPressed: (){
                       setState(() {
                         widget.controller.text = "";
-                        FocusScope.of(context).unfocus();
+                        final FocusScopeNode currentScope = FocusScope.of(context);
+                        if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
+                          FocusManager.instance.primaryFocus!.unfocus();
+                        }
                       });
                     },
                   ),
@@ -89,7 +95,10 @@ class _SearchBarState extends State<SearchBar> {
                 color: Colors.white,
               ),
               onPressed: () {
-                FocusScope.of(context).unfocus();
+                final FocusScopeNode currentScope = FocusScope.of(context);
+                if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
+                  FocusManager.instance.primaryFocus!.unfocus();
+                }
                 widget.filter.setSearchQuery(widget.controller.text);
                 widget.search();
               },

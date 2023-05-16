@@ -89,7 +89,10 @@ class _LoginPageState extends State<LoginPage> {
                       child: ElevatedButton(
                         key: Key("Logged"),
                         onPressed: () async {
-                          FocusScope.of(context).unfocus();
+                          final FocusScopeNode currentScope = FocusScope.of(context);
+                          if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
+                            FocusManager.instance.primaryFocus!.unfocus();
+                          }
                           showDialog(
                             context: context,
                             builder: (context) =>
@@ -104,6 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                               passwordController.text
                           );
                           if (error != "") {
+                            Navigator.of(context).pop();
                             showTopSnackBar(
                               Overlay.of(context),
                               CustomSnackBar.info(

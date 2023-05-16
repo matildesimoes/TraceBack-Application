@@ -66,6 +66,7 @@ class MyPostPage extends StatelessWidget {
               height: 70,
               child: FittedBox(
                 child: FloatingActionButton(
+                  heroTag: "remove",
                   backgroundColor: secondaryColor,
                   onPressed: (){
                     showDialog(
@@ -124,6 +125,7 @@ class MyPostPage extends StatelessWidget {
               width: 70,
               height: 70,
               child: FloatingActionButton(
+                heroTag: "edit",
                 backgroundColor: secondaryColor,
                 onPressed: (){
                 },

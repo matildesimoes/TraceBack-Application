@@ -119,6 +119,7 @@ class MapBuilderState extends State<MapBuilder> {
             child: Padding(
               padding: EdgeInsets.all(25),
               child: FloatingActionButton(
+                heroTag: "finish",
                 onPressed: (){
                   Navigator.pop(context, getAdress());
                 },
@@ -133,6 +134,7 @@ class MapBuilderState extends State<MapBuilder> {
               child: Padding(
                 padding: EdgeInsets.all(25),
                 child: FloatingActionButton(
+                  heroTag: "back",
                   onPressed: _backToInitial_,
                   backgroundColor: mainColor,
                   child: const Icon(Icons.center_focus_strong, color: Colors.white,),

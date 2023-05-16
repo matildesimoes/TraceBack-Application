@@ -98,6 +98,7 @@ class CreatePostButton extends StatelessWidget {
       widthFactor: 0.2,
       child: FittedBox(
         child: FloatingActionButton(
+          heroTag: "Create",
           key: Key("Create"),
           backgroundColor: secondaryColor,
           onPressed: (){
@@ -273,6 +274,7 @@ class GoBackButton extends StatelessWidget {
       widthFactor: 0.2,
       child: FittedBox(
         child: FloatingActionButton(
+          heroTag: "GoBack",
           backgroundColor: Colors.white,
           onPressed: (){
             Navigator.of(context)

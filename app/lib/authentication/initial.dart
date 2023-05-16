@@ -48,7 +48,8 @@ class _InitialPageState extends State<InitialPage>{
                         ),
                       ),
                     ),
-                  )
+                  ),
+                  SizedBox(height: 10),
                 ],
               )
             ),

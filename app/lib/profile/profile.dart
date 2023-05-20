@@ -56,104 +56,78 @@ class ProfilePageState extends State<ProfilePage> {
             return Center(child: Text('No data found'));
           } else {
             final userData = snapshot.data!;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(30.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        ClipOval(
-                          child: userData['photoUrl'] != ''
-                              ? Image.network(
-                            userData['photoUrl'],
-                            width: 140,
-                            height: 140,
-                            fit: BoxFit.cover,
-                          )
-                              : Container(
-                            width: 140,
-                            height: 140,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(left: 20.0),
-                                child: Text(
-                                  userData['name'] as String,
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              Padding(
-                                padding: EdgeInsets.only(left: 20.0),
-                                child: Text(
-                                  userData['email'] as String,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              Padding(
-                                padding: EdgeInsets.only(left: 20.0),
-                                child: Text(
-                                  userData['phone'] as String,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 16),
-                              Padding(
-                                padding: EdgeInsets.only(left: 20.0),
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: mainColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                  ),
-                                  child: Text('Edit Profile'),
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            EditProfilePage(
-                                                    () {
-                                                  setState(() {
-                                                    getUserData();
-                                                  }
-                                                );
-                                                ;
-                                              }
-                                          ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
+            return Center(
+              child: Padding(
+                padding: EdgeInsets.only(top: 40), // Adjust as needed
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    ClipOval(
+                      child: userData['photoUrl'] != ''
+                          ? Image.network(
+                        userData['photoUrl'],
+                        width: 140,
+                        height: 140,
+                        fit: BoxFit.cover,
+                      )
+                          : Container(
+                        width: 140,
+                        height: 140,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      userData['name'] as String,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      userData['email'] as String,
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      userData['phone'] as String,
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: mainColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                    ],
-                  ),
+                      child: Text('Edit Profile'),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                EditProfilePage(
+                                      () {
+                                    setState(() {
+                                      getUserData();
+                                    });
+                                  },
+                                ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
-            ],
-          );
+            );
+          }
         }
-      }
     );
   }
 }

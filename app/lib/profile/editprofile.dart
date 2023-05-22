@@ -164,6 +164,7 @@ class EditProfilePageState extends State<EditProfilePage> {
             key: _formKey,
             child: Expanded(
               child: ListView(
+                padding: EdgeInsets.symmetric(horizontal: 30),
                 children: [
                   SizedBox(height: 35),
                   Stack(
@@ -185,7 +186,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                       ),
                       Positioned(
                         bottom: 0,
-                        left: MediaQuery.of(context).size.width / 2,
+                        left: MediaQuery.of(context).size.width / 2 - 30,
                         child: Container(
                           padding: EdgeInsets.all(2),
                           decoration: BoxDecoration(

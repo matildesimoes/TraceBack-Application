@@ -1,8 +1,5 @@
 import 'package:TraceBack/authentication/authentication_backend.dart';
 import 'package:TraceBack/terms&guidelines/termsBackEnd.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';

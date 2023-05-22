@@ -1,6 +1,5 @@
 import 'package:TraceBack/firebase_initializer.dart';
 import 'package:TraceBack/firebase_options.dart';
-import 'package:TraceBack/notifications/firebaseMessagingService.dart';
 import 'package:TraceBack/posts/timeline.dart';
 import 'package:TraceBack/profile/my_place.dart';
 import 'package:TraceBack/profile/profile.dart';
@@ -12,7 +11,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'authentication/initial.dart';
-import 'package:TraceBack/notifications/firebaseMessagingService.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

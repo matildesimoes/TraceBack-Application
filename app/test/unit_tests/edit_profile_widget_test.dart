@@ -4,7 +4,7 @@ import 'package:TraceBack/profile/editprofile.dart';
 
 class EditProfilePageMock extends EditProfilePage  {
 
-  EditProfilePageMock(super.refresh);
+  EditProfilePageMock(super.refresh, {super.key});
 
   @override
   State<EditProfilePage> createState() => _MockEditProfilePageState();

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 import 'package:TraceBack/profile/profileBackend.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,7 +12,7 @@ class EditProfilePage extends StatefulWidget {
 
   final VoidCallback refresh;
 
-  EditProfilePage(this.refresh);
+  const EditProfilePage(this.refresh, {super.key});
 
   @override
   State<EditProfilePage> createState() => EditProfilePageState();
@@ -49,7 +48,6 @@ class EditProfilePageState extends State<EditProfilePage> {
       final downloadUrl = await ref.getDownloadURL();
       return downloadUrl;
     } catch (e) {
-      print('Error retrieving profile picture URL: $e');
       return null;
     }
   }
@@ -70,7 +68,6 @@ class EditProfilePageState extends State<EditProfilePage> {
       TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
 
       String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-      print(downloadUrl);
 
       setState(() {
         _image = File(image.path);
@@ -96,7 +93,6 @@ class EditProfilePageState extends State<EditProfilePage> {
       TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
 
       String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-      print(downloadUrl);
 
       setState(() {
         _image = File(image.path);
@@ -155,10 +151,10 @@ class EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: SideMenu(),
     appBar: AppBar(
-    backgroundColor: mainColor,
-    toolbarHeight: 80,
+      backgroundColor: mainColor,
+      toolbarHeight: 80,
+      leading: BackButton(),
     ),
     body: userData.isEmpty ? Center(child: CircularProgressIndicator()) :
       SingleChildScrollView(
@@ -285,7 +281,7 @@ class EditBox extends StatelessWidget {
   final String hintText;
   final TextEditingController controller;
 
-  EditBox({required this.text, required this.hintText, required this.controller,});
+  const EditBox({required this.text, required this.hintText, required this.controller,});
 
   @override
   Widget build(BuildContext context) {

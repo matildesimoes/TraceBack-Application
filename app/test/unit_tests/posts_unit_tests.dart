@@ -1,4 +1,3 @@
-import 'package:TraceBack/posts/post_pages/post_page.dart';
 import 'package:TraceBack/posts/timeline_util/short_post.dart';
 import 'package:TraceBack/posts/main_timeline.dart';
 import 'package:TraceBack/posts/post_pages/post.dart';
@@ -31,5 +30,34 @@ void main(){
     expect(find.text("Test Location"), findsOneWidget);
     expect(find.text("Test Description"), findsNothing);
     expect(find.text("Test Author ID"), findsNothing);
+  });
+
+  testWidgets('Post Widget Test', (WidgetTester tester) async {
+
+    imageRetriever() async {
+      return Image.asset("assets/images/TraceBack.png");
+    }
+
+    await tester.pumpWidget(MaterialApp(
+      home: Column(
+        children: [Post(
+          title: "Test Title",
+          date: "Test Date",
+          tags: [Tag("Tag1"), Tag("Tag2")],
+          location: "FEUP Porto",
+          description: "Test Description",
+          authorID: "Test Author ID",
+          imageRetriever: imageRetriever ,
+        ),]
+      ),
+    ));
+
+    expect(find.text("Test Title"), findsOneWidget);
+    expect(find.text("Test Date"), findsOneWidget);
+    expect(find.byType(Tag), findsNWidgets(2));
+    expect(find.byType(SizedBox), findsAtLeastNWidgets(1));
+    expect(find.text("Test Description"), findsOneWidget);
+    expect(find.text("FEUP Porto"), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsNWidgets(2));
   });
 }

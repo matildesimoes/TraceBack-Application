@@ -15,6 +15,23 @@ void main() {
     });
   });
 
+  group('emailValidator', () {
+    test('should return null if the value is not empty and correct', () {
+      final result = emailValidator.validate('up202112345@up.pt');
+      expect(result, null);
+    });
+
+    test('should return an error message if the value is empty', () {
+      final result = emailValidator.validate('');
+      expect(result, 'Please enter an UP email address');
+    });
+
+    test('should return an error message if the value is wrong', () {
+      final result = emailValidator.validate('202112345@up.pt');
+      expect(result, 'Please enter a valid UP email address');
+    });
+  });
+
   group('phoneValidator', () {
     test('should return null if the value is not empty and correct', () {
       final result = phoneValidator.validate('912345678');

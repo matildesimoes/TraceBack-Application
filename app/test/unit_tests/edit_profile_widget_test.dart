@@ -23,13 +23,11 @@ class _MockEditProfilePageState extends EditProfilePageState {
 
     userData = {
       'name': 'nome',
-      'email': 'email',
       'phone': 'phoneNumber',
     };
 
     setState(() {
       nameController.text = userData['name'];
-      emailController.text = userData['email'];
       phoneNumberController.text = userData['phone'];
     });
 

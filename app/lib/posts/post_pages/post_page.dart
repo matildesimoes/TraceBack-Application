@@ -1,3 +1,5 @@
+import 'package:TraceBack/profile/profile.dart';
+import 'package:TraceBack/profile/profilePage.dart';
 import 'package:TraceBack/util/colors.dart';
 import 'package:TraceBack/posts/post_pages/post.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +40,14 @@ class PostPage extends StatelessWidget {
     }
   }
 
+  contact(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ProfilePage(userID: authorID)
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -57,7 +67,9 @@ class PostPage extends StatelessWidget {
       floatingActionButton: BottomButton(
         text: isClosed ? "Go Back" : "Contact",
         icon: isClosed ? Icons.arrow_back_ios : Icons.message_outlined,
-        onPressed: isClosed ? (){Navigator.pop(context);} : (){}),
+        onPressed: isClosed ?
+            (){Navigator.pop(context);} :
+            (){contact(context);}),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }

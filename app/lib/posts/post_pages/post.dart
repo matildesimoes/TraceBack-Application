@@ -1,5 +1,7 @@
 import 'dart:ui';
+import 'package:TraceBack/profile/profile.dart';
 import 'package:TraceBack/profile/profileBackend.dart';
+import 'package:TraceBack/profile/profilePage.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -160,7 +162,11 @@ class _PostState extends State<Post> {
                 LocationDate(location: widget.location, date: widget.date),
                 map,
                 SizedBox(height: 10,),
-                AuthorBox(authorPhoto: authorPhoto, authorName: authorName),
+                AuthorBox(
+                  authorPhoto: authorPhoto,
+                  authorName: authorName,
+                  authorID: widget.authorID
+                ),
                 SizedBox(height: 100,)
               ],
             ),
@@ -252,11 +258,13 @@ class AuthorBox extends StatelessWidget {
 
   final Widget? authorPhoto;
   final String authorName;
+  final String authorID;
 
   const AuthorBox({
     super.key,
     required this.authorPhoto,
-    required this.authorName
+    required this.authorName,
+    required this.authorID
   });
 
   @override
@@ -266,7 +274,20 @@ class AuthorBox extends StatelessWidget {
       child: InkWell(
         splashColor: accent,
         borderRadius: BorderRadius.circular(50),
-        onTap: (){},
+        onTap: (){
+          if (authorID == ProfileBackend().getCurrentUserID()){
+            Navigator.pushNamed(context, "/My Place");
+            return;
+          }
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ProfilePage(
+                    userID: authorID,
+                  )
+              )
+          );
+        },
         child:UnconstrainedBox(
           child: Ink(
             height: 40,

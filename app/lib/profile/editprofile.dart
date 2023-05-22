@@ -29,13 +29,11 @@ class EditProfilePageState extends State<EditProfilePage> {
   File? _image;
   late String uid = FirebaseAuth.instance.currentUser!.uid;
   late String name;
-  late String email;
   late String phoneNumber;
   late Map<String, dynamic> userData = {};
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
-  final emailController = TextEditingController();
   final phoneNumberController = TextEditingController();
 
 
@@ -140,11 +138,9 @@ class EditProfilePageState extends State<EditProfilePage> {
     FirebaseFirestore.instance.collection('Users').doc(uid).get().then(
           (doc) {
         name = doc['name'];
-        email = doc['email'];
         phoneNumber = doc['phone'];
 
         nameController.text = name;
-        emailController.text = email;
         phoneNumberController.text = phoneNumber;
 
         setState(() {
@@ -158,135 +154,129 @@ class EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (userData.isEmpty) {
-      return CircularProgressIndicator();
-    } else {
-      return Scaffold(
+    return Scaffold(
         drawer: SideMenu(),
-        appBar: AppBar(
-          backgroundColor: mainColor,
-          toolbarHeight: 80,
-        ),
-        body: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                SizedBox(height: 35),
-                Stack(
-                  children: [
-                    ClipOval(
-                      child: userData.containsKey('photoUrl') && userData['photoUrl'] != ''
-                          ? Image.network(
-                        userData['photoUrl'] as String,
-                        width: 140,
-                        height: 140,
-                        fit: BoxFit.cover,
-                      )
-                          : Container(
-                        width: 140,
-                        height: 140,
+    appBar: AppBar(
+    backgroundColor: mainColor,
+    toolbarHeight: 80,
+    ),
+    body: userData.isEmpty ? Center(child: CircularProgressIndicator()) :
+      SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              SizedBox(height: 35),
+              Stack(
+                children: [
+                  ClipOval(
+                    child: userData.containsKey('photoUrl') && userData['photoUrl'] != ''
+                        ? Image.network(
+                      userData['photoUrl'] as String,
+                      width: 140,
+                      height: 140,
+                      fit: BoxFit.cover,
+                    )
+                        : Container(
+                      width: 140,
+                      height: 140,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      padding: EdgeInsets.all(2),
+                      decoration: BoxDecoration(
                         color: Colors.white,
+                        borderRadius: BorderRadius.circular(50),
                       ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        padding: EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              icon: Icon(
-                                Icons.photo_library,
-                                color: mainColor,
-                                size: 24,
-                              ),
-                              onPressed: pickUploadImage,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              Icons.photo_library,
+                              color: mainColor,
+                              size: 24,
                             ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.camera_alt,
-                                color: mainColor,
-                                size: 24,
-                              ),
-                              onPressed: captureImage,
+                            onPressed: pickUploadImage,
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.camera_alt,
+                              color: mainColor,
+                              size: 24,
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16),
-                Container(
-                  padding: EdgeInsets.only(left: 25),
-                  margin: EdgeInsets.only(bottom: 10),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Your Information',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: mainColor,
-                        fontWeight: FontWeight.bold,
+                            onPressed: captureImage,
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ),
-              EditBox(text: "Name", hintText: "Name", controller: nameController),
-              EditBox(text: "Email", hintText: "upXXXXXXXXX@up.pt", controller: emailController),
-              EditBox(text: "Phone Number", hintText: "Phone Number", controller: phoneNumberController),
-              SizedBox(height: 40),
+                ],
+              ),
+              SizedBox(height: 16),
               Container(
-                height: 50,
-                margin: EdgeInsets.only(top: 5),
-                width: 200,
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      Map<String, dynamic> data = {
-                        'name': nameController.text,
-                        'email': emailController.text,
-                        'phone': phoneNumberController.text,
-                      };
-                      ProfileBackend().updateProfile(uid, data);
-                      widget.refresh();
-                      Navigator.of(context).pop();
-                    }
-                    // função para guardar as informações
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(mainColor),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25.0),
-                      ),
-                    ),
-                  ),
+                padding: EdgeInsets.only(left: 25),
+                margin: EdgeInsets.only(bottom: 10),
+                child: Align(
+                  alignment: Alignment.centerLeft,
                   child: Text(
-                    "Save",
+                    'Your Information',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 20,
+                      color: mainColor,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
+              ),
+            EditBox(text: "Name", hintText: "Name", controller: nameController),
+            EditBox(text: "Phone Number", hintText: "Phone Number", controller: phoneNumberController),
+            SizedBox(height: 40),
+            Container(
+              height: 50,
+              margin: EdgeInsets.only(top: 5),
+              width: 200,
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    Map<String, dynamic> data = {
+                      'name': nameController.text,
+                      'phone': phoneNumberController.text,
+                    };
+                    ProfileBackend().updateProfile(uid, data);
+                    widget.refresh();
+                    Navigator.of(context).pop();
+                  }
+                  // função para guardar as informações
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(mainColor),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                  ),
                 ),
-                SizedBox(height: 32),
-              ],
-            ),
+                child: Text(
+                  "Save",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              ),
+              SizedBox(height: 32),
+            ],
           ),
         ),
-      );
-    }
+      ),
+    );
   }
-
 }
 
 class EditBox extends StatelessWidget {

@@ -8,24 +8,32 @@ import 'package:TraceBack/util/colors.dart';
 import 'dart:async';
 
 
-class ProfilePage extends StatefulWidget{
+class Profile extends StatefulWidget{
+
+  final String userID;
+  final bool isCurrentUser;
+
+  const Profile({
+    Key? key,
+    required this.userID,
+    this.isCurrentUser = false}
+  ) : super(key: key);
 
   @override
-  State<ProfilePage> createState() => ProfilePageState();
+  State<Profile> createState() => ProfileState();
 }
 
-class ProfilePageState extends State<ProfilePage> {
+class ProfileState extends State<Profile> {
 
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
-  late User? user;
 
   Future<Map<String, dynamic>> getUserData() async {
     DocumentSnapshot snapshot = await firestore.collection("Users").doc(
-        user!.uid).get();
+        widget.userID).get();
     String photoUrl;
     try {
-      photoUrl = await storage.ref('Profile Pics/${user!.uid}/ProfilePic.jpg')
+      photoUrl = await storage.ref('Profile Pics/${widget.userID}/ProfilePic.jpg')
           .getDownloadURL();
     } catch (e) {
       photoUrl = '';
@@ -39,7 +47,7 @@ class ProfilePageState extends State<ProfilePage> {
   void initState() {
     storage = FirebaseStorage.instance;
     firestore = FirebaseFirestore.instance;
-    user = FirebaseAuth.instance.currentUser;
+    super.initState();
   }
 
   @override
@@ -99,7 +107,7 @@ class ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                     SizedBox(height: 16),
-                    ElevatedButton(
+                    widget.isCurrentUser ?  ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         primary: mainColor,
                         shape: RoundedRectangleBorder(
@@ -121,7 +129,7 @@ class ProfilePageState extends State<ProfilePage> {
                           ),
                         );
                       },
-                    ),
+                    ) : const SizedBox.shrink(),
                   ],
                 ),
               ),

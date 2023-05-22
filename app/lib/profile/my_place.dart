@@ -1,9 +1,9 @@
-import 'dart:ui';
 import 'package:TraceBack/profile/profile.dart';
+import 'package:TraceBack/profile/profileBackend.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'editprofile.dart';
-import '../posts/timeline.dart';
+import '../posts/main_timeline.dart';
+import 'package:TraceBack/util/colors.dart';
 import 'my_posts.dart';
 
 class MyPlace extends StatefulWidget{
@@ -16,7 +16,14 @@ class _MyPlaceState extends State<MyPlace> {
 
   int _navBarIndex = 1;
 
-  List<Widget> body = [MyFoundPosts(), ProfilePage(), MyLostPosts()];
+  List<Widget> body = [
+    MyFoundPosts(),
+    Profile(
+      userID: ProfileBackend().getCurrentUserID(),
+      isCurrentUser: true
+    ),
+    MyLostPosts()
+  ];
 
   @override
   Widget build(BuildContext context){

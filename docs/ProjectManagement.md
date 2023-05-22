@@ -21,7 +21,7 @@ End of iteration 3
 ![img.png](../images/BoardIteration3.png)
 
 End of iteration 4
-![img.png](../image/BoardIteration4.png)
+![img_1.png](../images/BoardIteration4.png)
 
 ## Release management
 

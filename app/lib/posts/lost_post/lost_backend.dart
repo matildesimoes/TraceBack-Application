@@ -1,14 +1,12 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-abstract class PostsBackend {
+class LostBackend{
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-  String get collection;
+  String collection = "Lost Items";
 
   CollectionReference<Map<String, dynamic>> getCollection(){
 
@@ -43,8 +41,8 @@ abstract class PostsBackend {
     firestore.collection(collection).doc(id).update({"image_url": url});
   }
 
-  Future<DocumentReference<Map<String, dynamic>>> getDoc(String id) async {
-    var doc = await firestore.collection(collection).doc(id);
+  Future<DocumentSnapshot<Map<String, dynamic>>> getDoc(String id) async {
+    var doc = await firestore.collection(collection).doc(id).get();
 
     return doc;
   }
@@ -53,24 +51,4 @@ abstract class PostsBackend {
 
     await firestore.collection(collection).doc(postID).update({"closed": true});
   }
-
-  void addItemToUser(String id) async
-  {
-    User? user = FirebaseAuth.instance.currentUser;
-
-    await firestore.collection('Users')
-        .doc(user!.uid)
-        .collection('Found Items')
-        .add({'id': id});
-  }
-}
-
-class FoundBackend extends PostsBackend {
-  @override
-  String get collection => "Found Items";
-}
-
-class LostBackend extends PostsBackend {
-  @override
-  String get collection => "Lost Items";
 }

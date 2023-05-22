@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:TraceBack/authentication/signup_validators.dart';
+import 'package:TraceBack/authentication/signUp.dart';
 
 void main() {
   group('nameValidator', () {

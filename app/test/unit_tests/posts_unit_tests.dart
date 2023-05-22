@@ -1,6 +1,6 @@
-import 'package:TraceBack/posts/timeline_util/short_post.dart';
-import 'package:TraceBack/posts/main_timeline.dart';
-import 'package:TraceBack/posts/post_pages/post.dart';
+import 'package:TraceBack/posts/short_post.dart';
+import 'package:TraceBack/posts/timeline.dart';
+import 'package:TraceBack/posts/post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

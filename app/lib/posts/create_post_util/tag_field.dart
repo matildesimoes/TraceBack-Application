@@ -2,9 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:textfield_tags/textfield_tags.dart';
-import 'package:TraceBack/util/colors.dart';
-
-import '../../../util/custom_border.dart';
+import '../timeline.dart';
+import '../found_post/create_found_post.dart';
 
 class TagField extends StatefulWidget {
 
@@ -50,11 +49,11 @@ class _TagFieldState extends State<TagField> {
                 isDense: true,
                 filled: true,
                 fillColor: accent,
-                enabledBorder: CustomBorder(mainColor),
-                focusedBorder: CustomBorder(mainColor),
-                errorBorder: CustomBorder(Colors.red),
-                focusedErrorBorder: CustomBorder(Colors.red),
-                hintText: widget.controller.hasTags ? '' : "Enter tags ",
+                enabledBorder: border(mainColor),
+                focusedBorder: border(mainColor),
+                errorBorder:border(Colors.red),
+                focusedErrorBorder: border(Colors.red),
+                hintText: widget.controller.hasTags ? '' : "Enter tag...",
                 errorText: error,
                 prefixIconConstraints:
                 BoxConstraints(maxWidth: _distanceToField! * 0.74),

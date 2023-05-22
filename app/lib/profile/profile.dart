@@ -4,36 +4,28 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'editprofile.dart';
-import 'package:TraceBack/util/colors.dart';
+import '../posts/timeline.dart';
 import 'dart:async';
 
 
-class Profile extends StatefulWidget{
-
-  final String userID;
-  final bool isCurrentUser;
-
-  const Profile({
-    Key? key,
-    required this.userID,
-    this.isCurrentUser = false}
-  ) : super(key: key);
+class ProfilePage extends StatefulWidget{
 
   @override
-  State<Profile> createState() => ProfileState();
+  State<ProfilePage> createState() => ProfilePageState();
 }
 
-class ProfileState extends State<Profile> {
+class ProfilePageState extends State<ProfilePage> {
 
   late final FirebaseFirestore firestore;
   late final FirebaseStorage storage;
+  late User? user;
 
   Future<Map<String, dynamic>> getUserData() async {
     DocumentSnapshot snapshot = await firestore.collection("Users").doc(
-        widget.userID).get();
+        user!.uid).get();
     String photoUrl;
     try {
-      photoUrl = await storage.ref('Profile Pics/${widget.userID}/ProfilePic.jpg')
+      photoUrl = await storage.ref('Profile Pics/${user!.uid}/ProfilePic.jpg')
           .getDownloadURL();
     } catch (e) {
       photoUrl = '';
@@ -47,7 +39,7 @@ class ProfileState extends State<Profile> {
   void initState() {
     storage = FirebaseStorage.instance;
     firestore = FirebaseFirestore.instance;
-    super.initState();
+    user = FirebaseAuth.instance.currentUser;
   }
 
   @override
@@ -64,13 +56,14 @@ class ProfileState extends State<Profile> {
             return Center(child: Text('No data found'));
           } else {
             final userData = snapshot.data!;
-            return Center(
-              child: Padding(
-                padding: EdgeInsets.only(top: 40), // Adjust as needed
-                child: ListView(
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(30.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         ClipOval(
                           child: userData['photoUrl'] != ''
@@ -79,118 +72,88 @@ class ProfileState extends State<Profile> {
                             width: 140,
                             height: 140,
                             fit: BoxFit.cover,
-                          ) : Container(
+                          )
+                              : Container(
                             width: 140,
                             height: 140,
                             color: Colors.white,
                           ),
                         ),
-                        SizedBox(height: 15),
-                        Text(
-                          userData['name'] as String,
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.only(left: 20.0),
+                                child: Text(
+                                  userData['name'] as String,
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              Padding(
+                                padding: EdgeInsets.only(left: 20.0),
+                                child: Text(
+                                  userData['email'] as String,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              Padding(
+                                padding: EdgeInsets.only(left: 20.0),
+                                child: Text(
+                                  userData['phone'] as String,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 16),
+                              Padding(
+                                padding: EdgeInsets.only(left: 20.0),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: mainColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ),
+                                  child: Text('Edit Profile'),
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            EditProfilePage(
+                                                    () {
+                                                  setState(() {
+                                                    getUserData();
+                                                  }
+                                                );
+                                                ;
+                                              }
+                                          ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(height: 40),
-                        Info(
-                          label: 'Email',
-                          data: userData['email'],
-                        ),
-                        SizedBox(height: 10),
-                        Info(
-                          label: 'Phone Number',
-                          data: userData['phone'],
-                        ),
-                        SizedBox(height: 40),
-                        if (widget.isCurrentUser) EditButton(
-                          refresh: () {
-                            setState(() {});
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            );
-          }
+            ],
+          );
         }
-    );
-  }
-}
-
-class Info extends StatelessWidget {
-
-  final String label;
-  final String data;
-
-  const Info({
-    Key? key,
-    required this.label,
-    required this.data}
-  ) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 8),
-      width: MediaQuery.of(context).size.width * 0.8,
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          color: accent
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-              label,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-          ),
-          SizedBox(height: 5),
-          Text(
-            data,
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-
-class EditButton extends StatelessWidget {
-
-  VoidCallback refresh;
-
-  EditButton({Key? key, required this.refresh}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        minimumSize: Size(150, 50),
-        backgroundColor: secondaryColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-      ),
-      child: Text('Edit Profile'),
-      onPressed: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => EditProfilePage(refresh)
-          ),
-        );
-      },
+      }
     );
   }
 }

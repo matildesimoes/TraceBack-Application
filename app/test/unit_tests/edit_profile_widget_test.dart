@@ -4,7 +4,7 @@ import 'package:TraceBack/profile/editprofile.dart';
 
 class EditProfilePageMock extends EditProfilePage  {
 
-  EditProfilePageMock(super.refresh, {super.key});
+  EditProfilePageMock(super.refresh);
 
   @override
   State<EditProfilePage> createState() => _MockEditProfilePageState();
@@ -23,11 +23,13 @@ class _MockEditProfilePageState extends EditProfilePageState {
 
     userData = {
       'name': 'nome',
+      'email': 'email',
       'phone': 'phoneNumber',
     };
 
     setState(() {
       nameController.text = userData['name'];
+      emailController.text = userData['email'];
       phoneNumberController.text = userData['phone'];
     });
 

@@ -1,18 +1,18 @@
-import 'package:TraceBack/posts/post_pages/my_post_page.dart';
+import 'package:TraceBack/posts/my_post_page.dart';
 import 'package:TraceBack/profile/profileBackend.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
-import '../../util/camera.dart';
-import '../post_pages/post_page.dart';
-import '../main_timeline.dart';
-import 'package:TraceBack/util/colors.dart';
+import '../util/camera.dart';
+import 'post_page.dart';
+import 'timeline.dart';
 
 class PostCard extends StatefulWidget {
 
   late String title;
   List<Tag> tags = [];
   late String location;
-  late String? imageURL;
+  late String imageURL;
   late String description;
   late String date;
   late String authorID;
@@ -42,7 +42,7 @@ class _PostCardState extends State<PostCard> {
   void initPhoto() async {
 
     try {
-      photo = await ImageHandler().getPictureFrame(widget.imageURL!);
+      photo = await ImageHandler().getPictureFrame(widget.imageURL);
     } catch (e){
       photo = const SizedBox(width: 50,);
     }

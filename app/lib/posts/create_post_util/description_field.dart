@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:TraceBack/util/colors.dart';
-
-import '../../../util/custom_border.dart';
+import '../found_post/create_found_post.dart';
+import '../timeline.dart';
 
 class DescriptionField extends StatefulWidget {
 
@@ -23,9 +22,9 @@ class _DescriptionFieldState extends State<DescriptionField> {
       controller: widget.controller,
       readOnly: true,
       decoration: InputDecoration(
-          border: CustomBorder(mainColor),
-          focusedBorder: CustomBorder(mainColor),
-          enabledBorder: CustomBorder(mainColor),
+          border: border(mainColor),
+          focusedBorder: border(mainColor),
+          enabledBorder: border(mainColor),
           label: Text("Description"),
           fillColor: accent,
           filled: true
@@ -49,14 +48,14 @@ class _DescriptionFieldState extends State<DescriptionField> {
                           controller: _scrollController,
                           child: TextFormField(
                             keyboardType: TextInputType.multiline,
-                            maxLines: 4,
+                            maxLines: 5,
                             controller: tempController,
                             scrollController: _scrollController,
                             autofocus: true,
                             autocorrect: true,
                             decoration: InputDecoration(
-                                border: CustomBorder(mainColor),
-                                focusedBorder: CustomBorder(mainColor)
+                                border: border(mainColor),
+                                focusedBorder: border(mainColor)
                             ),
                           ),
                         ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../posts/main_timeline.dart';
-import 'package:TraceBack/util/colors.dart';
+import '../posts/timeline.dart';
 
 class Terms extends StatefulWidget {
   @override

@@ -137,12 +137,10 @@ class Info extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8),
       width: MediaQuery.of(context).size.width * 0.8,
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: accent,
-          ),
-        ),
+          borderRadius: BorderRadius.circular(30),
+          color: accent
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -179,7 +177,8 @@ class EditButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: mainColor,
+        minimumSize: Size(150, 50),
+        backgroundColor: secondaryColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),

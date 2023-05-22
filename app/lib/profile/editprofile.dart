@@ -157,121 +157,160 @@ class EditProfilePageState extends State<EditProfilePage> {
       leading: BackButton(),
     ),
     body: userData.isEmpty ? Center(child: CircularProgressIndicator()) :
-      SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              SizedBox(height: 35),
-              Stack(
+      Stack(
+        alignment: Alignment.center,
+        children: [
+          Form(
+            key: _formKey,
+            child: Expanded(
+              child: ListView(
                 children: [
-                  ClipOval(
-                    child: userData.containsKey('photoUrl') && userData['photoUrl'] != ''
-                        ? Image.network(
-                      userData['photoUrl'] as String,
-                      width: 140,
-                      height: 140,
-                      fit: BoxFit.cover,
-                    )
-                        : Container(
-                      width: 140,
-                      height: 140,
-                      color: Colors.white,
+                  SizedBox(height: 35),
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      ClipOval(
+                        child: userData.containsKey('photoUrl') && userData['photoUrl'] != ''
+                            ? Image.network(
+                          userData['photoUrl'] as String,
+                          width: 140,
+                          height: 140,
+                          fit: BoxFit.cover,
+                        )
+                            : Container(
+                          width: 140,
+                          height: 140,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: MediaQuery.of(context).size.width / 2,
+                        child: Container(
+                          padding: EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  Icons.photo_library,
+                                  color: mainColor,
+                                  size: 24,
+                                ),
+                                onPressed: pickUploadImage,
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.camera_alt,
+                                  color: mainColor,
+                                  size: 24,
+                                ),
+                                onPressed: captureImage,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  Container(
+                    padding: EdgeInsets.only(left: 25),
+                    margin: EdgeInsets.only(bottom: 10),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Your Information',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: mainColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      padding: EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              Icons.photo_library,
-                              color: mainColor,
-                              size: 24,
-                            ),
-                            onPressed: pickUploadImage,
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.camera_alt,
-                              color: mainColor,
-                              size: 24,
-                            ),
-                            onPressed: captureImage,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                EditBox(text: "Name", hintText: "Name", controller: nameController),
+                EditBox(text: "Phone Number", hintText: "Phone Number", controller: phoneNumberController),
+                SizedBox(height: 40),
                 ],
               ),
-              SizedBox(height: 16),
-              Container(
-                padding: EdgeInsets.only(left: 25),
-                margin: EdgeInsets.only(bottom: 10),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Your Information',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: mainColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+            ),
+          ),
+          Column(
+            children: [
+              Spacer(),
+              SaveButton(
+                formKey: _formKey,
+                nameController: nameController,
+                phoneNumberController: phoneNumberController,
+                uid: uid,
+                widget: widget
               ),
-            EditBox(text: "Name", hintText: "Name", controller: nameController),
-            EditBox(text: "Phone Number", hintText: "Phone Number", controller: phoneNumberController),
-            SizedBox(height: 40),
-            Container(
-              height: 50,
-              margin: EdgeInsets.only(top: 5),
-              width: 200,
-              child: ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    Map<String, dynamic> data = {
-                      'name': nameController.text,
-                      'phone': phoneNumberController.text,
-                    };
-                    ProfileBackend().updateProfile(uid, data);
-                    widget.refresh();
-                    Navigator.of(context).pop();
-                  }
-                  // função para guardar as informações
-                },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(mainColor),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25.0),
-                    ),
-                  ),
-                ),
-                child: Text(
-                  "Save",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              ),
-              SizedBox(height: 32),
+              SizedBox(height: 40),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SaveButton extends StatelessWidget {
+  const SaveButton({
+    super.key,
+    required GlobalKey<FormState> formKey,
+    required this.nameController,
+    required this.phoneNumberController,
+    required this.uid,
+    required this.widget,
+  }) : _formKey = formKey;
+
+  final GlobalKey<FormState> _formKey;
+  final TextEditingController nameController;
+  final TextEditingController phoneNumberController;
+  final String uid;
+  final EditProfilePage widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 50,
+      margin: EdgeInsets.only(top: 5),
+      width: 200,
+      child: ElevatedButton(
+        onPressed: () {
+          if (_formKey.currentState!.validate()) {
+            Map<String, dynamic> data = {
+              'name': nameController.text,
+              'phone': phoneNumberController.text,
+            };
+            ProfileBackend().updateProfile(uid, data);
+            widget.refresh();
+            Navigator.of(context).pop();
+          }
+          // função para guardar as informações
+        },
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(secondaryColor),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(25.0),
+            ),
+          ),
+        ),
+        child: Text(
+          "Save",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
-    );
+      );
   }
 }
 

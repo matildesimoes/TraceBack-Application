@@ -22,6 +22,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   Future _passwordReset() async {
     try {
+      final FocusScopeNode currentScope = FocusScope.of(context);
+      if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
+        FocusManager.instance.primaryFocus!.unfocus();
+      }
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: _emailController.text.trim());
       showDialog(

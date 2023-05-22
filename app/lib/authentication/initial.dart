@@ -2,7 +2,6 @@ import 'package:TraceBack/authentication/signUp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'login.dart';
-import '../posts/main_timeline.dart';
 import 'package:TraceBack/util/colors.dart';
 import 'dart:ui';
 

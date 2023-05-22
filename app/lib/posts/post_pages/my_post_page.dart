@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:TraceBack/posts/post_pages/post.dart';
 import 'package:TraceBack/posts/posts_backend/posts_backend.dart';
+import 'package:TraceBack/util/bottom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:TraceBack/util/colors.dart';
 import '../../util/camera.dart';
@@ -41,6 +42,57 @@ class MyPostPage extends StatelessWidget {
     }
   }
 
+  close(context){
+    showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            actionsAlignment: MainAxisAlignment.spaceAround,
+            actions: [
+              TextButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "No",
+                  style: TextStyle(
+                      color: mainColor
+                  ),
+                ),
+                style: ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(accent)
+                ),
+              ),
+              TextButton(
+                onPressed: () async {
+                  if (isLostPost)
+                    await LostBackend().closePost(postID);
+                  else
+                    await FoundBackend().closePost(postID);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Yes",
+                  style: TextStyle(
+                      color: Colors.white
+                  ),
+                ),
+                style: ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(mainColor)
+                ),
+              ),
+            ],
+            title:  Text(
+              "Are you sure you want \nto close this post?",
+              textAlign: TextAlign.center,
+            ),
+            content: Text("This action can not be reversed."),
+          );
+        }
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -57,86 +109,12 @@ class MyPostPage extends StatelessWidget {
               date: date, authorID: authorID,),
           ]
       ),
-      floatingActionButton: Padding(
-        padding: EdgeInsetsDirectional.symmetric(horizontal: 18),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(
-              width: 70,
-              height: 70,
-              child: FittedBox(
-                child: FloatingActionButton(
-                  heroTag: "remove",
-                  backgroundColor: secondaryColor,
-                  onPressed: (){
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context){
-                      return AlertDialog(
-                        actionsAlignment: MainAxisAlignment.spaceAround,
-                        actions: [
-                          TextButton(
-                            onPressed: (){
-                              Navigator.pop(context);
-                            },
-                            child: Text(
-                                "No",
-                              style: TextStyle(
-                                color: mainColor
-                              ),
-                            ),
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll(accent)
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () async {
-                              if (isLostPost)
-                                await LostBackend().closePost(postID);
-                              else
-                                await FoundBackend().closePost(postID);
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                            },
-                            child: Text(
-                              "Yes",
-                              style: TextStyle(
-                                  color: Colors.white
-                              ),
-                            ),
-                            style: ButtonStyle(
-                                backgroundColor: MaterialStatePropertyAll(mainColor)
-                            ),
-                          ),
-                        ],
-                        title:  Text(
-                              "Are you sure you want \nto close this post?",
-                            textAlign: TextAlign.center,
-                        ),
-                        content: Text("This action can not be reversed."),
-                      );
-                    });
-                  },
-                  child: const Icon(size: 25, Icons.close),
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 70,
-              height: 70,
-              child: FloatingActionButton(
-                heroTag: "edit",
-                backgroundColor: secondaryColor,
-                onPressed: (){
-                },
-                child: const Icon(size: 25,Icons.edit),
-              ),
-            )
-          ],
-        ),
+      floatingActionButton: BottomButton(
+        text: 'Close',
+        onPressed: (){close(context);},
+        icon: Icons.close,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

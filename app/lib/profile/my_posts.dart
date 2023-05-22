@@ -90,56 +90,51 @@ abstract class _MyPostsState<T extends MyPosts> extends State<T> {
         if (snapshot.connectionState == ConnectionState.waiting){
           return Center(child: CircularProgressIndicator(color: secondaryColor,));
         } else {
-          return Scrollbar(
-            thickness: 7,
-            thumbVisibility: true,
-            radius: const Radius.circular(10),
-            child: RefreshIndicator(
-              color: Colors.white,
-              backgroundColor: secondaryColor,
-              onRefresh: () async {
-                await getPosts();
-                setState(() {});
-              },
-              child: postsData.isEmpty ?
-              Center(child: Text("No items to show here"))
-                  :
-              ListView.builder(
-                padding: EdgeInsets.all(15),
-                physics: AlwaysScrollableScrollPhysics(),
-                itemCount: postsData.length,
-                itemBuilder: (context, index) {
-                  var postData = postsData.elementAt(index);
-                  PostCard postCard = postData.getPostCard();
-                  if (postData.isClosed()){
-                    return Stack(
-                      children: [
-                        postCard,
-                        Positioned(
-                          top: 0,
-                          right: 25,
-                          child: Container(
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: secondaryColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              'Closed',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
+          return RefreshIndicator(
+            color: Colors.white,
+            backgroundColor: secondaryColor,
+            onRefresh: () async {
+              await getPosts();
+              setState(() {});
+            },
+            child: postsData.isEmpty ?
+            Center(child: Text("No items to show here"))
+                :
+            ListView.builder(
+              padding: EdgeInsets.all(15),
+              physics: AlwaysScrollableScrollPhysics(),
+              itemCount: postsData.length,
+              itemBuilder: (context, index) {
+                var postData = postsData.elementAt(index);
+                PostCard postCard = postData.getPostCard();
+                if (postData.isClosed()){
+                  return Stack(
+                    children: [
+                      postCard,
+                      Positioned(
+                        top: 0,
+                        right: 25,
+                        child: Container(
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: secondaryColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            'Closed',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                      ],
-                    );
-                  }
-                  return postCard;
+                      ),
+                    ],
+                  );
                 }
-              ),
-            )
+                return postCard;
+              }
+            ),
           );
         }
       }

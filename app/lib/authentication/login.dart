@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Align(
                         alignment: Alignment.center,
                         child: Text(
-                          'Log In',
+                          'Login',
                           style: TextStyle(
                             fontSize: constraints.maxWidth * 0.07,
                             color: mainColor,
@@ -167,7 +167,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         child: Text(
-                          "LogIn",
+                          "Login",
                           style: TextStyle(
                             fontSize: constraints.maxWidth * 0.045,
                             fontWeight: FontWeight.bold,

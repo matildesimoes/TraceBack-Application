@@ -3,13 +3,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:TraceBack/profile/profile.dart';
 
 
-class ProfilePageMock extends ProfilePage {
+class ProfilePageMock extends Profile {
+
+  ProfilePageMock({required super.userID});
 
   @override
-  State<ProfilePage> createState() => _MockProfilePageState();
+  State<Profile> createState() => _MockProfilePageState();
 }
 
-class _MockProfilePageState extends ProfilePageState {
+class _MockProfilePageState extends ProfileState {
 
 
   @override
@@ -29,7 +31,7 @@ class _MockProfilePageState extends ProfilePageState {
 void main() {
   testWidgets('Find user data widgets', (WidgetTester tester) async {
     await tester.pumpWidget(
-      MaterialApp(home: ProfilePageMock()),
+      MaterialApp(home: ProfilePageMock(userID: 'userID')),
     );
 
     await tester.pumpAndSettle();

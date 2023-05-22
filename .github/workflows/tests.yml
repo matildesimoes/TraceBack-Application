@@ -2,7 +2,7 @@ name: Flutter_Tests
 
 on:
   pull_request:
-    branches: [main, develop]
+    branches: [main]
 
 jobs:
   flutter_test:

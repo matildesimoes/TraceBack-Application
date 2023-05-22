@@ -1,19 +1,17 @@
 import 'dart:ui';
-import 'package:TraceBack/posts/post.dart';
+import 'package:TraceBack/posts/post_pages/post.dart';
+import 'package:TraceBack/posts/posts_backend/posts_backend.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../util/camera.dart';
-import 'found_post/found_fake_backend.dart';
-import 'lost_post/lost_backend.dart';
-import 'timeline.dart';
+import 'package:TraceBack/util/colors.dart';
+import '../../util/camera.dart';
+import '../main_timeline.dart';
 
 class MyPostPage extends StatelessWidget {
 
   late String title;
   List<Tag> tags = [];
   late String location;
-  late String imageURL;
+  late String? imageURL;
   late String description;
   late String date;
   late String authorID;
@@ -34,8 +32,10 @@ class MyPostPage extends StatelessWidget {
       ) : super(key: key);
 
   Future<Widget> imageRetriever() async {
+    if (imageURL == null)
+      return SizedBox.shrink();
     try {
-      return await ImageHandler().getPictureFrame(imageURL);
+      return await ImageHandler().getPictureFrame(imageURL!);
     } catch (e){
       return SizedBox.shrink();
     }
@@ -67,6 +67,7 @@ class MyPostPage extends StatelessWidget {
               height: 70,
               child: FittedBox(
                 child: FloatingActionButton(
+                  heroTag: "remove",
                   backgroundColor: secondaryColor,
                   onPressed: (){
                     showDialog(
@@ -125,6 +126,7 @@ class MyPostPage extends StatelessWidget {
               width: 70,
               height: 70,
               child: FloatingActionButton(
+                heroTag: "edit",
                 backgroundColor: secondaryColor,
                 onPressed: (){
                 },

@@ -19,7 +19,7 @@ class Post extends StatefulWidget {
   late String description;
   late String authorID;
 
-  Post({Key? key,
+  Post({
     required this.tags,
     required this.title,
     required this.location,
@@ -28,7 +28,7 @@ class Post extends StatefulWidget {
     required this.description,
     required this.authorID
   }
-      ) : super(key: key);
+      ) : super(key: const Key("Post Page"));
 
   @override
   State<Post> createState() => _PostState();

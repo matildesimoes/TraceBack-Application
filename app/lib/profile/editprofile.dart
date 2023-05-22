@@ -26,7 +26,7 @@ class EditProfilePageState extends State<EditProfilePage> {
   late User? user;
 
   File? _image;
-  late String uid = FirebaseAuth.instance.currentUser!.uid;
+  late String uid;
   late String name;
   late String phoneNumber;
   late Map<String, dynamic> userData = {};
@@ -123,6 +123,7 @@ class EditProfilePageState extends State<EditProfilePage> {
     firestore = FirebaseFirestore.instance;
     storage = FirebaseStorage.instance;
     user = FirebaseAuth.instance.currentUser;
+    uid = user!.uid;
 
     _storage = FirebaseStorage.instance;
     super.initState();

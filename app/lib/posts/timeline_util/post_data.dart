@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 import 'short_post.dart';
 
 class PostData {
 
+  static bool key = true;
   PostData(this.doc, this._isLostPost);
 
   final DocumentSnapshot<Map<String, dynamic>> doc;
@@ -52,6 +54,10 @@ class PostData {
   }
 
   getPostCard() {
+    bool displayKey = key;
+    if (key){
+      key = false;
+    }
     return PostCard(
       title: getTitle(),
       description: getDescription(),
@@ -63,6 +69,7 @@ class PostData {
       imageURL: getImageURL(),
       postID: getID(),
       isLostPost: isLostPost(),
+      key: displayKey ? const Key("Post Card") : null,
     );
   }
 }

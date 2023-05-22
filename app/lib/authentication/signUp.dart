@@ -1,8 +1,10 @@
+import 'package:TraceBack/util/custom_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import '../posts/timeline.dart';
+import 'package:TraceBack/util/colors.dart';
+import 'package:TraceBack/authentication/signup_validators.dart';
 import 'dart:ui';
 import '../terms&guidelines/privacyAcceptance.dart';
 import 'authentication_backend.dart';
@@ -17,7 +19,6 @@ class SignUpPage extends StatefulWidget {
 class _signUpPageState extends State<SignUpPage>{
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _passwordVisible = false;
 
   AuthBackend authBackend = AuthBackend();
 
@@ -30,11 +31,10 @@ class _signUpPageState extends State<SignUpPage>{
   String errorMessage = "";
 
   register() async {
+    FocusScope.of(context).unfocus();
     if (_formKey.currentState!.validate()){
       if (passwordController.text != confirmPasswordController.text) {
-        setState(() {
-          errorMessage = 'Passwords do not match';
-        });
+        showError("Passwords do not match");
         return;
       }
       Map<String, dynamic> userDoc = {
@@ -44,20 +44,19 @@ class _signUpPageState extends State<SignUpPage>{
         'password': passwordController.text,
         'acceptedTerms' : false,
       };
+      showDialog(
+          context: context,
+          builder: (context) =>
+              Center (
+                child:  CircularProgressIndicator(
+                  color: secondaryColor,
+                ),
+              )
+      );
       String? error = await authBackend.registerUser(userDoc);
+      Navigator.of(context).pop();
       if (error != null) {
-        showTopSnackBar(
-          Overlay.of(context),
-          CustomSnackBar.info(
-            message: error,
-            textStyle: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 16
-            ),
-            backgroundColor: secondaryColor,
-          ),
-        );
+        showError(error);
       } else {
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -66,6 +65,21 @@ class _signUpPageState extends State<SignUpPage>{
         );
       }
     }
+  }
+
+  void showError(String error) {
+    showTopSnackBar(
+      Overlay.of(context),
+      CustomSnackBar.info(
+        message: error,
+        textStyle: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 16
+        ),
+        backgroundColor: secondaryColor,
+      ),
+    );
   }
 
   Widget build(BuildContext context) {
@@ -83,8 +97,6 @@ class _signUpPageState extends State<SignUpPage>{
         builder: ( context, constraints) {
           final double maxWidth = constraints.maxWidth;
           final double fieldWidth = maxWidth * 1;
-          final double buttonWidth = maxWidth * 0.6;
-          final double minHeight = 50;
           return SingleChildScrollView(
             child: Form(
               key: _formKey,
@@ -255,22 +267,10 @@ class _EditBoxState extends State<EditBox> {
               : null,
           filled: true,
           fillColor: Colors.grey[300],
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(25),
-            borderSide: BorderSide(
-              color: Colors.grey,
-              width: 2,
-              style: BorderStyle.solid,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(25),
-            borderSide: BorderSide(
-              color: Colors.blue,
-              width: 1,
-              style: BorderStyle.solid,
-            ),
-          ),
+          enabledBorder: CustomBorder(mainColor),
+          focusedBorder: CustomBorder(mainColor),
+          errorBorder: CustomBorder(Colors.red),
+          focusedErrorBorder: CustomBorder(Colors.red),
         ),
         onChanged: (value) {},
         validator: (value) => widget.validator(value),
@@ -279,61 +279,4 @@ class _EditBoxState extends State<EditBox> {
   }
 }
 
-class nameValidator {
-  static String? validate(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter a name';
-    }
-    return null;
-  }
-}
 
-class emailValidator {
-  static String? validate(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter an UP email address';
-    }
-
-    final upEmailRegex = RegExp(r'^up[0-9]+@up\.pt$');
-    if (!upEmailRegex.hasMatch(value)) {
-      return 'Please enter a valid UP email address';
-    }
-
-    return null;
-  }
-}
-
-class phoneValidator {
-  static String? validate(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter a phone number';
-    }
-
-    final upEmailRegex = RegExp(r'^[0-9]*$');
-    if (!upEmailRegex.hasMatch(value)) {
-      return 'Please enter a valid phone number';
-    }
-    return null;
-  }
-}
-
-class passwordValidator {
-  static String? validate(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Password is required';
-    }
-    if (value.length < 8) {
-      return 'Password must be at least 8 characters long';
-    }
-    if (!RegExp(r'[a-z]').hasMatch(value)) {
-      return 'Password must contain at least one lowercase letter';
-    }
-    if (!RegExp(r'[A-Z]').hasMatch(value)) {
-      return 'Password must contain at least one uppercase letter';
-    }
-    if (!RegExp(r'[0-9]').hasMatch(value)) {
-      return 'Password must contain at least one digit';
-    }
-    return null;
-  }
-}

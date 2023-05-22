@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../posts/timeline.dart';
+import 'package:TraceBack/util/colors.dart';
+
 
 class GuidelinesPage extends StatefulWidget {
   @override

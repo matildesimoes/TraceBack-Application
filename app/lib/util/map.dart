@@ -1,7 +1,6 @@
 import 'dart:async';
 
-import 'package:TraceBack/posts/found_post/create_found_post.dart';
-import 'package:TraceBack/posts/timeline.dart';
+import 'package:TraceBack/util/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -120,6 +119,7 @@ class MapBuilderState extends State<MapBuilder> {
             child: Padding(
               padding: EdgeInsets.all(25),
               child: FloatingActionButton(
+                heroTag: "finish",
                 onPressed: (){
                   Navigator.pop(context, getAdress());
                 },
@@ -134,6 +134,7 @@ class MapBuilderState extends State<MapBuilder> {
               child: Padding(
                 padding: EdgeInsets.all(25),
                 child: FloatingActionButton(
+                  heroTag: "back",
                   onPressed: _backToInitial_,
                   backgroundColor: mainColor,
                   child: const Icon(Icons.center_focus_strong, color: Colors.white,),
@@ -165,10 +166,21 @@ class MapBuilderState extends State<MapBuilder> {
 
   }
 
-  Future<String?> getAdress() async {
+  Future<Place> getAdress() async {
 
     List<Placemark> placemarks = await placemarkFromCoordinates(
         selectedMarker!.position.latitude, selectedMarker!.position.longitude);
-    return "${placemarks.first.street},${placemarks.first.locality}";
+    return Place(
+        "${placemarks.first.street},${placemarks.first.locality}",
+        selectedMarker!.position)
+    ;
   }
+}
+
+class Place {
+
+  final String address;
+  final LatLng latLng;
+
+  Place(this.address, this.latLng);
 }

@@ -1,19 +1,10 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:TraceBack/posts/post.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:TraceBack/posts/post_pages/post.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../util/bottom_button.dart';
-import '../util/camera.dart';
-import 'lost_post/lost_backend.dart';
-import 'timeline.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-
+import '../../util/bottom_button.dart';
+import '../main_timeline.dart';
+import 'package:TraceBack/util/colors.dart';
 
 class PostPreview extends StatelessWidget {
 

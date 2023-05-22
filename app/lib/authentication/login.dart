@@ -1,5 +1,8 @@
 import 'package:TraceBack/authentication/authentication_backend.dart';
 import 'package:TraceBack/terms&guidelines/termsBackEnd.dart';
+import 'package:TraceBack/authentication/forgot_password.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:TraceBack/util/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -79,6 +82,39 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     Text(errorMessage),
+
+
+                    Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return ForgotPasswordPage();
+                                    },
+                                  ),
+                                );
+                              },
+                            child: Text(
+                              'Forgot password?',
+                              style: TextStyle(
+                                fontSize: constraints.maxWidth * 0.045,
+                                fontWeight: FontWeight.bold,
+                                color: mainColor,
+                              ),
+                            ),
+                          ),
+                          ],
+                        ),
+                    ),
+
+
+
                     SizedBox(height: constraints.maxHeight * 0.05),
                     Container(
                       height: constraints.maxHeight * 0.08,

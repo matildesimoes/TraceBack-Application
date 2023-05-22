@@ -31,10 +31,10 @@ class Post extends StatefulWidget {
       ) : super(key: const Key("Post Page"));
 
   @override
-  State<Post> createState() => _PostState();
+  State<Post> createState() => PostState();
 }
 
-class _PostState extends State<Post> {
+class PostState extends State<Post> {
 
   late Widget map;
 

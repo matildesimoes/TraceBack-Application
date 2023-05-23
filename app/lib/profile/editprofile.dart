@@ -162,83 +162,81 @@ class EditProfilePageState extends State<EditProfilePage> {
         children: [
           Form(
             key: _formKey,
-            child: Expanded(
-              child: ListView(
-                padding: EdgeInsets.symmetric(horizontal: 30),
-                children: [
-                  SizedBox(height: 35),
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      ClipOval(
-                        child: userData.containsKey('photoUrl') && userData['photoUrl'] != ''
-                            ? Image.network(
-                          userData['photoUrl'] as String,
-                          width: 140,
-                          height: 140,
-                          fit: BoxFit.cover,
-                        )
-                            : Container(
-                          width: 140,
-                          height: 140,
+            child: ListView(
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              children: [
+                SizedBox(height: 35),
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    ClipOval(
+                      child: userData.containsKey('photoUrl') && userData['photoUrl'] != ''
+                          ? Image.network(
+                        userData['photoUrl'] as String,
+                        width: 140,
+                        height: 140,
+                        fit: BoxFit.cover,
+                      )
+                          : Container(
+                        width: 140,
+                        height: 140,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      left: MediaQuery.of(context).size.width / 2 - 30,
+                      child: Container(
+                        padding: EdgeInsets.all(2),
+                        decoration: BoxDecoration(
                           color: Colors.white,
+                          borderRadius: BorderRadius.circular(50),
                         ),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        left: MediaQuery.of(context).size.width / 2 - 30,
-                        child: Container(
-                          padding: EdgeInsets.all(2),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              IconButton(
-                                icon: Icon(
-                                  Icons.photo_library,
-                                  color: mainColor,
-                                  size: 24,
-                                ),
-                                onPressed: pickUploadImage,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                Icons.photo_library,
+                                color: mainColor,
+                                size: 24,
                               ),
-                              IconButton(
-                                icon: Icon(
-                                  Icons.camera_alt,
-                                  color: mainColor,
-                                  size: 24,
-                                ),
-                                onPressed: captureImage,
+                              onPressed: pickUploadImage,
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.camera_alt,
+                                color: mainColor,
+                                size: 24,
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16),
-                  Container(
-                    padding: EdgeInsets.only(left: 25),
-                    margin: EdgeInsets.only(bottom: 10),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Your Information',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: mainColor,
-                          fontWeight: FontWeight.bold,
+                              onPressed: captureImage,
+                            ),
+                          ],
                         ),
                       ),
                     ),
+                  ],
+                ),
+                SizedBox(height: 16),
+                Container(
+                  padding: EdgeInsets.only(left: 25),
+                  margin: EdgeInsets.only(bottom: 10),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Your Information',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: mainColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                EditBox(text: "Name", hintText: "Name", controller: nameController),
-                EditBox(text: "Phone Number", hintText: "Phone Number", controller: phoneNumberController),
-                SizedBox(height: 40),
-                ],
-              ),
+                ),
+              EditBox(text: "Name", hintText: "Name", controller: nameController),
+              EditBox(text: "Phone Number", hintText: "Phone Number", controller: phoneNumberController),
+              SizedBox(height: 40),
+              ],
             ),
           ),
           Column(

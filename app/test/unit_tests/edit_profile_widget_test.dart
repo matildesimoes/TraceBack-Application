@@ -31,7 +31,7 @@ class _MockEditProfilePageState extends EditProfilePageState {
       phoneNumberController.text = userData['phone'];
     });
 
-    uid = 'uid';
+    uid = "RMeHoHaoAEU4YtZjeMv6wxIhHwH2";
   }
 }
 

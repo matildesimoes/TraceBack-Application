@@ -4,7 +4,7 @@ import 'package:TraceBack/profile/editprofile.dart';
 
 class EditProfilePageMock extends EditProfilePage  {
 
-  EditProfilePageMock(super.refresh);
+  EditProfilePageMock(super.refresh, {super.key});
 
   @override
   State<EditProfilePage> createState() => _MockEditProfilePageState();
@@ -23,16 +23,15 @@ class _MockEditProfilePageState extends EditProfilePageState {
 
     userData = {
       'name': 'nome',
-      'email': 'email',
       'phone': 'phoneNumber',
     };
 
     setState(() {
       nameController.text = userData['name'];
-      emailController.text = userData['email'];
       phoneNumberController.text = userData['phone'];
     });
 
+    uid = "RMeHoHaoAEU4YtZjeMv6wxIhHwH2";
   }
 }
 
@@ -44,6 +43,9 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.byType(EditBox), findsNWidgets(3));
+    expect(find.byType(EditBox), findsNWidgets(2));
+
+    expect(find.text('nome'), findsOneWidget);
+    expect(find.text('phoneNumber'), findsOneWidget);
   });
 }

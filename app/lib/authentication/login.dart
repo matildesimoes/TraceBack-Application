@@ -1,12 +1,13 @@
 import 'package:TraceBack/authentication/authentication_backend.dart';
 import 'package:TraceBack/terms&guidelines/termsBackEnd.dart';
+import 'package:TraceBack/authentication/forgot_password.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:TraceBack/util/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import '../posts/timeline.dart';
 import 'dart:ui';
 import 'signUp.dart';
 
@@ -61,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Align(
                         alignment: Alignment.center,
                         child: Text(
-                          'Log In',
+                          'Login',
                           style: TextStyle(
                             fontSize: constraints.maxWidth * 0.07,
                             color: mainColor,
@@ -81,6 +82,39 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     Text(errorMessage),
+
+
+                    Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return ForgotPasswordPage();
+                                    },
+                                  ),
+                                );
+                              },
+                            child: Text(
+                              'Forgot password?',
+                              style: TextStyle(
+                                fontSize: constraints.maxWidth * 0.045,
+                                fontWeight: FontWeight.bold,
+                                color: mainColor,
+                              ),
+                            ),
+                          ),
+                          ],
+                        ),
+                    ),
+
+
+
                     SizedBox(height: constraints.maxHeight * 0.05),
                     Container(
                       height: constraints.maxHeight * 0.08,
@@ -89,11 +123,25 @@ class _LoginPageState extends State<LoginPage> {
                       child: ElevatedButton(
                         key: Key("Logged"),
                         onPressed: () async {
+                          final FocusScopeNode currentScope = FocusScope.of(context);
+                          if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
+                            FocusManager.instance.primaryFocus!.unfocus();
+                          }
+                          showDialog(
+                            context: context,
+                            builder: (context) =>
+                              Center (
+                                child:  CircularProgressIndicator(
+                                  color: secondaryColor,
+                                ),
+                              )
+                          );
                           String error = await authBackend.login(
                               emailController.text,
                               passwordController.text
                           );
                           if (error != "") {
+                            Navigator.of(context).pop();
                             showTopSnackBar(
                               Overlay.of(context),
                               CustomSnackBar.info(
@@ -108,6 +156,7 @@ class _LoginPageState extends State<LoginPage> {
                             );
                           } else {
                             termsBackend.checkAcceptedTerms(context);
+                            //FirebaseMessaging.instance.subscribeToTopic('found_new_post');
                           }
                         },
                         style: ButtonStyle(
@@ -119,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         child: Text(
-                          "LogIn",
+                          "Login",
                           style: TextStyle(
                             fontSize: constraints.maxWidth * 0.045,
                             fontWeight: FontWeight.bold,

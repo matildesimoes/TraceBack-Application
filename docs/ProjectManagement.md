@@ -20,6 +20,9 @@ End of iteration 2
 End of iteration 3
 ![img.png](../images/BoardIteration3.png)
 
+End of iteration 4
+![img_1.png](../images/BoardIteration4.png)
+
 ## Release management
 
 Each version before the offical release, should be labeled with 0.X, where X starts on 1, and is incremented with each release.

@@ -58,9 +58,11 @@ abstract class PostsBackend {
   {
     User? user = FirebaseAuth.instance.currentUser;
 
+    String col = collection;
+
     await firestore.collection('Users')
         .doc(user!.uid)
-        .collection('Found Items')
+        .collection(collection)
         .add({'id': id});
   }
 }

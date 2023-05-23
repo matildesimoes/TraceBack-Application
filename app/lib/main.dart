@@ -1,6 +1,5 @@
 import 'package:TraceBack/firebase_initializer.dart';
 import 'package:TraceBack/firebase_options.dart';
-import 'package:TraceBack/posts/timeline.dart';
 import 'package:TraceBack/posts/main_timeline.dart';
 import 'package:TraceBack/profile/my_place.dart';
 import 'package:TraceBack/profile/profile.dart';
@@ -8,9 +7,7 @@ import 'package:TraceBack/terms&guidelines/guidelines.dart';
 import 'package:TraceBack/terms&guidelines/privacyAcceptance.dart';
 import 'package:TraceBack/terms&guidelines/privacyInformation.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'authentication/initial.dart';
 
 

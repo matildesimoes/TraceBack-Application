@@ -98,9 +98,12 @@ abstract class CreatePostState extends State<CreatePost> {
 
     String id = await backend.addToCollection(data);
 
-    String url = await backend.upload(_image!, id);
-    backend.addURL(id, url);
-    data['image_url'] = url;
+
+    if (_image != null) {
+      String url = await backend.upload(_image!, id);
+      backend.addURL(id, url);
+      data['image_url'] = url;
+    }
 
     backend.addItemToUser(id);
   }

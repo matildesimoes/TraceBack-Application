@@ -31,6 +31,7 @@ class _MockEditProfilePageState extends EditProfilePageState {
       phoneNumberController.text = userData['phone'];
     });
 
+    uid = "RMeHoHaoAEU4YtZjeMv6wxIhHwH2";
   }
 }
 
@@ -42,6 +43,9 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.byType(EditBox), findsNWidgets(3));
+    expect(find.byType(EditBox), findsNWidgets(2));
+
+    expect(find.text('nome'), findsOneWidget);
+    expect(find.text('phoneNumber'), findsOneWidget);
   });
 }

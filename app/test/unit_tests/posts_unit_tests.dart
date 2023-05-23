@@ -4,6 +4,32 @@ import 'package:TraceBack/posts/post_pages/post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+class PostMock extends Post {
+
+  PostMock({required super.tags, required super.title, required super.location, required super.imageRetriever, required super.date, required super.description, required super.authorID});
+
+  @override
+  State<Post> createState() => _MockPostState();
+}
+
+class _MockPostState extends PostState {
+
+  @override
+  loadAuthor() {
+    authorName = "Test Author Name";
+  }
+
+  @override
+  loadMap() {
+    map = Container();
+  }
+
+  @override
+  loadPhoto() {
+    photo = Container();
+  }
+}
+
 void main(){
 
   testWidgets('Short Post Test', (WidgetTester tester) async {
@@ -40,7 +66,7 @@ void main(){
 
     await tester.pumpWidget(MaterialApp(
       home: Column(
-        children: [Post(
+        children: [PostMock(
           title: "Test Title",
           date: "Test Date",
           tags: [Tag("Tag1"), Tag("Tag2")],
@@ -51,6 +77,8 @@ void main(){
         ),]
       ),
     ));
+
+    await tester.pumpAndSettle();
 
     expect(find.text("Test Title"), findsOneWidget);
     expect(find.text("Test Date"), findsOneWidget);

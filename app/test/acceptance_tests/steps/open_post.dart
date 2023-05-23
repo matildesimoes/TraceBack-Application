@@ -21,10 +21,10 @@ class PostCardExists extends AndWithWorld<FlutterWorld> {
 
   @override
   Future<void> executeStep() async {
-    final lostPost = find.byValueKey("Lost Post Card");
+    final lostPost = find.byValueKey("Post Card");
     bool lostPostExists = await FlutterDriverUtils.isPresent(world.driver, lostPost);
 
-    final foundPost = find.byValueKey("Found Post Card");
+    final foundPost = find.byValueKey("Post Card");
     bool foundPostExists = await FlutterDriverUtils.isPresent(world.driver, foundPost);
 
     if (!lostPostExists && !foundPostExists) {
@@ -41,15 +41,13 @@ class UserTapsAPost extends When1WithWorld<String, FlutterWorld> {
   @override
   Future<void> executeStep(String key) async {
 
-    final foundPost = find.byValueKey("Found $key");
-    final lostPost = find.byValueKey("Lost $key");
+    final item = find.byValueKey("$key");
 
-    if (await FlutterDriverUtils.isPresent(world.driver, foundPost)) {
-      await FlutterDriverUtils.tap(world.driver, foundPost);
+    if (await FlutterDriverUtils.isPresent(world.driver, item)) {
+      await FlutterDriverUtils.tap(world.driver, item);
     } else {
-      await FlutterDriverUtils.tap(world.driver, lostPost);
+      throw Exception("Can not click Post Card");
     }
-
   }
 
   @override

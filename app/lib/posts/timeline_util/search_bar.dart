@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:TraceBack/util/colors.dart';
 import 'filter.dart';
 
-class SearchBar extends StatefulWidget{
+class ItemSearchBar extends StatefulWidget{
 
   final ItemsFilter filter;
   final Function search;
   final TextEditingController controller;
 
-  SearchBar({
+  ItemSearchBar({
     super.key,
     required this.filter,
     required this.search,
@@ -17,10 +17,10 @@ class SearchBar extends StatefulWidget{
   });
 
   @override
-  State<SearchBar> createState() => _SearchBarState();
+  State<ItemSearchBar> createState() => _ItemSearchBarState();
 }
 
-class _SearchBarState extends State<SearchBar> {
+class _ItemSearchBarState extends State<ItemSearchBar> {
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 10.0),

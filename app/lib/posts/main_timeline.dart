@@ -61,7 +61,7 @@ class _MainTimelineState extends State<MainTimeline> {
             search: search,
             searchCtrl: searchCtrl
           ),
-          SearchBar(
+          ItemSearchBar(
             filter: filter,
             search: search,
             controller: searchCtrl,

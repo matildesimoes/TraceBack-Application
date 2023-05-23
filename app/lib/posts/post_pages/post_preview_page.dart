@@ -8,6 +8,7 @@ import 'package:TraceBack/util/colors.dart';
 
 class PostPreview extends StatelessWidget {
 
+  //final FirebaseMessagingService _firebaseMessagingService = FirebaseMessagingService();
   late String title;
   late String category;
   List<Tag> tagWidgets = [];
@@ -81,7 +82,53 @@ class PostPreview extends StatelessWidget {
       floatingActionButton: BottomButton(
         text: "Submit",
         icon: Icons.post_add_rounded,
-        onPressed: () {submit(); Navigator.popUntil(context, ModalRoute.withName("/Home"));}
+          onPressed: () async {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Are you sure you want to submit?',
+                  textAlign: TextAlign.center,),
+                  actionsAlignment: MainAxisAlignment.spaceAround,
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text(
+                        'No',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      style: TextButton.styleFrom(
+                        backgroundColor: mainColor,
+                      )
+                    ),
+                    TextButton(
+                      child: const Text(
+                          'Yes',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                      ),
+                      style: TextButton.styleFrom(
+                        backgroundColor: secondaryColor,
+                        textStyle: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                        submit();
+                        Navigator.popUntil(context, ModalRoute.withName("/Home"));
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          }
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );

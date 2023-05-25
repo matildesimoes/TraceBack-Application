@@ -1,9 +1,9 @@
 # Elevator Pitch
 
-Já tiveram aquele sentimento que nunca mais vão recuperar o vosso casaco preferido que deixaram na aula de Engenharia de Software? Na universidade do Porto nada disto vai voltar a acontecer.
+Já tiveram aquele sentimento que nunca mais vão recuperar o vosso casaco preferido que deixaram na aula de Engenharia de Software? Foram aos perdidos e achados e não o encontraram. E como última alternativa foram aos grupos de Whatsapp do curso, mas nada. Se calhar, foi alguém doutro curso que o encontrou.
 
-Para tal, criamos o TraceBack, uma solução inovadora que simplifica a forma como os alunos da UP encontram e recuperam os seus pertences perdidos. 
+Para tal, criámos o TraceBack, um serviço dinâmico e fácil de perdidos e achados que conecta todos os estudantes e docentes da universidade do Porto, e tudo, à distância de um toque. 
 
-Perder coisas acontece a todos, às vezes estamos com a cabeça na próxima entrega/ no próximo exame e deixamos algo para trás que nos vai pesar na consciência. Focamos-nos em criar uma aplicação eficiente, segura e amigável para combater um problema em vez de criar só mais um jogo diferenciado ou só mais uma cópia diferente duma outra já existente. 
+Esta aplicação permite que os seus utilizadores possam reportar objetos perdidos ou encontrados, de forma a que outros utilizadores possam ver e contactar a pessoa que os encontraram ou perderam.
 
-A aplicação está dividia em duas partes, a direcionada para o que encontra e a direcionada para o que perde. Simplesmente abrem, postam o item que perderam, dão algumas informações extras e do outro lado, certamente irão ter alguém que o vai encontrar e postar de forma a não dizeres "Mãe perdi os airpods que me deste..." mas sim "Mãe, tinha perdido os airpods mas com uma app que a uni tem, recuperei-os! Com o... TraceBack."
+Com o Traceback, nunca mais terão de voltar para casa e dizer "Mãe perdi os airpods que me deste..." mas sim "Mãe, tinha perdido os airpods mas recuperei-os, graças ao TraceBack."
